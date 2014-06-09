@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <script src="/js/sockjs.js"></script>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/stomp.js"></script>
+    <script type="text/javascript">
+        var WEBSOCKET_TARGET_URL = "/join";
+
+        var socket = new SockJS(WEBSOCKET_TARGET_URL);
+        var stompClient = Stomp.over(socket);
+
+        var yes = function() {
+            stompClient.send('/ox/answer', {}, JSON.stringify({answer: true}));
+        }
+
+        var no = function() {
+            stompClient.send('/ox/answer', {}, JSON.stringify({answer: false}));
+        }
+
+
+    </script>
+</head>
+<body>
+    <input type="button" onclick="yes()" value="YES"/>
+    <input type="button" onclick="no()" value="NO"/>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <script src="/js/sockjs.js"></script>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/stomp.js"></script>
+    <script type="text/javascript">
+        var WEBSOCKET_TARGET_URL = "/join";
+
+        var socket = new SockJS(WEBSOCKET_TARGET_URL);
+        var stompClient = Stomp.over(socket);
+
+
+        stompClient.connect(' ', ' ', function(frame) {
+            stompClient.subscribe("/ox/players/answer", function(message) {
+                console.log(message);
+                var answer = JSON.parse(message.body).answer;
+
+                $('.answer').append(answer);
+            });
+        }, function (error) {
+            console.log("STOMP protocol error " + error);
+        });
+
+
+    </script>
+</head>
+<body>
+    <div class="answer"></div>
+</body>
+</html>
