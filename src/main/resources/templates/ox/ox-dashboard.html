@@ -1,12 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <script src="/js/sockjs.js"></script>
     <script src="/js/jquery.js"></script>
     <script src="/js/stomp.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var board = /*[[${dashboard}]]*/ null;
+
         var WEBSOCKET_TARGET_URL = "/join";
 
         var socket = new SockJS(WEBSOCKET_TARGET_URL);
@@ -14,20 +17,41 @@
 
 
         stompClient.connect(' ', ' ', function(frame) {
-            stompClient.subscribe("/ox/players/answer", function(message) {
-                console.log(message);
-                var answer = JSON.parse(message.body).answer;
+            $('.socket-status').text("connected!!");
+            stompClient.subscribe("/ox/players/answer/" + board.id, function(message) {
+                var answer = JSON.parse(message.body);
+                $('.o-count').text(answer.o);
+                $('.x-count').text(answer.x);
 
-                $('.answer').append(answer);
+                if((answer.oxAnswerMessage != null) && (answer.oxAnswerMessage.response === "o")) {
+                    $('.o-plus').show();
+                    $('.o-plus').hide("slow");
+                } else {
+                    $('.x-plus').show();
+                    $('.x-plus').hide("slow");
+                }
             });
         }, function (error) {
-            console.log("STOMP protocol error " + error);
+            // TODO error 처리
+            $('.socket-status').text("connecting ...");
         });
 
-
+        /*]]>*/
     </script>
 </head>
 <body>
+    <h1 th:text="${dashboard.title}"></h1>
+    <div>
+        <p class="socket-status">connecting ...</p>
+    </div>
+    <div>
+        <p>O</p>
+        <span class="o-count"></span><span class="o-plus" style="display: none;">  +1</span>
+    </div>
+    <div>
+        <p>X</p>
+        <span class="x-count"></span><span class="x-plus" style="display: none;">  +1</span>
+    </div>
     <div class="answer"></div>
 </body>
 </html>
