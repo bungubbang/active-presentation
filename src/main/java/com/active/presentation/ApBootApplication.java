@@ -1,7 +1,7 @@
 package com.active.presentation;
 
-import com.active.presentation.core.handler.RandomUidHandler;
-import com.active.presentation.core.handler.UidHandler;
+import com.active.presentation.handler.RandomUidHandler;
+import com.active.presentation.handler.UidHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;

@@ -3,50 +3,139 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+
+
+    <!-- BootStrap START -->
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- BootStrap END -->
+
+    <link rel="stylesheet" href="/css/ox.css"/>
+    <link rel="stylesheet" href="/css/bounce.css"/>
+
     <script src="/js/sockjs.js"></script>
     <script src="/js/jquery.js"></script>
     <script src="/js/stomp.js"></script>
     <script src="/js/jquery.cookie.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
             var board = /*[[${dashboard}]]*/ null;
             var uId = /*[[${uid}]]*/ null;
+            var result = /*[[${answer}]]*/ null;
         /*]]>*/
+
+        var stompClient, socket;
         var WEBSOCKET_TARGET_URL = "/join";
         var COOKIE_ID = "apuid";
+        var status = false;
+        var timeout = 5000;
         var answer = {
             response: "",
             uid: uId
         }
 
-        var socket = new SockJS(WEBSOCKET_TARGET_URL);
-        var stompClient = Stomp.over(socket);
-
-        stompClient.connect(' ', ' ', function(frame) {
-            $('.socket-status').text("connected!!");
-        }, function (error) {
-            // TODO error 처리
-            $('.socket-status').text("connecting ...");
+        $(document).ready(function() {
+            socketConnect();
+            markingResult(result);
         });
 
+        var socketConnect = function() {
+            socket = new SockJS(WEBSOCKET_TARGET_URL);
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect(' ', ' ', function(frame) {
+                status = true;
+                statusConnect();
+            }, function (error) {
+                // TODO error 처리
+                status = false;
+                setTimeout(function() {
+                    socketConnect();
+                }, timeout);
+                statusDisconnect();
+            });
+        }
+
         var yes = function() {
-            answer.response = "o";
-            stompClient.send('/ox/answer/' + board.id, {}, JSON.stringify(answer));
+            if(status) {
+                answer.response = "O";
+                markingResult("O");
+                stompClient.send('/socket/answer/ox/' + board.id, {}, JSON.stringify(answer));
+            }
         }
 
         var no = function() {
-            answer.response = "X";
-            stompClient.send('/ox/answer/' + board.id, {}, JSON.stringify(answer));
+            if(status) {
+                answer.response = "X";
+                markingResult("X");
+                stompClient.send('/socket/answer/ox/' + board.id, {}, JSON.stringify(answer));
+            }
+        }
+
+        var statusConnect = function() {
+            $('.control-navbar-status-fail').hide();
+            $('.control-navbar-status-connect').show();
+
+        }
+
+        var statusDisconnect = function() {
+            $('.control-navbar-status-connect').hide();
+            $('.control-navbar-status-fail').show();
+
+        }
+
+        var markingResult = function(answer) {
+            if(answer === "O") {
+                $('.control-ox-answer-o').addClass('bounce-target');
+                $('.control-ox-answer-x').removeClass('bounce-target');
+            } else if(answer === "X") {
+                $('.control-ox-answer-x').addClass('bounce-target');
+                $('.control-ox-answer-o').removeClass('bounce-target');
+            }
         }
 
     </script>
 </head>
 <body>
-    <h1 th:text="${dashboard.title}"></h1>
-    <div>
-        <p class="socket-status">connecting ...</p>
+    <header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="/" class="navbar-brand control-navbar-brand">Active Presentation</a>
+            </div>
+            <div class="control-navbar-status">
+                <ul>
+                    <div class="control-navbar-status-fail">
+                        <span class="glyphicon glyphicon-remove control-navbar-status-fail"></span> Not Connected ...
+                    </div>
+                    <div class="control-navbar-status-connect" style="display: none;">
+                        <span class="glyphicon glyphicon-signal"></span>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="bs-docs-header" id="content">
+        <div class="container">
+            <div class="control-ox-container">
+                <h1 th:text="${dashboard.title}"></h1>
+                <span class="control-ox-answer control-ox-answer-o" onclick="yes()">O</span>
+                <span class="control-ox-answer control-ox-answer-x" onclick="no()">X</span>
+            </div>
+        </div>
     </div>
-    <input type="button" onclick="yes()" value="YES"/>
-    <input type="button" onclick="no()" value="NO"/>
 </body>
 </html>

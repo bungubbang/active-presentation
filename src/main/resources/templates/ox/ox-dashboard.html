@@ -3,6 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
     <script src="/js/sockjs.js"></script>
     <script src="/js/jquery.js"></script>
     <script src="/js/stomp.js"></script>
@@ -10,32 +12,47 @@
         /*<![CDATA[*/
         var board = /*[[${dashboard}]]*/ null;
 
+        var stompClient, socket;
         var WEBSOCKET_TARGET_URL = "/join";
+        var status = false;
+        var timeout = 5000;
 
-        var socket = new SockJS(WEBSOCKET_TARGET_URL);
-        var stompClient = Stomp.over(socket);
-
-
-        stompClient.connect(' ', ' ', function(frame) {
-            $('.socket-status').text("connected!!");
-            stompClient.subscribe("/ox/players/answer/" + board.id, function(message) {
-                var answer = JSON.parse(message.body);
-                $('.o-count').text(answer.o);
-                $('.x-count').text(answer.x);
-
-                if((answer.oxAnswerMessage != null) && (answer.oxAnswerMessage.response === "o")) {
-                    $('.o-plus').show();
-                    $('.o-plus').hide("slow");
-                } else {
-                    $('.x-plus').show();
-                    $('.x-plus').hide("slow");
-                }
-            });
-        }, function (error) {
-            // TODO error 처리
-            $('.socket-status').text("connecting ...");
+        $(document).ready(function() {
+            socketConnect();
         });
 
+        var socketConnect = function() {
+            console.log("con..");
+            socket = new SockJS(WEBSOCKET_TARGET_URL);
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect(' ', ' ', function(frame) {
+                status = true;
+                $('.socket-status').text("connected!!");
+                stompClient.subscribe("/socket/players/answer/ox/" + board.id, function(message) {
+                    var answer = JSON.parse(message.body);
+                    $('.o-count').text(answer.o);
+                    $('.x-count').text(answer.x);
+
+                    if(answer.oxAnswerMessage != null) {
+                        if(answer.oxAnswerMessage.response === "O") {
+                            $('.o-plus').show();
+                            $('.o-plus').hide("slow");
+                        } else if(answer.oxAnswerMessage.response === "X") {
+                            $('.x-plus').show();
+                            $('.x-plus').hide("slow");
+                        }
+                    }
+                });
+            }, function (error) {
+                // TODO error 처리
+                status = false;
+                setTimeout(function() {
+                    socketConnect();
+                }, timeout);
+                $('.socket-status').text("connecting ...");
+            });
+        }
         /*]]>*/
     </script>
 </head>
@@ -53,5 +70,7 @@
         <span class="x-count"></span><span class="x-plus" style="display: none;">  +1</span>
     </div>
     <div class="answer"></div>
+    <p></p>
+    <iframe th:src="${'/' + dashboard.id}" style="width: 500px; height: 400px; position: fixed; top: 10px; right: 10px;"></iframe>
 </body>
 </html>

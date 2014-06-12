@@ -1,25 +1,25 @@
-package com.active.presentation.ox.domain;
+package com.active.presentation.domain;
 
-import com.active.presentation.core.domain.Audience;
+import com.active.presentation.ox.domain.OxDashBoard;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by bungubbang
  * Email: sungyong.jung@sk.com
- * Date: 6/10/14
+ * Date: 6/11/14
  */
 @Entity
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"ox_dash_board_id", "audience_id"}))
-public class OxHistory implements Serializable {
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"dashboard_id", "audience_id"}))
+public class Answer {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
-    private OxDashBoard oxDashBoard;
+    private PresentationDashboard dashboard;
 
     @OneToOne
     private Audience audience;
@@ -28,10 +28,10 @@ public class OxHistory implements Serializable {
     private Date createdDate = new Date();
     private Date modifyDate = new Date();
 
-    public OxHistory() {}
+    public Answer() {}
 
-    public OxHistory(OxDashBoard oxDashBoard, Audience audience, String result) {
-        this.oxDashBoard = oxDashBoard;
+    public Answer(PresentationDashboard dashboard, Audience audience, String result) {
+        this.dashboard = dashboard;
         this.audience = audience;
         this.result = result;
     }
@@ -44,12 +44,12 @@ public class OxHistory implements Serializable {
         this.id = id;
     }
 
-    public OxDashBoard getOxDashBoard() {
-        return oxDashBoard;
+    public PresentationDashboard getDashboard() {
+        return dashboard;
     }
 
-    public void setOxDashBoard(OxDashBoard oxDashBoard) {
-        this.oxDashBoard = oxDashBoard;
+    public void setDashboard(PresentationDashboard dashboard) {
+        this.dashboard = dashboard;
     }
 
     public Audience getAudience() {
@@ -86,9 +86,9 @@ public class OxHistory implements Serializable {
 
     @Override
     public String toString() {
-        return "OxHistory{" +
+        return "Answer{" +
                 "id=" + id +
-                ", oxDashBoard=" + oxDashBoard +
+                ", dashboard=" + dashboard +
                 ", audience=" + audience +
                 ", result='" + result + '\'' +
                 ", createdDate=" + createdDate +

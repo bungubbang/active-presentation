@@ -1,8 +1,7 @@
-package com.active.presentation.core.repository;
+package com.active.presentation.repository;
 
-import com.active.presentation.core.domain.Speaker;
+import com.active.presentation.domain.Speaker;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 /**
  * Created by bungubbang

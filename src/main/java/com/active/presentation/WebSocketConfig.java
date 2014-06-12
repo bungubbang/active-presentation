@@ -26,8 +26,8 @@ public class WebSocketConfig extends WebSocketMessageBrokerConfigurationSupport 
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/ox/");
-        registry.setApplicationDestinationPrefixes("/ox");
+        registry.enableSimpleBroker("/socket/");
+        registry.setApplicationDestinationPrefixes("/socket");
     }
 
     @Override

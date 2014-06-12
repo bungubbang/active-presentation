@@ -1,9 +1,9 @@
-package com.active.presentation.ox.domain.message;
+package com.active.presentation.domain.message;
 
 /**
  * Created by bungubbang
  * Email: sungyong.jung@sk.com
- * Date: 6/10/14
+ * Date: 6/11/14
  */
 public class OxAnswerMessage {
 

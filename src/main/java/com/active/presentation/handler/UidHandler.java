@@ -1,4 +1,4 @@
-package com.active.presentation.core.handler;
+package com.active.presentation.handler;
 
 /**
  * Created by bungubbang

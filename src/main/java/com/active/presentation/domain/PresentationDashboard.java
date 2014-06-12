@@ -1,38 +1,33 @@
-package com.active.presentation.ox.domain;
+package com.active.presentation.domain;
 
-import com.active.presentation.core.domain.Speaker;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.Max;
 import java.util.Date;
 
 /**
  * Created by bungubbang
  * Email: sungyong.jung@sk.com
- * Date: 6/10/14
+ * Date: 6/11/14
  */
 @Entity
-public class OxDashBoard {
-
-    @Id @GeneratedValue
+public class PresentationDashboard {
+    @Id
+    @GeneratedValue
     private Long id;
 
     @ManyToOne
     private Speaker speaker;
 
+    @Enumerated(EnumType.STRING)
+    private PresentationType presentationType;
+
     private Date createdDate;
     private String title;
+    private String questions;
+
+    @Max(10)
+    private Integer choiceCount;
     private Boolean status;
-
-    public OxDashBoard() {}
-
-    public OxDashBoard(Speaker speaker, String title, Boolean status) {
-        this.speaker = speaker;
-        this.title = title;
-        this.status = status;
-    }
 
     public Long getId() {
         return id;
@@ -48,6 +43,14 @@ public class OxDashBoard {
 
     public void setSpeaker(Speaker speaker) {
         this.speaker = speaker;
+    }
+
+    public PresentationType getPresentationType() {
+        return presentationType;
+    }
+
+    public void setPresentationType(PresentationType presentationType) {
+        this.presentationType = presentationType;
     }
 
     public Date getCreatedDate() {
@@ -66,6 +69,22 @@ public class OxDashBoard {
         this.title = title;
     }
 
+    public String getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(String questions) {
+        this.questions = questions;
+    }
+
+    public Integer getChoiceCount() {
+        return choiceCount;
+    }
+
+    public void setChoiceCount(Integer choiceCount) {
+        this.choiceCount = choiceCount;
+    }
+
     public Boolean getStatus() {
         return status;
     }
@@ -76,11 +95,14 @@ public class OxDashBoard {
 
     @Override
     public String toString() {
-        return "OxDashBoard{" +
+        return "PresentationDashboard{" +
                 "id=" + id +
                 ", speaker=" + speaker +
+                ", presentationType=" + presentationType +
                 ", createdDate=" + createdDate +
                 ", title='" + title + '\'' +
+                ", questions='" + questions + '\'' +
+                ", choiceCount=" + choiceCount +
                 ", status=" + status +
                 '}';
     }
