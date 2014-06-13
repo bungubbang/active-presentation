@@ -3,7 +3,9 @@ package com.active.presentation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
@@ -13,6 +15,8 @@ import javax.sql.DataSource;
  * Date: 6/10/14
  */
 @Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = "com.active.presentation.domain")
 public class PersistenceConfiguration {
 
     @Bean
@@ -29,6 +33,11 @@ public class PersistenceConfiguration {
     @Bean
     @Profile("production")
     public DataSource dataSource() {
-        return null;
+        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+        dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
+        dataSource.setUrl("jdbc:mysql://localhost:3306/ap");
+        dataSource.setUsername("root");
+        dataSource.setPassword("SKplanet2129");
+        return dataSource;
     }
 }

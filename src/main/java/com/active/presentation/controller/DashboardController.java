@@ -28,6 +28,10 @@ public class DashboardController {
 
         if(board.getPresentationType().equals(PresentationType.OX)) {
             return "ox/ox-dashboard";
+        }else if(board.getPresentationType().equals(PresentationType.MULTIPLE_CHOICE)) {
+            return "choice/choice-dashboard";
+        }else if(board.getPresentationType().equals(PresentationType.QNA)) {
+            return "qna/qna-dashboard";
         }
         return "default";
     }

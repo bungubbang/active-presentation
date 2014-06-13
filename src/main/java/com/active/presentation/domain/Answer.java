@@ -1,7 +1,5 @@
 package com.active.presentation.domain;
 
-import com.active.presentation.ox.domain.OxDashBoard;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -25,15 +23,17 @@ public class Answer {
     private Audience audience;
 
     private String result;
+    private String userAgent;
     private Date createdDate = new Date();
     private Date modifyDate = new Date();
 
     public Answer() {}
 
-    public Answer(PresentationDashboard dashboard, Audience audience, String result) {
+    public Answer(PresentationDashboard dashboard, Audience audience, String result, String userAgent) {
         this.dashboard = dashboard;
         this.audience = audience;
         this.result = result;
+        this.userAgent = userAgent;
     }
 
     public Long getId() {
@@ -84,6 +84,14 @@ public class Answer {
         this.modifyDate = modifyDate;
     }
 
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
     @Override
     public String toString() {
         return "Answer{" +
@@ -91,6 +99,7 @@ public class Answer {
                 ", dashboard=" + dashboard +
                 ", audience=" + audience +
                 ", result='" + result + '\'' +
+                ", userAgent='" + userAgent + '\'' +
                 ", createdDate=" + createdDate +
                 ", modifyDate=" + modifyDate +
                 '}';

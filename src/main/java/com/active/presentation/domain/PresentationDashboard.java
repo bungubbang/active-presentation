@@ -3,6 +3,7 @@ package com.active.presentation.domain;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by bungubbang
@@ -23,7 +24,9 @@ public class PresentationDashboard {
 
     private Date createdDate;
     private String title;
-    private String questions;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Question> questions;
 
     @Max(10)
     private Integer choiceCount;
@@ -69,11 +72,11 @@ public class PresentationDashboard {
         this.title = title;
     }
 
-    public String getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(String questions) {
+    public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
 
@@ -101,7 +104,6 @@ public class PresentationDashboard {
                 ", presentationType=" + presentationType +
                 ", createdDate=" + createdDate +
                 ", title='" + title + '\'' +
-                ", questions='" + questions + '\'' +
                 ", choiceCount=" + choiceCount +
                 ", status=" + status +
                 '}';

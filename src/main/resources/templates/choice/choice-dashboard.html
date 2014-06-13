@@ -18,40 +18,35 @@
         var timeout = 5000;
 
         $(document).ready(function() {
-            socketoxConnect();
+            socketConnect();
         });
 
-        var socketoxConnect = function() {
+        var socketConnect = function() {
+            console.log("con..");
             socket = new SockJS(WEBSOCKET_TARGET_URL);
             stompClient = Stomp.over(socket);
 
             stompClient.connect(' ', ' ', function(frame) {
                 status = true;
+                $('.socket-status').text("connected!!");
                 stompClient.subscribe("/socket/players/answer/ox/" + board.id, function(message) {
-                    var ox = {
-                        o: 0,
-                        x: 0
-                    }
                     var answer = JSON.parse(message.body);
                     for (var a in answer.result) {
                         if(answer.result[a].result == 'O') {
-                            ox.o = answer.result[a].choice;
-                        } else if(answer.result[a].result == 'X') {
-                            ox.x = answer.result[a].choice;
-
+                            $('.o-count').text(answer.result[a].choice);
+                        } else if(answer.result[a].result == 'x') {
+                            $('.x-count').text(answer.result[a].choice);
                         }
 
                     }
-                    console.log(ox);
-                    $('.o-count').text(ox.o);
-                    $('.x-count').text(ox.x);
                 });
             }, function (error) {
                 // TODO error 처리
                 status = false;
                 setTimeout(function() {
-                    socketoxConnect();
+                    socketConnect();
                 }, timeout);
+                $('.socket-status').text("connecting ...");
             });
         }
         /*]]>*/
@@ -64,11 +59,11 @@
     </div>
     <div>
         <p>O</p>
-        <span class="o-count"></span>
+        <span class="o-count">0</span>
     </div>
     <div>
         <p>X</p>
-        <span class="x-count"></span>
+        <span class="x-count">0</span>
     </div>
     <div class="answer"></div>
     <p></p>

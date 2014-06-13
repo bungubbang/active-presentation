@@ -7,8 +7,6 @@ import com.active.presentation.domain.message.OxAnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
 import com.active.presentation.repository.AnswerRepository;
 import com.active.presentation.service.SocketService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,13 +19,10 @@ import java.util.Date;
 /**
  * Created by bungubbang
  * Email: sungyong.jung@sk.com
- * Date: 6/10/14
+ * Date: 6/13/14
  */
 @Controller
-public class OxSocketController {
-
-    private static final Logger logger = LoggerFactory.getLogger(OxSocketController.class);
-
+public class ChoiceSocketController {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
@@ -37,13 +32,13 @@ public class OxSocketController {
     @Autowired
     private SocketService socketService;
 
-    @SubscribeMapping("/players/answer/ox/{boardId}")
+    @SubscribeMapping("/players/answer/choice/{boardId}")
     public SocketResponseMessage answerResponse(@DestinationVariable Long boardId) {
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
         return new SocketResponseMessage(answerRepository.resultByDashboard(dashboard));
     }
 
-    @MessageMapping("/answer/ox/{boardId}")
+    @MessageMapping("/answer/choice/{boardId}")
     public void answer(@DestinationVariable Long boardId, OxAnswerMessage message) {
         Audience audience = socketService.generateAudience(message.getUid());
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
@@ -57,8 +52,6 @@ public class OxSocketController {
         }
 
         SocketResponseMessage socketResponseMessage = new SocketResponseMessage(answerRepository.resultByDashboard(dashboard), message.getResponse());
-        messagingTemplate.convertAndSend("/socket/players/answer/ox/" + dashboard.getId(), socketResponseMessage);
+        messagingTemplate.convertAndSend("/socket/players/answer/choice/" + dashboard.getId(), socketResponseMessage);
     }
-
-
 }

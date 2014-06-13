@@ -9,6 +9,7 @@ public class OxAnswerMessage {
 
     private String response;
     private String uid;
+    private String userAgent;
 
     public String getResponse() {
         return response;
@@ -24,11 +25,20 @@ public class OxAnswerMessage {
         this.uid = uid;
     }
 
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
     @Override
     public String toString() {
         return "OxAnswerMessage{" +
                 "response='" + response + '\'' +
                 ", uid='" + uid + '\'' +
+                ", userAgent='" + userAgent + '\'' +
                 '}';
     }
 }

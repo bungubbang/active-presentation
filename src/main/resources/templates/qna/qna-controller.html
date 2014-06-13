@@ -22,7 +22,6 @@
     <!-- BootStrap END -->
 
     <link rel="stylesheet" href="/css/ox.css"/>
-    <link rel="stylesheet" href="/css/control.css"/>
     <link rel="stylesheet" href="/css/bounce.css"/>
 
     <script src="/js/sockjs.js"></script>
@@ -40,6 +39,7 @@
         /*]]>*/
 
         var stompClient, socket;
+        var WEBSOCKET_TARGET_URL = "/join";
         var COOKIE_ID = "apuid";
         var status = false;
         var timeout = 5000;
@@ -48,13 +48,28 @@
             uid: uId,
             userAgent: navigator.userAgent
         }
-        var oxBounceClass = ".ox-bounce-target";
 
         $(document).ready(function() {
             socketConnect();
             markingResult(result);
         });
 
+        var socketConnect = function() {
+            socket = new SockJS(WEBSOCKET_TARGET_URL);
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect(' ', ' ', function(frame) {
+                status = true;
+                statusConnect();
+            }, function (error) {
+                // TODO error 처리
+                status = false;
+                setTimeout(function() {
+                    socketConnect();
+                }, timeout);
+                statusDisconnect();
+            });
+        }
 
         var yes = function() {
             if(status) {
@@ -72,18 +87,29 @@
             }
         }
 
+        var statusConnect = function() {
+            $('.control-navbar-status-fail').hide();
+            $('.control-navbar-status-connect').show();
+
+        }
+
+        var statusDisconnect = function() {
+            $('.control-navbar-status-connect').hide();
+            $('.control-navbar-status-fail').show();
+
+        }
+
         var markingResult = function(answer) {
             if(answer === "O") {
-                $('.control-ox-answer-o').addClass(oxBounceClass);
-                $('.control-ox-answer-x').removeClass(oxBounceClass);
+                $('.control-ox-answer-o').addClass('bounce-target');
+                $('.control-ox-answer-x').removeClass('bounce-target');
             } else if(answer === "X") {
-                $('.control-ox-answer-x').addClass(oxBounceClass);
-                $('.control-ox-answer-o').removeClass(oxBounceClass);
+                $('.control-ox-answer-x').addClass('bounce-target');
+                $('.control-ox-answer-o').removeClass('bounce-target');
             }
         }
 
     </script>
-    <script src="/js/socketConnect.js"></script>
 </head>
 <body>
     <header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
@@ -103,7 +129,7 @@
             </div>
         </div>
     </header>
-    <div id="content">
+    <div class="bs-docs-header" id="content">
         <div class="container">
             <div class="control-ox-container">
                 <h1 th:text="${dashboard.title}"></h1>

@@ -3,10 +3,12 @@ package com.active.presentation.controller;
 import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.Audience;
 import com.active.presentation.domain.PresentationDashboard;
+import com.active.presentation.domain.PresentationType;
 import com.active.presentation.handler.UidHandler;
 import com.active.presentation.repository.AnswerRepository;
 import com.active.presentation.repository.AudienceRepository;
 import com.active.presentation.repository.PresentationDashboardRepository;
+import com.active.presentation.repository.PresentationDashboardSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -43,7 +45,7 @@ public class ChoiceController {
                                HttpServletResponse response) {
         String uid = generateApUid(apuid, response);
         Audience audience = audienceRepository.findByUserKey(uid);
-        PresentationDashboard dashboard = dashboardRepository.findOne(id);
+        PresentationDashboard dashboard = dashboardRepository.findOne(PresentationDashboardSpecifications.findFetchQuestion(id));
         Answer answer = answerRepository.findByDashboardAndAudience(dashboard, audience);
 
         map.addAttribute("uid", uid);
@@ -52,7 +54,15 @@ public class ChoiceController {
         if(answer != null) {
             map.addAttribute("answer", answer.getResult());
         }
-        return "ox/ox-controller";
+
+        if(dashboard.getPresentationType().equals(PresentationType.OX)) {
+            return "ox/ox-controller";
+        }else if(dashboard.getPresentationType().equals(PresentationType.MULTIPLE_CHOICE)) {
+            return "choice/choice-controller";
+        }else if(dashboard.getPresentationType().equals(PresentationType.QNA)) {
+            return "qna/qna-controller";
+        }
+        return "default";
     }
 
     private String generateApUid(String uid, HttpServletResponse response) {
@@ -64,4 +74,6 @@ public class ChoiceController {
         }
         return uid;
     }
+
+
 }

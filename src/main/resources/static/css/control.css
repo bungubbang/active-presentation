@@ -1,0 +1,4 @@
+.control-navbar-header { border-bottom: 1px solid #555;}
+.control-navbar-brand {color: #555 !important;}
+.control-navbar-status {position: absolute; right: 50px; top: 18px; font-size: 15px;}
+.control-navbar-status-fail {color: #A83838;}
