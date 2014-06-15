@@ -55,6 +55,7 @@ public class ChoiceController {
             map.addAttribute("answer", answer.getResult());
         }
 
+        System.out.println("dashboard = " + dashboard);
         if(dashboard.getPresentationType().equals(PresentationType.OX)) {
             return "ox/ox-controller";
         }else if(dashboard.getPresentationType().equals(PresentationType.MULTIPLE_CHOICE)) {

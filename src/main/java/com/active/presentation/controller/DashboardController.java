@@ -3,6 +3,7 @@ package com.active.presentation.controller;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.PresentationType;
 import com.active.presentation.repository.PresentationDashboardRepository;
+import com.active.presentation.repository.PresentationDashboardSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -23,7 +24,7 @@ public class DashboardController {
 
     @RequestMapping("/{id}")
     public String board(@PathVariable Long id, ModelMap map) {
-        PresentationDashboard board = dashboardRepository.findOne(id);
+        PresentationDashboard board = dashboardRepository.findOne(PresentationDashboardSpecifications.findFetchQuestion(id));
         map.addAttribute("dashboard", board);
 
         if(board.getPresentationType().equals(PresentationType.OX)) {

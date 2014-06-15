@@ -1,6 +1,6 @@
 .ox-bounce-target {
     color: #6f5499;
-    -webkit-animation: bounce 2000ms infinite both;
+    -webkit-animation: ox-bounce 2000ms infinite both;
     animation: ox-bounce 2000ms infinite both;
 }
 
