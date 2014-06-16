@@ -22,22 +22,21 @@
         });
 
         var socketConnect = function() {
-            console.log("con..");
             socket = new SockJS(WEBSOCKET_TARGET_URL);
             stompClient = Stomp.over(socket);
 
             stompClient.connect(' ', ' ', function(frame) {
                 status = true;
-                $('.socket-status').text("connected!!");
-                stompClient.subscribe("/socket/players/answer/ox/" + board.id, function(message) {
+                stompClient.subscribe("/socket/players/answer/choice/" + board.id, function(message) {
                     var answer = JSON.parse(message.body);
-                    for (var a in answer.result) {
-                        if(answer.result[a].result == 'O') {
-                            $('.o-count').text(answer.result[a].choice);
-                        } else if(answer.result[a].result == 'x') {
-                            $('.x-count').text(answer.result[a].choice);
+                    for(var i in board.questions) {
+                        var result = 0;
+                        for (var a in answer.result) {
+                            if(board.questions[i].id == answer.result[a].result) {
+                                result = answer.result[a].choice;
+                            }
                         }
-
+                        $($('.' + board.questions[i].id).next()).text(result);
                     }
                 });
             }, function (error) {
@@ -46,7 +45,6 @@
                 setTimeout(function() {
                     socketConnect();
                 }, timeout);
-                $('.socket-status').text("connecting ...");
             });
         }
         /*]]>*/
@@ -54,8 +52,11 @@
 </head>
 <body>
     <h1 th:text="${dashboard.title}"></h1>
-    <ul>
-
-    </ul>
+    <div th:each="question : ${dashboard.questions}">
+        <ul>
+            <li th:class="${question.id}" th:text="${question.answerList}"></li>
+            <li></li>
+        </ul>
+    </div>
 </body>
 </html>

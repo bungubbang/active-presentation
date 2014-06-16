@@ -21,122 +21,112 @@
     <![endif]-->
     <!-- BootStrap END -->
 
-    <link rel="stylesheet" href="/css/ox.css"/>
-    <link rel="stylesheet" href="/css/bounce.css"/>
+    <link rel="stylesheet" href="/css/control.css"/>
 
     <script src="/js/sockjs.js"></script>
     <script src="/js/jquery.js"></script>
     <script src="/js/stomp.js"></script>
     <script src="/js/jquery.cookie.js"></script>
 
+
     <!-- Latest compiled and minified JavaScript -->
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" th:inline="javascript">
-        /*<![CDATA[*/
-            var board = /*[[${dashboard}]]*/ null;
-            var uId = /*[[${uid}]]*/ null;
-            var result = /*[[${answer}]]*/ null;
-        /*]]>*/
-
-        var stompClient, socket;
-        var WEBSOCKET_TARGET_URL = "/join";
-        var COOKIE_ID = "apuid";
-        var status = false;
-        var timeout = 5000;
-        var answer = {
-            response: "",
-            uid: uId,
-            userAgent: navigator.userAgent
-        }
-
-        $(document).ready(function() {
-            socketConnect();
-            markingResult(result);
-        });
-
-        var socketConnect = function() {
-            socket = new SockJS(WEBSOCKET_TARGET_URL);
-            stompClient = Stomp.over(socket);
-
-            stompClient.connect(' ', ' ', function(frame) {
-                status = true;
-                statusConnect();
-            }, function (error) {
-                // TODO error 처리
-                status = false;
-                setTimeout(function() {
-                    socketConnect();
-                }, timeout);
-                statusDisconnect();
-            });
-        }
-
-        var yes = function() {
-            if(status) {
-                answer.response = "O";
-                markingResult("O");
-                stompClient.send('/socket/answer/ox/' + board.id, {}, JSON.stringify(answer));
-            }
-        }
-
-        var no = function() {
-            if(status) {
-                answer.response = "X";
-                markingResult("X");
-                stompClient.send('/socket/answer/ox/' + board.id, {}, JSON.stringify(answer));
-            }
-        }
-
-        var statusConnect = function() {
-            $('.control-navbar-status-fail').hide();
-            $('.control-navbar-status-connect').show();
-
-        }
-
-        var statusDisconnect = function() {
-            $('.control-navbar-status-connect').hide();
-            $('.control-navbar-status-fail').show();
-
-        }
-
-        var markingResult = function(answer) {
-            if(answer === "O") {
-                $('.control-ox-answer-o').addClass('bounce-target');
-                $('.control-ox-answer-x').removeClass('bounce-target');
-            } else if(answer === "X") {
-                $('.control-ox-answer-x').addClass('bounce-target');
-                $('.control-ox-answer-o').removeClass('bounce-target');
-            }
-        }
-
-    </script>
 </head>
 <body>
-    <header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
-        <div class="container">
-            <div class="navbar-header">
-                <a href="/" class="navbar-brand control-navbar-brand">Active Presentation</a>
-            </div>
-            <div class="control-navbar-status">
-                <ul>
-                    <div class="control-navbar-status-fail">
-                        <span class="glyphicon glyphicon-remove control-navbar-status-fail"></span> Not Connected ...
-                    </div>
-                    <div class="control-navbar-status-connect" style="display: none;">
-                        <span class="glyphicon glyphicon-signal"></span>
-                    </div>
-                </ul>
-            </div>
+<header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand control-navbar-brand">Active Presentation</a>
         </div>
-    </header>
-    <div class="bs-docs-header" id="content">
-        <div class="container">
-            <div class="control-ox-container">
-                <h1 th:text="${dashboard.title}"></h1>
-                <span class="control-ox-answer control-ox-answer-o" onclick="yes()">O</span>
-                <span class="control-ox-answer control-ox-answer-x" onclick="no()">X</span>
-            </div>
+        <div class="control-navbar-status">
+            <ul>
+                <div class="control-navbar-status-fail">
+                    <span class="glyphicon glyphicon-remove control-navbar-status-fail"></span> Not Connected ...
+                </div>
+                <div class="control-navbar-status-connect" style="display: none;">
+                    <span class="glyphicon glyphicon-signal"></span>
+                </div>
+            </ul>
         </div>
     </div>
+</header>
+<div id="content">
+    <div class="container">
+        <div class="control-qna-container">
+            <h1 th:text="${dashboard.title}"></h1>
+            <textarea rows="4" cols="50" class="control-qna-textarea"></textarea>
+            <input class="control-qna-submit" type="submit"/>
+            <ul class="control-qna-list"></ul>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var board = /*[[${dashboard}]]*/ null;
+    var uId = /*[[${uid}]]*/ null;
+    var result = /*[[${answer}]]*/ null;
+
+    var WEBSOCKET_TARGET_URL = "/join";
+    var stompClient, socket;
+    var COOKIE_ID = "apuid";
+    var status = false;
+    var timeout = 5000;
+    var answer = {
+        response: "",
+        uid: uId,
+        userAgent: navigator.userAgent
+    }
+
+    $(document).ready(function() {
+        socketQnaConnect();
+    });
+
+    $('.control-qna-submit').click(function() {
+        response();
+    });
+
+    var socketQnaConnect = function() {
+        socket = new SockJS(WEBSOCKET_TARGET_URL);
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect(' ', ' ', function(frame) {
+            status = true;
+            statusConnect();
+            stompClient.subscribe("/socket/players/answer/qna/" + board.id, function(message) {
+                var answer = JSON.parse(message.body);
+                for (var a in answer.result) {
+                    var inHtml = "<li><h4>" + answer.result[a].result + "</h4></li>";
+                    $('.control-qna-list').prepend(inHtml);
+                }
+            });
+
+            stompClient.subscribe("/socket/players/answer/qna/result/" + board.id, function(message) {
+                console.log(message);
+                var answer = JSON.parse(message.body);
+                var inHtml = "<li><h4>" + answer + "</h4></li>";
+                $('.control-qna-list').prepend(inHtml);
+            });
+
+        }, function (error) {
+            // TODO error 처리
+            status = false;
+            setTimeout(function() {
+                socketQnaConnect();
+            }, timeout);
+            statusDisconnect();
+        });
+    }
+
+    var response = function() {
+        if(status) {
+            answer.response = $('.control-qna-textarea').val();
+            stompClient.send('/socket/answer/qna/' + board.id, {}, JSON.stringify(answer));
+        } else {
+            alert("마감되었습니다.");
+        }
+    }
+    /*]]>*/
+</script>
+<script src="/js/socketConnect.js"></script>
 </body>
 </html>

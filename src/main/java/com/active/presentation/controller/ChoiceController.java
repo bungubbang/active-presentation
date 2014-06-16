@@ -55,15 +55,7 @@ public class ChoiceController {
             map.addAttribute("answer", answer.getResult());
         }
 
-        System.out.println("dashboard = " + dashboard);
-        if(dashboard.getPresentationType().equals(PresentationType.OX)) {
-            return "ox/ox-controller";
-        }else if(dashboard.getPresentationType().equals(PresentationType.MULTIPLE_CHOICE)) {
-            return "choice/choice-controller";
-        }else if(dashboard.getPresentationType().equals(PresentationType.QNA)) {
-            return "qna/qna-controller";
-        }
-        return "default";
+        return checkPresentationType(dashboard);
     }
 
     private String generateApUid(String uid, HttpServletResponse response) {
@@ -76,5 +68,15 @@ public class ChoiceController {
         return uid;
     }
 
+    private String checkPresentationType(PresentationDashboard dashboard) {
+        if(dashboard.getPresentationType().equals(PresentationType.OX)) {
+            return "ox/ox-controller";
+        }else if(dashboard.getPresentationType().equals(PresentationType.MULTIPLE_CHOICE)) {
+            return "choice/choice-controller";
+        }else if(dashboard.getPresentationType().equals(PresentationType.QNA)) {
+            return "qna/qna-controller";
+        }
+        return "default";
+    }
 
 }

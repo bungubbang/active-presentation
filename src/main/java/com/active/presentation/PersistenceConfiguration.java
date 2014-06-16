@@ -24,7 +24,7 @@ public class PersistenceConfiguration {
     public DataSource localDataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
         dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
-        dataSource.setUrl("jdbc:mysql://localhost:3306/ap");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/ap?useUnicode=true&connectionCollation=utf8_general_ci&characterSetResults=utf8&characterEncoding=utf8");
         dataSource.setUsername("root");
         dataSource.setPassword("");
         return dataSource;
@@ -35,7 +35,7 @@ public class PersistenceConfiguration {
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
         dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
-        dataSource.setUrl("jdbc:mysql://localhost:3306/ap");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/ap?useUnicode=true&connectionCollation=utf8_general_ci&characterSetResults=utf8&characterEncoding=utf8");
         dataSource.setUsername("root");
         dataSource.setPassword("SKplanet2129");
         return dataSource;

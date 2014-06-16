@@ -22,4 +22,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
 
     @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, count(a.result) as choice) FROM Answer a WHERE a.dashboard = :dashboard GROUP BY a.result")
     List<AnswerResultDto> resultByDashboard(@Param("dashboard") PresentationDashboard dashboard);
+
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result) FROM Answer a WHERE a.dashboard = :dashboard")
+    List<AnswerResultDto> findByDashboardOnAnswerResultDto(@Param("dashboard") PresentationDashboard dashboard);
 }

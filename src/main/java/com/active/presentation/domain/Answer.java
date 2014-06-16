@@ -9,7 +9,7 @@ import java.util.Date;
  * Date: 6/11/14
  */
 @Entity
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"dashboard_id", "audience_id"}))
+//@Table(uniqueConstraints=@UniqueConstraint(columnNames={"dashboard_id", "audience_id"}))
 public class Answer {
 
     @Id

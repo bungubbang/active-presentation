@@ -12,8 +12,7 @@ public class OxDashBoardTest {
     @Test
     public void test() {
         // Given
-        String v = Long.toHexString((long) ((1 + Math.random()) * 0x10000));
-        System.out.println("v = " + v);
+        System.out.println("한글 테스트!");
         // When
 
         // Then

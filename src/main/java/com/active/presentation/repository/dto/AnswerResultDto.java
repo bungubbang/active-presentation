@@ -14,6 +14,9 @@ public class AnswerResultDto {
         this.choice = choice;
     }
 
+    public AnswerResultDto(String result) {
+        this.result = result;
+    }
 
     public String getResult() {
         return result;
