@@ -118,11 +118,15 @@
     }
 
     var response = function() {
-        if(status) {
-            answer.response = $('.control-qna-textarea').val();
-            stompClient.send('/socket/answer/qna/' + board.id, {}, JSON.stringify(answer));
-        } else {
-            alert("마감되었습니다.");
+        var questionText = $('.control-qna-textarea').val();
+        if(questionText.length != 0) {
+            if(status) {
+                answer.response = questionText;
+                stompClient.send('/socket/answer/qna/' + board.id, {}, JSON.stringify(answer));
+                $('.control-qna-textarea').val('');
+            } else {
+                alert("마감되었습니다.");
+            }
         }
     }
     /*]]>*/

@@ -46,16 +46,11 @@ public class ChoiceController {
         String uid = generateApUid(apuid, response);
         Audience audience = audienceRepository.findByUserKey(uid);
         PresentationDashboard dashboard = dashboardRepository.findOne(PresentationDashboardSpecifications.findFetchQuestion(id));
-        Answer answer = answerRepository.findByDashboardAndAudience(dashboard, audience);
 
         map.addAttribute("uid", uid);
         map.addAttribute("dashboard", dashboard);
 
-        if(answer != null) {
-            map.addAttribute("answer", answer.getResult());
-        }
-
-        return checkPresentationType(dashboard);
+        return checkPresentationType(dashboard, audience, map);
     }
 
     private String generateApUid(String uid, HttpServletResponse response) {
@@ -68,15 +63,24 @@ public class ChoiceController {
         return uid;
     }
 
-    private String checkPresentationType(PresentationDashboard dashboard) {
+    private String checkPresentationType(PresentationDashboard dashboard, Audience audience, ModelMap map) {
         if(dashboard.getPresentationType().equals(PresentationType.OX)) {
+            attachAnswer(dashboard, audience, map);
             return "ox/ox-controller";
         }else if(dashboard.getPresentationType().equals(PresentationType.MULTIPLE_CHOICE)) {
+            attachAnswer(dashboard, audience, map);
             return "choice/choice-controller";
         }else if(dashboard.getPresentationType().equals(PresentationType.QNA)) {
             return "qna/qna-controller";
         }
         return "default";
+    }
+
+    private void attachAnswer(PresentationDashboard dashboard, Audience audience, ModelMap map) {
+        Answer answer = answerRepository.findByDashboardAndAudience(dashboard, audience);
+        if(answer != null) {
+            map.addAttribute("answer", answer.getResult());
+        }
     }
 
 }

@@ -24,5 +24,5 @@ INSERT INTO presentation_dashboard_questions(presentation_dashboard_id, question
 
 -- QNS
 INSERT INTO presentation_dashboard (choice_count, created_date, presentation_type, status, title, speaker_id) VALUES (null, CURRENT_DATE, 'QNA', true, 'Do you have any Questions?', 1);
-INSERT INTO question(answer_list) VALUES ('ㅎ');
+INSERT INTO question(answer_list) VALUES ('Q');
 INSERT INTO presentation_dashboard_questions(presentation_dashboard_id, questions_id) VALUES (3, 7);
