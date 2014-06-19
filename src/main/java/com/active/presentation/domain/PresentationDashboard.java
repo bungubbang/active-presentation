@@ -30,7 +30,9 @@ public class PresentationDashboard {
 
     @Max(10)
     private Integer choiceCount;
-    private Boolean status;
+
+    private Boolean status = true;
+    private Boolean secure = false;
 
     public Long getId() {
         return id;
@@ -96,6 +98,14 @@ public class PresentationDashboard {
         this.status = status;
     }
 
+    public Boolean getSecure() {
+        return secure;
+    }
+
+    public void setSecure(Boolean secure) {
+        this.secure = secure;
+    }
+
     @Override
     public String toString() {
         return "PresentationDashboard{" +
@@ -104,8 +114,10 @@ public class PresentationDashboard {
                 ", presentationType=" + presentationType +
                 ", createdDate=" + createdDate +
                 ", title='" + title + '\'' +
+                ", questions=" + questions +
                 ", choiceCount=" + choiceCount +
                 ", status=" + status +
+                ", secure=" + secure +
                 '}';
     }
 }

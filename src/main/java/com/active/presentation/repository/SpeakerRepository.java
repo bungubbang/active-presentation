@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Date: 6/10/14
  */
 public interface SpeakerRepository extends JpaRepository<Speaker, Long> {
+    Speaker findByEmail(String email);
+
 }

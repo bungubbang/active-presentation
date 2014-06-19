@@ -3,7 +3,7 @@ package com.active.presentation.controller.socket;
 import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.Audience;
 import com.active.presentation.domain.PresentationDashboard;
-import com.active.presentation.domain.message.OxAnswerMessage;
+import com.active.presentation.domain.message.AnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
 import com.active.presentation.repository.AnswerRepository;
 import com.active.presentation.service.SocketService;
@@ -44,7 +44,7 @@ public class OxSocketController {
     }
 
     @MessageMapping("/answer/ox/{boardId}")
-    public void answer(@DestinationVariable Long boardId, OxAnswerMessage message) {
+    public void answer(@DestinationVariable Long boardId, AnswerMessage message) {
         Audience audience = socketService.generateAudience(message.getUid());
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
         Answer answer = answerRepository.findByDashboardAndAudience(dashboard, audience);

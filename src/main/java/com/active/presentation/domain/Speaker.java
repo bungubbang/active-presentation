@@ -1,5 +1,7 @@
 package com.active.presentation.domain;
 
+import com.sun.istack.internal.NotNull;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,14 +17,27 @@ public class Speaker {
     @Id @GeneratedValue
     private Long id;
 
-    private String name;
+    @NotNull
     private String email;
 
+    private String name;
+    private String profileImage;
+
     public Speaker() {}
+
+    public Speaker(String email) {
+        this.email = email;
+    }
 
     public Speaker(String name, String email) {
         this.name = name;
         this.email = email;
+    }
+
+    public Speaker(String name, String email, String profileImage) {
+        this.name = name;
+        this.email = email;
+        this.profileImage = profileImage;
     }
 
     public Long getId() {
@@ -49,12 +64,21 @@ public class Speaker {
         this.email = email;
     }
 
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
     @Override
     public String toString() {
         return "Speaker{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", profileImage='" + profileImage + '\'' +
                 '}';
     }
 }

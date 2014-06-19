@@ -54,8 +54,8 @@
     <div class="container">
         <div class="control-qna-container">
             <h1 th:text="${dashboard.title}"></h1>
-            <textarea rows="4" cols="50" class="control-qna-textarea"></textarea>
-            <input class="control-qna-submit" type="submit"/>
+            <textarea rows="2" cols="50" class="form-control control-qna-textarea"></textarea>
+            <button class="control-qna-submit btn btn-default btn-block" type="button" style="margin-top: 10px;">Submit</button>
             <ul class="control-qna-list"></ul>
         </div>
     </div>
@@ -101,7 +101,6 @@
             });
 
             stompClient.subscribe("/socket/players/answer/qna/result/" + board.id, function(message) {
-                console.log(message);
                 var answer = JSON.parse(message.body);
                 var inHtml = "<li><h4>" + answer + "</h4></li>";
                 $('.control-qna-list').prepend(inHtml);

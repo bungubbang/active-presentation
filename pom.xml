@@ -10,6 +10,16 @@
 
     <packaging>war</packaging>
 
+    <properties>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <spring-social.version>1.1.0.RELEASE</spring-social.version>
+        <spring-social-facebook.version>1.1.1.RELEASE</spring-social-facebook.version>
+        <mysql-connector.version>5.1.31</mysql-connector.version>
+        <hibernate-validator.version>5.1.1.Final</hibernate-validator.version>
+        <spring-security-crypto.version>3.2.4.RELEASE</spring-security-crypto.version>
+    </properties>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -46,12 +56,12 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.31</version>
+            <version>${mysql-connector.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.1.1.Final</version>
+            <version>${hibernate-validator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -68,6 +78,32 @@
             <artifactId>spring-messaging</artifactId>
             <version>4.0.3.RELEASE</version>
         </dependency>
+
+        <!-- spring security -->
+        <dependency>
+            <groupId>org.springframework.social</groupId>
+            <artifactId>spring-social-core</artifactId>
+            <version>${spring-social.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.social</groupId>
+            <artifactId>spring-social-web</artifactId>
+            <version>${spring-social.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.social</groupId>
+            <artifactId>spring-social-facebook</artifactId>
+            <version>${spring-social-facebook.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+            <version>${spring-security-crypto.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

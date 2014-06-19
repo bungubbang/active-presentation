@@ -3,7 +3,7 @@ package com.active.presentation.controller.socket;
 import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.Audience;
 import com.active.presentation.domain.PresentationDashboard;
-import com.active.presentation.domain.message.OxAnswerMessage;
+import com.active.presentation.domain.message.AnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
 import com.active.presentation.repository.AnswerRepository;
 import com.active.presentation.service.SocketService;
@@ -13,9 +13,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by bungubbang
@@ -41,8 +38,7 @@ public class QnaSocketController {
     }
 
     @MessageMapping("/answer/qna/{boardId}")
-    public void answer(@DestinationVariable Long boardId, OxAnswerMessage message) {
-        System.out.println("message = " + message);
+    public void answer(@DestinationVariable Long boardId, AnswerMessage message) {
         Audience audience = socketService.generateAudience(message.getUid());
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
         answerRepository.save(new Answer(dashboard, audience, message.getResponse(), message.getUserAgent()));
