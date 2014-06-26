@@ -1,10 +1,9 @@
 package com.active.presentation.domain;
 
-import com.sun.istack.internal.NotNull;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by bungubbang

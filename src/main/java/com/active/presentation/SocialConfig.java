@@ -5,10 +5,12 @@ import com.active.presentation.security.SecurityContext;
 import com.active.presentation.security.SimpleConnectionSignUp;
 import com.active.presentation.security.SimpleSignInAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.social.UserIdSource;
@@ -38,6 +40,9 @@ public class SocialConfig implements SocialConfigurer {
 
     @Autowired
     private DataSource dataSource;
+
+    @Value("${application.url}")
+    private String appUrl;
 
     @Override
     public void addConnectionFactories(ConnectionFactoryConfigurer cfConfig, Environment env) {
@@ -72,8 +77,17 @@ public class SocialConfig implements SocialConfigurer {
     }
 
     @Bean
-    public ProviderSignInController providerSignInController(ConnectionFactoryLocator connectionFactoryLocator, UsersConnectionRepository usersConnectionRepository) {
-        return new ProviderSignInController(connectionFactoryLocator, usersConnectionRepository, simpleSignInAdapter());
+    public ProviderSignInController providerSignInController(ConnectionFactoryLocator connectionFactoryLocator, UsersConnectionRepository usersConnectionRepository) throws Exception {
+
+        final ProviderSignInController signInController = new ProviderSignInController(connectionFactoryLocator, usersConnectionRepository, simpleSignInAdapter()) {
+            @Override
+            public void afterPropertiesSet() throws Exception {
+                super.afterPropertiesSet();
+                setApplicationUrl(appUrl);
+            }
+        };
+        signInController.setPostSignInUrl("/admin");
+        return signInController;
     }
 
     @Bean
@@ -85,4 +99,5 @@ public class SocialConfig implements SocialConfigurer {
     public SimpleSignInAdapter simpleSignInAdapter() {
         return new SimpleSignInAdapter();
     }
+
 }
