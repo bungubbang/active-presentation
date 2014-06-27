@@ -46,6 +46,9 @@ public class AdminDashboardService implements AdminService {
         adminHomeDto.setQna(answerRepository.findByRecentBySpeakerAndType(speaker, PresentationType.QNA));
 
         Long answerTotal = answerRepository.countBySpeaker(speaker);
+        if(answerTotal == null) {
+            answerTotal = 0L;
+        }
         adminHomeDto.setAnswerTotal(answerTotal);
         adminHomeDto.setAnswerTotalDiff(answerTotal - answerRepository.countBySpeakerBeforeDate(speaker, new DateTime().minusWeeks(1).toDate()));
         adminHomeDto.setAnswerToday(answerRepository.countBySpeakerAfterDate(speaker, new DateTime().withTimeAtStartOfDay().toDate()));

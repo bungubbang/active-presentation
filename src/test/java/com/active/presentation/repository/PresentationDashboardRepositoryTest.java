@@ -38,10 +38,9 @@ public class PresentationDashboardRepositoryTest {
 
     @Test
     public void testCountBySpeaker() throws Exception {
-        Speaker speaker = speakerRepository.findByEmail("bungubbang1@nate.com");
-        List<AnswerResultDto> resultDtos = answerRepository.findByRecentBySpeakerAndType(speaker, PresentationType.QNA);
-        for (AnswerResultDto resultDto : resultDtos) {
-            System.out.println("resultDto = " + resultDto);
-        }
+        Speaker speaker = speakerRepository.findByEmail("bungubbang@nate.com");
+        System.out.println("speaker = " + speaker);
+        Long aLong = dashboardRepository.countBySpeakerAndPresentationType(speaker, PresentationType.QNA);
+        System.out.println("aLong = " + aLong);
     }
 }
