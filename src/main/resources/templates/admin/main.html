@@ -39,88 +39,153 @@
                     <div class="sub"><h2>User</h2><span>80</span></div>
                     <div class="stat"><span class="up"> 10</span></div>
                 </div>
-            </div>
-        </div>
-        <div class="row dash-cols">
-            <div class="col-sm-6 col-md-6">
-                <div class="block">
-                    <div class="header no-border">
-                        <h2>Sales</h2>
-                    </div>
-                    <div class="content blue-chart" data-step="3">
-                        <div id="site_statistics" style="height:180px;"></div>
-                    </div>
-                    <div class="content">
-                        <div class="stat-data">
-                            <div class="stat-blue">
-                                <h2>1,254</h2>
-                                <span>Total Sales</span>
-                            </div>
-                        </div>
-                        <div class="stat-data">
-                            <div class="stat-number">
-                                <div><h2>83</h2></div>
-                                <div>Total hits<br /><span>(Daily)</span></div>
-                            </div>
-                            <div class="stat-number">
-                                <div><h2>57</h2></div>
-                                <div>Views<br /><span>(Daily)</span></div>
-                            </div>
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                </div>
-            </div>
+            </div> <!-- .stats_bar END -->
 
-            <div class="col-sm-6 col-md-6">
-                <div class="block">
-                    <div class="header no-border">
-                        <h2>Monitor</h2>
+            <div class="row dash-cols">
+                <div class="col-sm-6 col-md-6">
+                    <div class="block">
+                        <div class="header no-border">
+                            <h2>Transaction</h2>
+                        </div>
+                        <div class="content blue-chart" data-step="3">
+                            <div id="site_statistics" style="height:180px;"></div>
+                        </div>
+                        <div class="content">
+                            <div class="stat-data">
+                                <div class="stat-blue">
+                                    <h2>1,254</h2>
+                                    <span>Total Answer</span>
+                                </div>
+                            </div>
+                            <div class="stat-data">
+                                <div class="stat-number">
+                                    <div><h2>83</h2></div>
+                                    <div>Total Poll<br/><span>&nbsp;</span></div>
+                                </div>
+                                <div class="stat-number">
+                                    <div><h2>57</h2></div>
+                                    <div>Today Answer<br/><span>(Daily)</span></div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div> <!-- Transaction END -->
+
+
+                    <div class="block">
+                        <div class="header no-border">
+                            <h2>Qna Timeline</h2>
+                        </div>
                     </div>
-                    <div class="content red-chart">
-                        <div id="site_statistics2" style="height:152px;"></div>
+                    <ul class="timeline">
+                        <li>
+                            <i class="fa fa-comment"></i>
+                            <span class="date">5 Jan</span>
+                            <div class="content">
+                                <p>First Question...? how?</p>
+                                <small>A minute ago</small>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa fa-comment"></i>
+                            <span class="date">5 Jan</span>
+                            <div class="content">
+                                <p>What is your name?</p>
+                                <small>A minute ago</small>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa fa-comment"></i>
+                            <span class="date">5 Jan</span>
+                            <div class="content">
+                                <p>It is possible????</p>
+                                <small>A minute ago</small>
+                            </div>
+                        </li>
+
+                    </ul> <!-- Qna END -->
+
+
+
+                </div> <!-- .col-sm-6 left END -->
+
+                <div class="col-sm-6 col-md-6">
+                    <div class="block-flat pie-widget">
+                        <div class="content no-padding">
+                            <h4 class="no-margin">Top 10 Poll</h4>
+                            <div class="row">
+                                <div class="col-sm-4"><div id="ticket-chart" style="height:160px;"></div></div>
+                                <div class="col-sm-8">
+                                    <table class="no-borders no-strip padding-sm">
+                                        <tbody class="no-border-x no-border-y">
+                                        <tr>
+                                            <td style="width:15px;"><div class="legend" data-color="#649BF4"></div></td>
+                                            <td>Responsive</td>
+                                            <td class="text-right"><b>$3.500</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="legend" data-color="#19B698"></div></td>
+                                            <td>Corporate Site</td>
+                                            <td class="text-right"><b>$3.500</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="legend" data-color="#BD3B47"></div></td>
+                                            <td>Creative Portfolio</td>
+                                            <td class="text-right"><b>$3.500</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="legend" data-color="#DD4444"></div></td>
+                                            <td>Wordpress Theme</td>
+                                            <td class="text-right"><b>$3.500</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="legend" data-color="#FD9C35"></div></td>
+                                            <td>Photography Template</td>
+                                            <td class="text-right"><b>$3.500</b></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- Top 10 Poll END -->
+
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3>Latest Poll</h3>
+                        </div>
+                        <div class="content">
+                            <div class="list-group tickets">
+                                <li class="list-group-item" href="#">
+                                    <span class="label label-primary pull-right">QnA</span>
+                                    <img class="avatar" src="images/avatar_50.jpg"/>
+                                    <h4 class="name">Jeff Hanneman</h4>
+                                    <p>My vMaps plugin doesn't work</p>
+                                    <span class="date">17 Feb</span>
+                                </li>
+                                <li class="list-group-item" href="#">
+                                    <span class="label label-danger pull-right">OX</span>
+                                    <img class="avatar" src="images/avatar4_50.jpg"/>
+                                    <h4 class="name">Jhon Doe</h4>
+                                    <p>My vMaps plugin doesn't work</p>
+                                    <span class="date">15 Feb</span>
+                                </li>
+                                <li class="list-group-item" href="#">
+                                    <span class="label label-warning pull-right">Multiple Choice</span>
+                                    <img class="avatar" src="images/avatar1_50.jpg"/>
+                                    <h4 class="name">Victor Jara</h4>
+                                    <p>My vMaps plugin doesn't work</p>
+                                    <span class="date">15 Feb</span>
+                                </li>
+                            </div>
+                        </div>
                     </div>
-                    <div class="content no-padding">
-                        <table class="red">
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th class="right"><span>25%</span>C.P.U</th>
-                                <th class="right"><span>29%</span>Memory</th>
-                                <th class="right"><span>16%</span>Disc</th>
-                            </tr>
-                            </thead>
-                            <tbody class="no-border-x">
-                            <tr>
-                                <td style="width:40%;"><i class="fa fa-sitemap"></i> Server load</td>
-                                <td class="text-right">0,2%</td>
-                                <td class="text-right">13,2 MB</td>
-                                <td class="text-right">0,1 MB/s</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-tasks"></i> Apps</td>
-                                <td class="text-right">0,2%</td>
-                                <td class="text-right">13,2 MB</td>
-                                <td class="text-right">0,1 MB/s</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-signal"></i> Process</td>
-                                <td class="text-right">0,2%</td>
-                                <td class="text-right">13,2 MB</td>
-                                <td class="text-right">0,1 MB/s</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-bolt"></i> Wamp Server</td>
-                                <td class="text-right">0,2%</td>
-                                <td class="text-right">13,2 MB</td>
-                                <td class="text-right">0,1 MB/s</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+            </div> <!-- .col-sm-6 right END -->
+
+            </div> <!-- .row dash-cols END -->
+
+        </div><!-- .cl-mcont END -->
     </div>
 
 </div>

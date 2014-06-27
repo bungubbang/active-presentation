@@ -114,7 +114,6 @@ public class PresentationDashboard {
                 ", presentationType=" + presentationType +
                 ", createdDate=" + createdDate +
                 ", title='" + title + '\'' +
-                ", questions=" + questions +
                 ", choiceCount=" + choiceCount +
                 ", status=" + status +
                 ", secure=" + secure +

@@ -1,6 +1,5 @@
 package com.active.presentation;
 
-import com.active.presentation.repository.SpeakerRepository;
 import com.active.presentation.security.SecurityContext;
 import com.active.presentation.security.SimpleConnectionSignUp;
 import com.active.presentation.security.SimpleSignInAdapter;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.social.UserIdSource;
@@ -22,7 +20,6 @@ import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
-import org.springframework.social.connect.support.ConnectionFactoryRegistry;
 import org.springframework.social.connect.web.ProviderSignInController;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
@@ -84,9 +81,9 @@ public class SocialConfig implements SocialConfigurer {
             public void afterPropertiesSet() throws Exception {
                 super.afterPropertiesSet();
                 setApplicationUrl(appUrl);
+                setPostSignInUrl("/admin");
             }
         };
-        signInController.setPostSignInUrl("/admin");
         return signInController;
     }
 

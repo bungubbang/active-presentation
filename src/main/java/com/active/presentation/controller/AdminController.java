@@ -1,7 +1,9 @@
 package com.active.presentation.controller;
 
 import com.active.presentation.domain.Speaker;
+import com.active.presentation.repository.dto.AdminHomeDto;
 import com.active.presentation.security.SecurityContext;
+import com.active.presentation.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Controller;
@@ -26,13 +28,17 @@ public class AdminController {
         this.facebook = facebook;
     }
 
+    @Autowired
+    private AdminService adminService;
+
     @ModelAttribute
     public Speaker speaker() {
         return SecurityContext.getCurrentUser();
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String main() {
+    public String main(ModelMap map) {
+        map.addAttribute("homeData", adminService.getAdminHome(SecurityContext.getCurrentUser()));
         return "admin/main";
     }
 }
