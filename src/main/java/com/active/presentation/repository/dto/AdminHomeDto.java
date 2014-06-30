@@ -32,11 +32,13 @@ public class AdminHomeDto {
     private Long audienceTotal;
     private Long audienceTotalDiff;
 
-    private List<PresentationDashboard> top10 = new ArrayList<PresentationDashboard>();
+    private List<DashboardTop10Dto> top10 = new ArrayList<DashboardTop10Dto>();
 
     private List<PresentationDashboard> latest = new ArrayList<PresentationDashboard>();
 
     private List<AnswerResultDto> qna = new ArrayList<AnswerResultDto>();
+
+    private List<AnswerTransactionDto> transaction = new ArrayList<AnswerTransactionDto>();
 
     public AdminHomeDto() {}
 
@@ -144,11 +146,11 @@ public class AdminHomeDto {
         this.audienceTotalDiff = audienceTotalDiff;
     }
 
-    public List<PresentationDashboard> getTop10() {
+    public List<DashboardTop10Dto> getTop10() {
         return top10;
     }
 
-    public void setTop10(List<PresentationDashboard> top10) {
+    public void setTop10(List<DashboardTop10Dto> top10) {
         this.top10 = top10;
     }
 
@@ -168,6 +170,14 @@ public class AdminHomeDto {
         this.qna = qna;
     }
 
+    public List<AnswerTransactionDto> getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(List<AnswerTransactionDto> transaction) {
+        this.transaction = transaction;
+    }
+
     @Override
     public String toString() {
         return "AdminHomeDto{" +
@@ -184,7 +194,7 @@ public class AdminHomeDto {
                 ", answerToday=" + answerToday +
                 ", audienceTotal=" + audienceTotal +
                 ", audienceTotalDiff=" + audienceTotalDiff +
-                ", top10.size=" + top10.size() +
+                ", top10" + top10 +
                 ", latest.size=" + latest.size() +
                 ", qna.size=" + qna.size() +
                 '}';

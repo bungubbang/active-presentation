@@ -5,6 +5,7 @@ import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.Speaker;
 import com.active.presentation.repository.dto.AnswerResultDto;
+import com.active.presentation.repository.dto.AnswerTransactionDto;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,24 +42,24 @@ public class AnswerRepositoryTest {
     @Test
     public void testFindBySpeaker() {
         // Given
-        Speaker speaker = speakerRepository.findByEmail("bungubbang1@nate.com");
+        Speaker speaker = speakerRepository.findByEmail("bungubbang@nate.com");
         System.out.println("speaker = " + speaker);
         // When
-        long count = answerRepository.count();
-        System.out.println("count = " + count);
-        Long l = answerRepository.countBySpeaker(speaker);
-        System.out.println("l = " + l);
+        List<AnswerTransactionDto> objects = answerRepository.countAnswerAfterDate(speaker, new DateTime().minusWeeks(1).toDate());
+        for (AnswerTransactionDto object : objects) {
+            System.out.println("object = " + object);
+        }
+    }
+
+    @Test
+    public void test() {
+        // Given
+        Date date = new DateTime("2014-07-25").toDate();
+        System.out.println("date = " + date);
+        // When
+
         // Then
 
-
-        Long beforeDate = answerRepository.countBySpeakerBeforeDate(speaker, new DateTime().minusDays(2).toDate());
-        System.out.println("beforeDate = " + new DateTime().minusDays(2).toDate());
-        System.out.println("beforeDate = " + beforeDate);
-
-
-        Long afterDate = answerRepository.countBySpeakerAfterDate(speaker, new DateTime().withTimeAtStartOfDay().toDate());
-        System.out.println("new DateTime().withTimeAtStartOfDay().toDate() = " + new DateTime().withTimeAtStartOfDay().toDate());
-        System.out.println("afterDate = " + afterDate);
     }
 
 }

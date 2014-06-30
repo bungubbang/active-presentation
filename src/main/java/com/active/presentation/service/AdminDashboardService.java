@@ -1,14 +1,19 @@
 package com.active.presentation.service;
 
+import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.PresentationType;
 import com.active.presentation.domain.Speaker;
 import com.active.presentation.repository.AnswerRepository;
+import com.active.presentation.repository.AudienceRepository;
 import com.active.presentation.repository.PresentationDashboardRepository;
 import com.active.presentation.repository.dto.AdminHomeDto;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by bungubbang
@@ -23,6 +28,9 @@ public class AdminDashboardService implements AdminService {
 
     @Autowired
     private PresentationDashboardRepository dashboardRepository;
+
+    @Autowired
+    private AudienceRepository audienceRepository;
 
     @Override
     public AdminHomeDto getAdminHome(Speaker speaker) {
@@ -43,7 +51,7 @@ public class AdminDashboardService implements AdminService {
         Long qnaTotal = dashboardRepository.countBySpeakerAndPresentationType(speaker, PresentationType.QNA);
         adminHomeDto.setQnaTotal(qnaTotal);
         adminHomeDto.setQnaTotalDiff(qnaTotal - dashboardRepository.countBySpeakerAndPresentationTypeAndCreatedDateBefore(speaker, PresentationType.QNA, new DateTime().minusWeeks(1).toDate()));
-        adminHomeDto.setQna(answerRepository.findByRecentBySpeakerAndType(speaker, PresentationType.QNA));
+        adminHomeDto.setQna(answerRepository.findByRecentBySpeakerAndType(speaker, PresentationType.QNA, new PageRequest(0, 5)));
 
         Long answerTotal = answerRepository.countBySpeaker(speaker);
         if(answerTotal == null) {
@@ -53,13 +61,18 @@ public class AdminDashboardService implements AdminService {
         adminHomeDto.setAnswerTotalDiff(answerTotal - answerRepository.countBySpeakerBeforeDate(speaker, new DateTime().minusWeeks(1).toDate()));
         adminHomeDto.setAnswerToday(answerRepository.countBySpeakerAfterDate(speaker, new DateTime().withTimeAtStartOfDay().toDate()));
 
-//        adminHomeDto.setAudienceTotal();
-//        adminHomeDto.setAudienceTotalDiff();
-//
-        adminHomeDto.setLatest(dashboardRepository.findBySpeaker(speaker, new PageRequest(0, 5)));
-//        adminHomeDto.setTop10();
+        /**
+         *  count 숫자로 바로 불러오는 방식을 생각해봐야함.
+         */
+        Long audienceTotal = (long) audienceRepository.findBySpeaker(speaker).size();
+        adminHomeDto.setAudienceTotal(audienceTotal);
+        adminHomeDto.setAudienceTotalDiff(audienceTotal - audienceRepository.findBySpeakerBeforeDate(speaker, new DateTime().minusWeeks(1).toDate()).size());
 
-        System.out.println("adminHomeDto = " + adminHomeDto);
+        adminHomeDto.setLatest(dashboardRepository.findBySpeaker(speaker, new PageRequest(0, 5)));
+        adminHomeDto.setTop10(dashboardRepository.getTop10(speaker, new PageRequest(0, 10)));
+
+        adminHomeDto.setTransaction(answerRepository.countAnswerAfterDate(speaker, new DateTime().minusMonths(1).toDate()));
+
         return adminHomeDto;
     }
 }

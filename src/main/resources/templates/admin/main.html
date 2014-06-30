@@ -16,28 +16,46 @@
         <div class="cl-mcont">
             <div class="stats_bar">
                 <div class="butpro butstyle">
-                    <div class="sub"><h2>Total</h2><span>11</span></div>
-                    <div class="stat"><span class="up"> 3</span></div>
+                    <div class="sub"><h2>Total</h2><span th:text="${homeData.pollTotal}">11</span></div>
+                    <div class="stat">
+                        <span th:if="${homeData.pollTotalDiff} == 0" class="equal"> 0</span>
+                        <span th:if="${homeData.pollTotalDiff} != 0" class="up" th:text="${homeData.pollTotalDiff}"> 0</span>
+                    </div>
                 </div>
                 <div class="butpro butstyle">
-                    <div class="sub"><h2>Ox Choice</h2><span>3</span></div>
-                    <div class="stat"><span class="equal"> 0</span></div>
+                    <div class="sub"><h2>Ox Choice</h2><span th:text="${homeData.oxTotal}">3</span></div>
+                    <div class="stat">
+                        <span th:if="${homeData.oxTotalDiff} == 0" class="equal"> 0</span>
+                        <span th:if="${homeData.oxTotalDiff} != 0" class="up" th:text="${homeData.oxTotalDiff}"> 0</span>
+                    </div>
                 </div>
                 <div class="butpro butstyle">
-                    <div class="sub"><h2>Multi Choice</h2><span>2</span></div>
-                    <div class="stat"><span class="up"> 2</span></div>
+                    <div class="sub"><h2>Multi Choice</h2><span th:text="${homeData.multipleTotal}">2</span></div>
+                    <div class="stat">
+                        <span th:if="${homeData.multipleTotalDiff} == 0" class="equal"> 0</span>
+                        <span th:if="${homeData.multipleTotalDiff} != 0" class="up" th:text="${homeData.multipleTotalDiff}"> 0</span>
+                    </div>
                 </div>
                 <div class="butpro butstyle">
-                    <div class="sub"><h2>Q&amp;A</h2><span>5</span></div>
-                    <div class="stat"><span class="up"> 1</span></div>
+                    <div class="sub"><h2>Q&amp;A</h2><span th:text="${homeData.qnaTotal}">5</span></div>
+                    <div class="stat">
+                        <span th:if="${homeData.qnaTotalDiff} == 0" class="equal"> 0</span>
+                        <span th:if="${homeData.qnaTotalDiff} != 0" class="up" th:text="${homeData.qnaTotalDiff}"> 0</span>
+                    </div>
                 </div>
                 <div class="butpro butstyle">
-                    <div class="sub"><h2>Answer</h2><span>132</span></div>
-                    <div class="stat"><span class="up"> 5</span></div>
+                    <div class="sub"><h2>Answer</h2><span th:text="${homeData.answerTotal}">132</span></div>
+                    <div class="stat">
+                        <span th:if="${homeData.answerTotalDiff} == 0" class="equal"> 0</span>
+                        <span th:if="${homeData.answerTotalDiff} != 0" class="up" th:text="${homeData.answerTotalDiff}"> 0</span>
+                    </div>
                 </div>
                 <div class="butpro butstyle">
-                    <div class="sub"><h2>User</h2><span>80</span></div>
-                    <div class="stat"><span class="up"> 10</span></div>
+                    <div class="sub"><h2>User</h2><span th:text="${homeData.audienceTotal}">80</span></div>
+                    <div class="stat">
+                        <span th:if="${homeData.audienceTotalDiff} == 0" class="equal"> 0</span>
+                        <span th:if="${homeData.audienceTotalDiff} != 0" class="up" th:text="${homeData.audienceTotalDiff}"> 0</span>
+                    </div>
                 </div>
             </div> <!-- .stats_bar END -->
 
@@ -53,17 +71,17 @@
                         <div class="content">
                             <div class="stat-data">
                                 <div class="stat-blue">
-                                    <h2>1,254</h2>
+                                    <h2 th:text="${homeData.answerTotal}">1,254</h2>
                                     <span>Total Answer</span>
                                 </div>
                             </div>
                             <div class="stat-data">
                                 <div class="stat-number">
-                                    <div><h2>83</h2></div>
+                                    <div><h2 th:text="${homeData.pollTotal}">83</h2></div>
                                     <div>Total Poll<br/><span>&nbsp;</span></div>
                                 </div>
                                 <div class="stat-number">
-                                    <div><h2>57</h2></div>
+                                    <div><h2 th:text="${homeData.answerToday}">57</h2></div>
                                     <div>Today Answer<br/><span>(Daily)</span></div>
                                 </div>
                             </div>
@@ -78,31 +96,16 @@
                         </div>
                     </div>
                     <ul class="timeline">
-                        <li>
+                        <li th:each="qna : ${homeData.qna}">
                             <i class="fa fa-comment"></i>
-                            <span class="date">5 Jan</span>
+                            <span class="date" th:text="${#calendars.format(qna.createdDate.time,'MM/dd')}">5 Jan</span>
                             <div class="content">
-                                <p>First Question...? how?</p>
-                                <small>A minute ago</small>
+                                <i class="fa fa-paperclip pull-right"></i>
+                                <p><strong th:text="${qna.title}">abc</strong></p>
+                                <p th:text="${qna.result}">First Question...? how?</p>
+                                <small th:text="${#calendars.format(qna.createdDate.time,'dd MMM yyyy HH:mm')}">A minute ago</small>
                             </div>
                         </li>
-                        <li>
-                            <i class="fa fa-comment"></i>
-                            <span class="date">5 Jan</span>
-                            <div class="content">
-                                <p>What is your name?</p>
-                                <small>A minute ago</small>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="fa fa-comment"></i>
-                            <span class="date">5 Jan</span>
-                            <div class="content">
-                                <p>It is possible????</p>
-                                <small>A minute ago</small>
-                            </div>
-                        </li>
-
                     </ul> <!-- Qna END -->
 
 
@@ -112,37 +115,17 @@
                 <div class="col-sm-6 col-md-6">
                     <div class="block-flat pie-widget">
                         <div class="content no-padding">
-                            <h4 class="no-margin">Top 10 Poll</h4>
+                            <h4 class="no-margin">Most Population Poll</h4>
                             <div class="row">
-                                <div class="col-sm-4"><div id="ticket-chart" style="height:160px;"></div></div>
+                                <div class="col-sm-4"><div id="poppoll-chart" style="height:160px;"></div></div>
                                 <div class="col-sm-8">
                                     <table class="no-borders no-strip padding-sm">
-                                        <tbody class="no-border-x no-border-y">
-                                        <tr>
-                                            <td style="width:15px;"><div class="legend" data-color="#649BF4"></div></td>
-                                            <td>Responsive</td>
-                                            <td class="text-right"><b>$3.500</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td><div class="legend" data-color="#19B698"></div></td>
-                                            <td>Corporate Site</td>
-                                            <td class="text-right"><b>$3.500</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td><div class="legend" data-color="#BD3B47"></div></td>
-                                            <td>Creative Portfolio</td>
-                                            <td class="text-right"><b>$3.500</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td><div class="legend" data-color="#DD4444"></div></td>
-                                            <td>Wordpress Theme</td>
-                                            <td class="text-right"><b>$3.500</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td><div class="legend" data-color="#FD9C35"></div></td>
-                                            <td>Photography Template</td>
-                                            <td class="text-right"><b>$3.500</b></td>
-                                        </tr>
+                                        <tbody class="no-border-x no-border-y poppoll-list">
+                                            <tr th:each="top : ${homeData.top10}">
+                                                <td style="width:15px;"><div class="legend" data-color=""></div></td>
+                                                <td th:text="${top.label}">Responsive</td>
+                                                <td class="text-right" th:text="${top.data}"><b>$3.500</b></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -152,30 +135,16 @@
 
                     <div class="block-flat">
                         <div class="header">
-                            <h3>Latest Poll</h3>
+                            <h3>Recent Created Poll</h3>
                         </div>
                         <div class="content">
                             <div class="list-group tickets">
-                                <li class="list-group-item" href="#">
-                                    <span class="label label-primary pull-right">QnA</span>
-                                    <img class="avatar" src="images/avatar_50.jpg"/>
-                                    <h4 class="name">Jeff Hanneman</h4>
-                                    <p>My vMaps plugin doesn't work</p>
-                                    <span class="date">17 Feb</span>
-                                </li>
-                                <li class="list-group-item" href="#">
-                                    <span class="label label-danger pull-right">OX</span>
-                                    <img class="avatar" src="images/avatar4_50.jpg"/>
-                                    <h4 class="name">Jhon Doe</h4>
-                                    <p>My vMaps plugin doesn't work</p>
-                                    <span class="date">15 Feb</span>
-                                </li>
-                                <li class="list-group-item" href="#">
-                                    <span class="label label-warning pull-right">Multiple Choice</span>
-                                    <img class="avatar" src="images/avatar1_50.jpg"/>
-                                    <h4 class="name">Victor Jara</h4>
-                                    <p>My vMaps plugin doesn't work</p>
-                                    <span class="date">15 Feb</span>
+                                <li class="list-group-item" href="#" th:each="poll : ${homeData.latest}">
+                                    <span th:if="${poll.presentationType?.name()} == 'OX'" class="label label-danger pull-right">OX</span>
+                                    <span th:if="${poll.presentationType?.name()} == 'MULTIPLE_CHOICE'" class="label label-warning pull-right">Multiple Choice</span>
+                                    <span th:if="${poll.presentationType?.name()} == 'QNA'" class="label label-primary pull-right">QnA</span>
+                                    <p th:text="${poll.title}">My vMaps plugin doesn't work</p>
+                                    <span class="date" th:text="${#calendars.format(poll.createdDate.time,'dd MMM yyyy HH:mm')}">17 Feb</span>
                                 </li>
                             </div>
                         </div>
@@ -191,5 +160,160 @@
 </div>
 
 <div th:include="admin/layout :: script"></div>
+<script type="text/javascript" src="/js/jquery.flot/jquery.flot.time.js"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var homeDate = /*[[${homeData}]]*/ null;
+    var pollData = /*[[${homeData.top10}]]*/ null;
+    var transactionData = /*[[${homeData.transaction}]]*/ null;
+
+    var colorArray = ["#5793f3", "#19B698","#dd4444","#fd9c35","#fec42c","#d4df5a","#5578c2", "#649BF4", "#BD3B47", "#A66BBE"];
+
+    $(document).ready(function(){
+        //initialize the javascript
+        App.init();
+
+
+        var pageviews = [];
+        for(var i in transactionData) {
+            pageviews.push([transactionData[i].date.time, transactionData[i].count]);
+        }
+
+        if ($('#site_statistics').size() != 0) {
+            $('#site_statistics_loading').hide();
+            $('#site_statistics_content').show();
+            var plot_statistics = $.plot($("#site_statistics"), [{
+                data: pageviews,
+                label: "Answer"
+            }
+            ], {
+                series: {
+                    lines: {
+                        show: true,
+                        lineWidth: 2,
+                        fill: true,
+                        fillColor: {
+                            colors: [{
+                                opacity: 0.2
+                            }, {
+                                opacity: 0.01
+                            }
+                            ]
+                        }
+                    },
+                    points: {
+                        show: true
+                    },
+                    shadowSize: 2
+                },
+                legend:{
+                    show: false
+                },
+                grid: {
+                    labelMargin: 10,
+                    axisMargin: 500,
+                    hoverable: true,
+                    clickable: true,
+                    tickColor: "rgba(255,255,255,0.22)",
+                    borderWidth: 0
+                },
+                colors: ["#FFFFFF", "#4A8CF7", "#52e136"],
+                xaxis: {
+                    mode: "time",
+                    tickLength: 5
+                },
+                selection: {
+                    mode: "x"
+                },
+                yaxis: {
+                    ticks: 5,
+                    tickDecimals: 0
+                }
+            });
+        };
+
+        var previousPoint = null;
+        $("#site_statistics").bind("plothover", function (event, pos, item) {
+
+            var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
+
+            if (item) {
+                if (previousPoint != item.dataIndex) {
+                    previousPoint = item.dataIndex;
+                    $("#tooltip").remove();
+                    var x = item.datapoint[0].toFixed(2),
+                            y = item.datapoint[1].toFixed(2);
+                    var d = new Date(parseInt(x));
+                    showTooltip(item.pageX, item.pageY,
+                            item.series.label + " of "+ d.getFullYear() + "/" + d.getMonth() + "/" + d.getDate() + " = " + parseInt(y));
+                }
+            } else {
+                $("#tooltip").remove();
+                previousPoint = null;
+            }
+        });
+
+        function showTooltip(x, y, contents) {
+            $("<div id='tooltip'>" + contents + "</div>").css({
+                position: "absolute",
+                display: "none",
+                top: y + 5,
+                left: x + 5,
+                border: "1px solid #000",
+                padding: "5px",
+                'color':'#fff',
+                'border-radius':'2px',
+                'font-size':'11px',
+                "background-color": "#000",
+                opacity: 0.80
+            }).appendTo("body").fadeIn(200);
+        }
+
+
+        // Most Population Poll pie chart
+        for(var i=0; i < $('.poppoll-list tr').size(); i++) {
+            $($('.poppoll-list tr')[i]).find('.legend').attr('data-color', colorArray[i]);
+        }
+
+        $.plot('#poppoll-chart', pollData, {
+            series: {
+                pie: {
+                    show: true,
+                    innerRadius: 0.5,
+                    shadow:{
+                        top: 5,
+                        left: 15,
+                        alpha:0.3
+                    },
+                    stroke:{
+                        width:0
+                    },
+                    label: {
+                        show: false
+                    },
+                    highlight:{
+                        opacity: 0.08
+                    }
+                }
+            },
+            grid: {
+                hoverable: true,
+                clickable: true
+            },
+            colors: ["#5793f3", "#19B698","#dd4444","#fd9c35","#fec42c","#d4df5a","#5578c2"],
+            legend: {
+                show: false
+            }
+        });
+
+        $("table td .legend").each(function(){
+            var el = $(this);
+            var color = el.data("color");
+            el.css("background",color);
+        });
+    });
+    /*]]>*/
+</script>
 </body>
 </html>

@@ -17,4 +17,9 @@ public class ExceptionController {
     public RedirectView noUserCurrentlySignedIn() {
         return new RedirectView("/signout");
     }
+
+    @ExceptionHandler(Exception.class)
+    public String defaultException() {
+        return "error";
+    }
 }

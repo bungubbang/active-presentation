@@ -2,6 +2,8 @@ package com.active.presentation.repository;
 
 import com.active.presentation.domain.*;
 import com.active.presentation.repository.dto.AnswerResultDto;
+import com.active.presentation.repository.dto.AnswerTransactionDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -34,13 +36,19 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
 
     Answer findByDashboardAndAudience(PresentationDashboard dashboard, Audience audience);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, count(a.result) as choice) FROM Answer a WHERE a.dashboard = :dashboard GROUP BY a.result")
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, count(a.result) as choice, a.createdDate as createdDate) FROM Answer a WHERE a.dashboard = :dashboard GROUP BY a.result")
     List<AnswerResultDto> resultByDashboard(@Param("dashboard") PresentationDashboard dashboard);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result) FROM Answer a WHERE a.dashboard = :dashboard")
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, a.createdDate as createdDate) FROM Answer a WHERE a.dashboard = :dashboard")
     List<AnswerResultDto> findByDashboardOnAnswerResultDto(@Param("dashboard") PresentationDashboard dashboard);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result) FROM Answer a join a.dashboard d join d.speaker s " +
-            "WHERE s = :speaker AND d.presentationType = :dashboardType")
-    List<AnswerResultDto> findByRecentBySpeakerAndType(@Param("speaker") Speaker speaker, @Param("dashboardType") PresentationType presentationType);
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, d.title as title, a.createdDate as createdDate) FROM Answer a join a.dashboard d join d.speaker s " +
+            "WHERE s = :speaker AND d.presentationType = :dashboardType order by a.createdDate desc")
+    List<AnswerResultDto> findByRecentBySpeakerAndType(@Param("speaker") Speaker speaker, @Param("dashboardType") PresentationType presentationType, Pageable pageable);
+
+    @Query("select new com.active.presentation.repository.dto.AnswerTransactionDto(count(a) as count, year(a.createdDate) ||'-'|| month(a.createdDate) ||'-'|| day(a.createdDate) as date ) " +
+            " FROM Answer a join a.dashboard d join d.speaker s where s = :speaker AND d.createdDate >= :date" +
+            " group by year(a.createdDate) ||'-'|| month(a.createdDate) ||'-'|| day(a.createdDate)" +
+            " order by year(a.createdDate) ||'-'|| month(a.createdDate) ||'-'|| day(a.createdDate) desc")
+    List<AnswerTransactionDto> countAnswerAfterDate(@Param("speaker") Speaker speaker, @Param("date") Date date);
 }
