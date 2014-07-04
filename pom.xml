@@ -85,6 +85,12 @@
             <version>2.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>17.0</version>
+        </dependency>
+
         <!-- spring security -->
         <dependency>
             <groupId>org.springframework.social</groupId>

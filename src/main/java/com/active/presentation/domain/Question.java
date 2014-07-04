@@ -16,6 +16,12 @@ public class Question {
 
     private String answerList;
 
+    public Question() {}
+
+    public Question(String answerList) {
+        this.answerList = answerList;
+    }
+
     public Long getId() {
         return id;
     }

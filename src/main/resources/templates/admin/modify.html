@@ -1,0 +1,90 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="admin/layout :: head"></head>
+<head>
+    <link href="/js/jquery.icheck/skins/square/blue.css" rel="stylesheet"/>
+</head>
+
+<body>
+
+<!-- Fixed navbar -->
+<div id="head-nav" class="navbar navbar-default navbar-fixed-top" th:include="admin/layout :: navbar"></div>
+
+
+<div id="cl-wrapper">
+    <div class="cl-sidebar" th:include="admin/layout :: sidebar"></div>
+
+    <div class="container-fluid" id="pcont">
+        <div class="page-head">
+            <h2>OX Choice</h2>
+            <ol class="breadcrumb">
+                <li><a href="/admin">Home</a></li>
+                <li th:if="${data.presentationType?.name() == 'OX'}"><a href="/admin/ox">OX Choice</a></li>
+                <li th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}"><a href="/admin/multiple">Multiple Choice</a></li>
+                <li th:if="${data.presentationType?.name() == 'QNA'}"><a href="/admin/qna">QnA</a></li>
+                <li class="active">Edit</li>
+            </ol>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3 th:text="${data.presentationType?.name()} + ' Dashboard Modify'"></h3>
+                            <p style="margin-bottom: 0px !important">
+                                Dashboard URL : <a th:href="'http://metadata.co.kr/board/' + ${data.id}" th:text="'http://metadata.co.kr/board/' + ${data.id}"></a>
+                            </p>
+                            <p>
+                                Controller URL : <a th:href="'http://metadata.co.kr/' + ${data.id}" th:text="'http://metadata.co.kr/' + ${data.id}"></a>
+                            </p>
+                        </div>
+                        <div class="content">
+                            <form class="form-horizontal group-border-dashed" th:action="@{/admin/modify}" style="border-radius: 0px;" th:object="${data}" method="post">
+                                <input type="hidden" th:field="*{id}"/>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Title</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" th:field="*{title}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Secure</label>
+                                    <div class="col-sm-6">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" class="switch bt-switch" data-size="small" th:field="*{secure}"/>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Status</label>
+                                    <div class="col-sm-6">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" class="switch bt-switch" data-size="small" th:field="*{status}"/>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="spacer2 text-center">
+                                    <button class="btn btn-primary" type="submit">Submit</button>
+                                    <a href="/admin" class="btn btn-default">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:include="admin/layout :: script"></div>
+<script type="text/javascript" src="/js/jquery.icheck/icheck.min.js"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $('.bt-switch').bootstrapSwitch();
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="admin/layout :: head"></head>
+
+<body>
+
+<!-- Fixed navbar -->
+<div id="head-nav" class="navbar navbar-default navbar-fixed-top" th:include="admin/layout :: navbar"></div>
+
+
+<div id="cl-wrapper">
+    <div class="cl-sidebar" th:include="admin/layout :: sidebar"></div>
+
+    <div class="container-fluid" id="pcont">
+        <div class="page-head">
+            <h2>OX Choice</h2>
+            <ol class="breadcrumb">
+                <li><a href="/admin">Home</a></li>
+                <li class="active">OX Choice</li>
+            </ol>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-sm-4 col-md-4 col-lg-3">
+                    <div class="block-flat makeone">
+                        <div class="header">
+                            <h4>Make OX Choice</h4>
+                        </div>
+                        <div class="content text-center">
+                            <p style="font-size: 50px; margin: 20px; color: #dadada;"><i class="fa fa-plus"></i></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-3" th:each="ox : ${oxData}">
+                    <div class="block-flat">
+                        <div class="pull-right">
+                            <input th:if="${ox.status}" class="switch bt-switch" type="checkbox" checked="checked" data-size="mini" th:id="${ox.id}"/>
+                            <input th:if="!${ox.status}" class="switch bt-switch" type="checkbox" data-size="mini" th:id="${ox.id}"/>
+                        </div>
+                        <div class="header">
+                            <h3 class="visible-sm visible-md" th:text="${ox.presentationType?.name()}">Col 4</h3>
+                            <h3 class="visible-lg" th:text="${ox.presentationType?.name()}">Col 3</h3>
+                            <h3 class="visible-xs" th:text="${ox.presentationType?.name()}">Col 12</h3>
+                        </div>
+                        <div class="content">
+                            <p th:text="${ox.title}">title</p>
+                            <div class="spacer2 text-center">
+                                <a th:href="'/board/' + ${ox.id}" class="btn btn-default btn-flat" target="_blank"><i class="fa fa-dashboard"></i> Dashboard</a>
+                                <a th:href="'/admin/modify/' + ${ox.id}" class="btn btn-default btn-flat"><i class="fa fa-edit"></i> Modify</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:include="admin/layout :: script"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var oxData = /*[[${oxData}]]*/ null;
+    $('.bt-switch').bootstrapSwitch();
+
+    $('.bt-switch').on('switchChange.bootstrapSwitch', function(event, state) {
+        var data = {
+            id: $(this).attr('id'),
+            status: state
+        }
+
+        $.post('/admin/api/status', data, function(data){});
+    });
+
+    $('.makeone').click(function() {
+        location.href = "/admin/ox/make";
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

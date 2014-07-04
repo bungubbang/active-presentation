@@ -22,7 +22,7 @@ public class PresentationDashboard {
     @Enumerated(EnumType.STRING)
     private PresentationType presentationType;
 
-    private Date createdDate;
+    private Date createdDate = new Date();
     private String title;
 
     @OneToMany(fetch = FetchType.LAZY)

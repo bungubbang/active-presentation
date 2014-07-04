@@ -28,6 +28,7 @@ public interface PresentationDashboardRepository extends JpaRepository<Presentat
     Long countBySpeakerAndPresentationTypeAndCreatedDateBefore(Speaker speaker, PresentationType presentationType, Date createdDate);
 
     List<PresentationDashboard> findBySpeaker(Speaker speaker, Pageable pageable);
+    List<PresentationDashboard> findBySpeakerAndPresentationType(Speaker speaker, PresentationType presentationType);
 
     @Query("SELECT new com.active.presentation.repository.dto.DashboardTop10Dto(d.id as id, d.title as label, count(d) as data) FROM Answer a join a.dashboard d join d.speaker s where s = :speaker GROUP BY d order by count(d) desc")
     List<DashboardTop10Dto> getTop10(@Param("speaker") Speaker speaker, Pageable pageable);

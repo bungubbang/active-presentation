@@ -53,12 +53,11 @@ public class AdminDashboardService implements AdminService {
         adminHomeDto.setQnaTotalDiff(qnaTotal - dashboardRepository.countBySpeakerAndPresentationTypeAndCreatedDateBefore(speaker, PresentationType.QNA, new DateTime().minusWeeks(1).toDate()));
         adminHomeDto.setQna(answerRepository.findByRecentBySpeakerAndType(speaker, PresentationType.QNA, new PageRequest(0, 5)));
 
-        Long answerTotal = answerRepository.countBySpeaker(speaker);
-        if(answerTotal == null) {
-            answerTotal = 0L;
-        }
+        Long answerTotal = convertNullToZero(answerRepository.countBySpeaker(speaker));
+        Long answerTotalDiff = convertNullToZero(answerRepository.countBySpeakerBeforeDate(speaker, new DateTime().minusWeeks(1).toDate()));
+
         adminHomeDto.setAnswerTotal(answerTotal);
-        adminHomeDto.setAnswerTotalDiff(answerTotal - answerRepository.countBySpeakerBeforeDate(speaker, new DateTime().minusWeeks(1).toDate()));
+        adminHomeDto.setAnswerTotalDiff(answerTotal - answerTotalDiff);
         adminHomeDto.setAnswerToday(answerRepository.countBySpeakerAfterDate(speaker, new DateTime().withTimeAtStartOfDay().toDate()));
 
         /**
@@ -74,5 +73,9 @@ public class AdminDashboardService implements AdminService {
         adminHomeDto.setTransaction(answerRepository.countAnswerAfterDate(speaker, new DateTime().minusMonths(1).toDate()));
 
         return adminHomeDto;
+    }
+
+    private Long convertNullToZero(Long count) {
+        return (count == null)? 0L: count;
     }
 }
