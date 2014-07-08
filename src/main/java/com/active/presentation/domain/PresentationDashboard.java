@@ -34,6 +34,15 @@ public class PresentationDashboard {
     private Boolean status = true;
     private Boolean secure = false;
 
+    public PresentationDashboard() {}
+
+    public PresentationDashboard(PresentationType presentationType, String title, Boolean status, Boolean secure) {
+        this.presentationType = presentationType;
+        this.title = title;
+        this.status = status;
+        this.secure = secure;
+    }
+
     public Long getId() {
         return id;
     }

@@ -16,7 +16,7 @@ public class BoardModifyForm {
     private boolean secure;
     private boolean status;
 
-    private List<String> questions;
+    private String questionList;
 
     public Long getId() {
         return id;
@@ -50,12 +50,12 @@ public class BoardModifyForm {
         this.status = status;
     }
 
-    public List<String> getQuestions() {
-        return questions;
+    public String getQuestionList() {
+        return questionList;
     }
 
-    public void setQuestions(List<String> questions) {
-        this.questions = questions;
+    public void setQuestionList(String questionList) {
+        this.questionList = questionList;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class BoardModifyForm {
                 ", title='" + title + '\'' +
                 ", secure=" + secure +
                 ", status=" + status +
-                ", questions=" + questions +
+                ", questionList='" + questionList + '\'' +
                 '}';
     }
 }

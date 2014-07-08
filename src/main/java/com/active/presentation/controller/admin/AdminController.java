@@ -1,5 +1,6 @@
 package com.active.presentation.controller.admin;
 
+import com.active.presentation.controller.admin.form.BoardMakeForm;
 import com.active.presentation.controller.admin.form.BoardModifyForm;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.PresentationType;
@@ -12,6 +13,7 @@ import com.active.presentation.security.SecurityContext;
 import com.active.presentation.service.AdminService;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -62,8 +64,20 @@ public class AdminController {
 
     @RequestMapping(value = "/ox", method = RequestMethod.GET)
     public String ox(ModelMap map) {
-        map.addAttribute("oxData", dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), OX));
-        return "admin/ox";
+        map.addAttribute("datas", dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), OX, new Sort(Sort.Direction.DESC, "createdDate")));
+        return "admin/board";
+    }
+
+    @RequestMapping(value = "/multi", method = RequestMethod.GET)
+    public String multiChoice(ModelMap map) {
+        map.addAttribute("datas", dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), MULTIPLE_CHOICE, new Sort(Sort.Direction.DESC, "createdDate")));
+        return "admin/board";
+    }
+
+    @RequestMapping(value = "/qna", method = RequestMethod.GET)
+    public String qna(ModelMap map) {
+        map.addAttribute("datas", dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), QNA, new Sort(Sort.Direction.DESC, "createdDate")));
+        return "admin/board";
     }
 
     @RequestMapping(value = "/make/ox", method = RequestMethod.GET)
@@ -74,17 +88,25 @@ public class AdminController {
 
     }
 
-    @RequestMapping(value = "/make", method = RequestMethod.POST)
-    public String makeOx(PresentationDashboard dashboard) {
-        dashboard.setSpeaker(SecurityContext.getCurrentUser());
+    @RequestMapping(value = "/make/multi", method = RequestMethod.GET)
+    public String makeMultiPage(PresentationDashboard dashboard, ModelMap map) {
+        dashboard.setPresentationType(PresentationType.MULTIPLE_CHOICE);
+        map.addAttribute("data", dashboard);
+        return "admin/make";
+    }
 
-        if(dashboard.getPresentationType().equals(PresentationType.OX)) {
-            List<Question> questions = Lists.newArrayList(
-                    questionRepository.save(new Question("O")), questionRepository.save(new Question("X")));
-            dashboard.setQuestions(questions);
-        }
-        dashboardRepository.save(dashboard);
-        return "redirect:/admin/ox";
+    @RequestMapping(value = "/make/qna", method = RequestMethod.GET)
+    public String makeQnaPage(PresentationDashboard dashboard, ModelMap map) {
+        dashboard.setPresentationType(PresentationType.QNA);
+        map.addAttribute("data", dashboard);
+        return "admin/make";
+    }
+
+    @RequestMapping(value = "/make", method = RequestMethod.POST)
+    public String makeOx(BoardMakeForm makeForm) {
+        adminService.addBoard(new PresentationDashboard(makeForm.getPresentationType(), makeForm.getTitle(), makeForm.getStatus(), makeForm.getSecure())
+                            , makeForm.getQuestionList());
+        return typeReturn(makeForm.getPresentationType());
     }
 
     @RequestMapping(value = "/modify/{id}", method = RequestMethod.GET)
@@ -95,26 +117,25 @@ public class AdminController {
 
     @RequestMapping(value = "/modify", method = RequestMethod.POST)
     public String modify(BoardModifyForm board) {
+        PresentationDashboard dashboard = adminService.modifyBoard(board);
+        return typeReturn(dashboard.getPresentationType());
+    }
 
-        PresentationDashboard dashboard = dashboardRepository.findOne(board.getId());
-        dashboard.setTitle(board.getTitle());
-        dashboard.setSecure(board.isSecure());
-        dashboard.setStatus(board.isStatus());
-
-        if(board.getQuestions() != null) {
-            // TODO questions Update!
-        }
-
-        dashboardRepository.save(dashboard);
-
-        switch (dashboard.getPresentationType()) {
+    private String typeReturn(PresentationType type) {
+        switch (type) {
             case OX:
                 return "redirect:/admin/ox";
             case MULTIPLE_CHOICE:
-                return "redirect:/admin/multiple";
+                return "redirect:/admin/multi";
             case QNA:
                 return "redirect:/admin/qna";
         }
+        return "redirect:/admin";
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public String delete(@PathVariable Long id) {
+        dashboardRepository.delete(id);
         return "redirect:/admin";
     }
 }

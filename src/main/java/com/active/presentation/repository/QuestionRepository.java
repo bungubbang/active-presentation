@@ -2,6 +2,8 @@ package com.active.presentation.repository;
 
 import com.active.presentation.domain.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,4 +13,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
+    public Question findByAnswerList(String answerList);
+
+    @Query("SELECT q FROM PresentationDashboard p JOIN p.questions q WHERE p.id = :id AND q.answerList = :answer")
+    public Question searchBoardAndAnswer(@Param("id")Long dashboardId, @Param("answer") String answer);
 }

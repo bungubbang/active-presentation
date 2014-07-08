@@ -16,10 +16,17 @@ public class Question {
 
     private String answerList;
 
+    private Integer listOrder;
+
     public Question() {}
 
     public Question(String answerList) {
         this.answerList = answerList;
+    }
+
+    public Question(String answerList, Integer listOrder) {
+        this.answerList = answerList;
+        this.listOrder = listOrder;
     }
 
     public Long getId() {
@@ -38,12 +45,20 @@ public class Question {
         this.answerList = answerList;
     }
 
+    public Integer getListOrder() {
+        return listOrder;
+    }
+
+    public void setListOrder(Integer listOrder) {
+        this.listOrder = listOrder;
+    }
 
     @Override
     public String toString() {
         return "Question{" +
                 "id=" + id +
                 ", answerList='" + answerList + '\'' +
+                ", listOrder=" + listOrder +
                 '}';
     }
 }

@@ -1,0 +1,113 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="admin/layout :: head"></head>
+
+<body>
+
+<!-- Fixed navbar -->
+<div id="head-nav" class="navbar navbar-default navbar-fixed-top" th:include="admin/layout :: navbar"></div>
+
+
+<div id="cl-wrapper">
+    <div class="cl-sidebar" th:include="admin/layout :: sidebar"></div>
+
+    <div class="container-fluid" id="pcont">
+        <div class="page-head">
+            <h2 th:if="${datas[0].presentationType?.name()} == 'OX'">OX Choice</h2>
+            <h2 th:if="${datas[0].presentationType?.name()} == 'MULTIPLE_CHOICE'">Multiple Choice</h2>
+            <h2 th:if="${datas[0].presentationType?.name()} == 'QNA'">Q&amp;A</h2>
+            <ol class="breadcrumb">
+                <li><a href="/admin">Home</a></li>
+                <li class="active" th:if="${datas[0].presentationType?.name()} == 'OX'">OX Choice</li>
+                <li class="active" th:if="${datas[0].presentationType?.name()} == 'MULTIPLE_CHOICE'">Multiple Choice</li>
+                <li class="active" th:if="${datas[0].presentationType?.name()} == 'QNA'">Q&amp;A</li>
+            </ol>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-sm-4 col-md-4 col-lg-3">
+                    <div class="block-flat makeone">
+                        <div class="header">
+                            <h4 th:if="${datas[0].presentationType?.name()} == 'OX'">Make OX Choice</h4>
+                            <h4 th:if="${datas[0].presentationType?.name()} == 'MULTIPLE_CHOICE'">Make Multiple Choice</h4>
+                            <h4 th:if="${datas[0].presentationType?.name()} == 'QNA'">Make Q&amp;A</h4>
+                        </div>
+                        <div class="content text-center">
+                            <div style="height: 87px;">
+                                <p style="font-size: 50px; margin-top: 35px; color: #dadada;"><i class="fa fa-plus"></i></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-3" th:each="data,iterStat : ${datas}">
+                    <div class="block-flat">
+                        <div class="pull-right">
+                            <input th:if="${data.status}" class="switch bt-switch" type="checkbox" checked="checked" data-size="mini" th:id="${data.id}"/>
+                            <input th:if="!${data.status}" class="switch bt-switch" type="checkbox" data-size="mini" th:id="${data.id}"/>
+                        </div>
+                        <div class="header">
+                            <div th:if="${data.presentationType?.name()} != 'MULTIPLE_CHOICE'" >
+                                <h3 class="visible-sm visible-md" th:text="${data.presentationType?.name()}">Col 4</h3>
+                                <h3 class="visible-lg" th:text="${data.presentationType?.name()}">Col 3</h3>
+                                <h3 class="visible-xs" th:text="${data.presentationType?.name()}">Col 12</h3>
+                            </div>
+                            <div th:if="${data.presentationType?.name()} == 'MULTIPLE_CHOICE'" >
+                                <h3 class="visible-sm visible-md">MULTI</h3>
+                                <h3 class="visible-lg">MULTI</h3>
+                                <h3 class="visible-xs">MULTI</h3>
+                            </div>
+
+                        </div>
+                        <div class="content">
+                            <div style="height: 50px; overflow: hidden;" class="title">
+                                <p th:text="${data.title}">title</p>
+                            </div>
+                            <div class="spacer2 text-center">
+                                <a th:href="'/board/' + ${data.id}" class="btn btn-default btn-flat" target="_blank"><i class="fa fa-dashboard"></i> Dashboard</a>
+                                <a th:href="'/admin/modify/' + ${data.id}" class="btn btn-default btn-flat"><i class="fa fa-edit"></i> Modify</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:include="admin/layout :: script"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var boardType = /*[[${datas[0].presentationType?.name()}]]*/ null;
+    $('.bt-switch').bootstrapSwitch();
+
+    $('.bt-switch').on('switchChange.bootstrapSwitch', function(event, state) {
+        var data = {
+            id: $(this).attr('id'),
+            status: state
+        }
+
+        $.post('/admin/api/status', data, function(data){});
+    });
+
+    $('.makeone').click(function() {
+        switch (boardType) {
+            case 'OX':
+                location.href = "/admin/make/ox";
+                break;
+            case 'MULTIPLE_CHOICE':
+                location.href = "/admin/make/multi";
+                break;
+            case 'QNA':
+                location.href = "/admin/make/qna";
+                break;
+        }
+    });
+
+    $('.content > .title').ellipsis();
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,18 +1,24 @@
 package com.active.presentation.service;
 
+import com.active.presentation.controller.admin.form.BoardModifyForm;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.PresentationType;
+import com.active.presentation.domain.Question;
 import com.active.presentation.domain.Speaker;
 import com.active.presentation.repository.AnswerRepository;
 import com.active.presentation.repository.AudienceRepository;
 import com.active.presentation.repository.PresentationDashboardRepository;
+import com.active.presentation.repository.QuestionRepository;
 import com.active.presentation.repository.dto.AdminHomeDto;
+import com.active.presentation.security.SecurityContext;
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +37,9 @@ public class AdminDashboardService implements AdminService {
 
     @Autowired
     private AudienceRepository audienceRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @Override
     public AdminHomeDto getAdminHome(Speaker speaker) {
@@ -73,6 +82,48 @@ public class AdminDashboardService implements AdminService {
         adminHomeDto.setTransaction(answerRepository.countAnswerAfterDate(speaker, new DateTime().minusMonths(1).toDate()));
 
         return adminHomeDto;
+    }
+
+    @Override
+    public PresentationDashboard addBoard(PresentationDashboard dashboard, String questionList) {
+        dashboard.setSpeaker(SecurityContext.getCurrentUser());
+        List<Question> questions = new ArrayList<Question>();
+        if(dashboard.getPresentationType().equals(PresentationType.OX)) {
+            questions.add(questionRepository.save(new Question("O")));
+            questions.add(questionRepository.save(new Question("X")));
+        } else if(dashboard.getPresentationType().equals(PresentationType.MULTIPLE_CHOICE)) {
+            String[] qList = questionList.split(",");
+            for (int i = 0; i < qList.length; i++) {
+                questions.add(questionRepository.save(new Question(qList[i], i + 1)));
+            }
+        } else if(dashboard.getPresentationType().equals(PresentationType.QNA)) {
+            questions.add(questionRepository.save(new Question("Q")));
+        }
+        dashboard.setQuestions(questions);
+        return dashboardRepository.save(dashboard);
+    }
+
+    @Override
+    public PresentationDashboard modifyBoard(BoardModifyForm boardModifyForm) {
+        PresentationDashboard dashboard = dashboardRepository.findOne(boardModifyForm.getId());
+        dashboard.setTitle(boardModifyForm.getTitle());
+        dashboard.setSecure(boardModifyForm.isSecure());
+        dashboard.setStatus(boardModifyForm.isStatus());
+
+        List<Question> questionList = new ArrayList<Question>();
+        String[] qList = boardModifyForm.getQuestionList().split(",");
+        for (int i = 0; i < qList.length; i++) {
+            Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), qList[i]);
+            if(question != null) {
+                question.setListOrder(i+1);
+                questionList.add(questionRepository.save(question));
+            } else {
+                questionList.add(questionRepository.save(new Question(qList[i], i+1)));
+            }
+        }
+        dashboard.setQuestions(questionList);
+
+        return dashboardRepository.save(dashboard);
     }
 
     private Long convertNullToZero(Long count) {
