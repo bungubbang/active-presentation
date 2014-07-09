@@ -21,7 +21,7 @@
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
                 <li th:if="${data.presentationType?.name() == 'OX'}"><a href="/admin/ox">OX Choice</a></li>
-                <li th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}"><a href="/admin/multiple">Multiple Choice</a></li>
+                <li th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}"><a href="/admin/multi">Multiple Choice</a></li>
                 <li th:if="${data.presentationType?.name() == 'QNA'}"><a href="/admin/qna">QnA</a></li>
                 <li class="active">Edit</li>
             </ol>
@@ -82,7 +82,9 @@
                                 </div>
                                 <div class="spacer2 text-center">
                                     <button class="btn btn-primary" type="submit">Submit</button>
-                                    <a href="/admin" class="btn btn-default">Cancel</a>
+                                    <a href="/admin/ox" th:if="${data.presentationType?.name() == 'OX'}" class="btn btn-default">Cancel</a>
+                                    <a href="/admin/multi" th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}" class="btn btn-default">Cancel</a>
+                                    <a href="/admin/qna" th:if="${data.presentationType?.name() == 'QNA'}" class="btn btn-default">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -125,8 +127,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Proceed</button>
-                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Delete</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="modifyProceed()">Proceed</button>
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" onclick="removeProceed()">Delete</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -147,10 +149,10 @@
     var listHTML = function(text) {
         return "<li class='dd-item' data-answerlist='" + text + "'>"
                 + "<div class='pull-right' onclick='modifyList(this)' style='margin: 7px' data-toggle='modal' data-target='#mod-modify'>"
-                + "<i class='fa fa-cogs'></i>"
+                    + "<i class='fa fa-cogs'></i>"
                 + "</div>"
                 + "<div class='dd-handle'>" + text + "</div>"
-                + "</li>";
+            + "</li>";
     }
 
     var selectList = [];
@@ -186,14 +188,12 @@
     }
 
     var fillQuestions = function() {
-        var listText = "";
-        var lists = $('.dd').nestable('serialize');
+        var listText = [];
+        var lists = $('.dd').find('.dd-handle');
         for(var i=0; i < lists.length; i++) {
-            listText += lists[i].answerlist;
-            listText += ',';
+            listText.push($(lists[i]).text());
         }
-        listText = listText.substr(0, listText.length -1);
-        $("#questionList").val(listText);
+        $("#questionList").val(listText.join(','));
     }
 
     var modiDiv;
@@ -201,6 +201,28 @@
         modiDiv = $(div).parent();
         $('.mod-modify-input').val(modiDiv.attr('data-answerlist'));
     }
+
+    var modifyProceed = function() {
+        var text = $('.mod-modify-input').val();
+        if(text.indexOf(',') > 0) {
+            $.gritter.add({
+                title: 'Invalid String',
+                text: 'Can not contain comma(,)',
+                class_name: 'clean',
+                time: ''
+            });
+            return false;
+        }
+        $(modiDiv).attr('data-answerlist', text);
+        $($(modiDiv).children().get(1)).text(text);
+        fillQuestions();
+    }
+
+    var removeProceed = function() {
+        $(modiDiv).remove();
+        fillQuestions();
+    }
+
     /*]]>*/
 </script>
 </body>

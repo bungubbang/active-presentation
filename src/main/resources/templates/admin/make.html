@@ -21,7 +21,7 @@
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
                 <li th:if="${data.presentationType?.name() == 'OX'}"><a href="/admin/ox">OX Choice</a></li>
-                <li th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}"><a href="/admin/multiple">Multiple Choice</a></li>
+                <li th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}"><a href="/admin/multi">Multiple Choice</a></li>
                 <li th:if="${data.presentationType?.name() == 'QNA'}"><a href="/admin/qna">QnA</a></li>
                 <li class="active">Make</li>
             </ol>
@@ -44,12 +44,19 @@
                                 <div class="form-group" th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}">
                                     <label class="col-sm-3 control-label">Select List </label>
                                     <div class="col-sm-6">
-                                        <div class="add-list input-group">
+                                        <div class="add-list input-group" th:if="${error} != 'questions'">
                                             <input type="text" class="form-control" />
                                             <span class="input-group-btn">
                                                 <button class="btn btn-primary" type="button" onclick="addList()"><i class="fa fa-plus-circle"></i></button>
                                             </span>
                                         </div>
+                                        <div class="add-list input-group" th:if="${error} == 'questions'">
+                                            <input type="text" class="form-control parsley-error" />
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary" type="button" onclick="addList()"><i class="fa fa-plus-circle"></i></button>
+                                            </span>
+                                        </div>
+                                        <ul class="parsley-errors-list filled" th:if="${error} == 'questions'"><li class="parsley-required">This value is required.</li></ul>
                                         <div class="dd">
                                             <ol class="dd-list"></ol>
                                         </div>
@@ -73,7 +80,9 @@
                                 </div>
                                 <div class="spacer2 text-center">
                                     <button class="btn btn-primary" type="submit">Submit</button>
-                                    <a href="/admin" class="btn btn-default">Cancel</a>
+                                    <a href="/admin/ox" th:if="${data.presentationType?.name() == 'OX'}" class="btn btn-default">Cancel</a>
+                                    <a href="/admin/multi" th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}" class="btn btn-default">Cancel</a>
+                                    <a href="/admin/qna" th:if="${data.presentationType?.name() == 'QNA'}" class="btn btn-default">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -122,14 +131,16 @@
     }
 
     var fillQuestions = function() {
-        var listText = "";
-        var lists = $('.dd').nestable('serialize');
+        var listText = [];
+        var lists = $('.dd').find('.dd-handle');
         for(var i=0; i < lists.length; i++) {
-            listText += lists[i].answerlist;
-            listText += ',';
+            listText.push($(lists[i]).text());
         }
-        listText = listText.substr(0, listText.length -1);
-        $("#questionList").val(listText);
+        $("#questionList").val(listText.join(','));
+
+        // validation remove
+        $('.parsley-error').removeClass('parsley-error');
+        $('.parsley-errors-list').remove();
     }
     /*]]>*/
 </script>

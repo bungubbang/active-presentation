@@ -106,10 +106,21 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/make", method = RequestMethod.POST)
-    public String makeOx(BoardMakeForm makeForm) {
+    public String makeOx(BoardMakeForm makeForm, ModelMap map) {
+        if (checkNullQuestions(makeForm, map)) return "admin/make";
         adminService.addBoard(new PresentationDashboard(makeForm.getPresentationType(), makeForm.getTitle(), makeForm.getStatus(), makeForm.getSecure())
                             , makeForm.getQuestionList());
         return typeReturn(makeForm.getPresentationType());
+    }
+
+    private boolean checkNullQuestions(BoardMakeForm makeForm, ModelMap map) {
+        if(makeForm.getPresentationType().equals(MULTIPLE_CHOICE) && makeForm.getQuestionList().trim().length() == 0 ) {
+            PresentationDashboard dashboard = new PresentationDashboard(PresentationType.MULTIPLE_CHOICE, makeForm.getTitle(), makeForm.getStatus(), makeForm.getSecure());
+            map.addAttribute("data", dashboard);
+            map.addAttribute("error", "questions");
+            return true;
+        }
+        return false;
     }
 
     @RequestMapping(value = "/modify/{id}", method = RequestMethod.GET)
