@@ -14,14 +14,14 @@
 
     <div class="container-fluid" id="pcont">
         <div class="page-head">
-            <h2 th:if="${datas[0].presentationType?.name()} == 'OX'">OX Choice</h2>
-            <h2 th:if="${datas[0].presentationType?.name()} == 'MULTIPLE_CHOICE'">Multiple Choice</h2>
-            <h2 th:if="${datas[0].presentationType?.name()} == 'QNA'">Q&amp;A</h2>
+            <h2 th:if="${boardType} == 'OX'">OX Choice</h2>
+            <h2 th:if="${boardType} == 'MULTIPLE'">Multiple Choice</h2>
+            <h2 th:if="${boardType} == 'QNA'">Q&amp;A</h2>
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
-                <li class="active" th:if="${datas[0].presentationType?.name()} == 'OX'">OX Choice</li>
-                <li class="active" th:if="${datas[0].presentationType?.name()} == 'MULTIPLE_CHOICE'">Multiple Choice</li>
-                <li class="active" th:if="${datas[0].presentationType?.name()} == 'QNA'">Q&amp;A</li>
+                <li class="active" th:if="${boardType} == 'OX'">OX Choice</li>
+                <li class="active" th:if="${boardType} == 'MULTIPLE'">Multiple Choice</li>
+                <li class="active" th:if="${boardType} == 'QNA'">Q&amp;A</li>
             </ol>
         </div>
         <div class="cl-mcont">
@@ -29,9 +29,9 @@
                 <div class="col-sm-4 col-md-4 col-lg-3">
                     <div class="block-flat makeone">
                         <div class="header">
-                            <h4 th:if="${datas[0].presentationType?.name()} == 'OX'">Make OX Choice</h4>
-                            <h4 th:if="${datas[0].presentationType?.name()} == 'MULTIPLE_CHOICE'">Make Multiple Choice</h4>
-                            <h4 th:if="${datas[0].presentationType?.name()} == 'QNA'">Make Q&amp;A</h4>
+                            <h4 th:if="${boardType} == 'OX'">Make OX Choice</h4>
+                            <h4 th:if="${boardType} == 'MULTIPLE'">Make Multiple Choice</h4>
+                            <h4 th:if="${boardType} == 'QNA'">Make Q&amp;A</h4>
                         </div>
                         <div class="content text-center">
                             <div style="height: 87px;">
@@ -80,7 +80,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var boardType = /*[[${datas[0].presentationType?.name()}]]*/ null;
+    var boardType = /*[[${boardType}]]*/ null;
     $('.bt-switch').bootstrapSwitch();
 
     $('.bt-switch').on('switchChange.bootstrapSwitch', function(event, state) {
@@ -97,7 +97,7 @@
             case 'OX':
                 location.href = "/admin/make/ox";
                 break;
-            case 'MULTIPLE_CHOICE':
+            case 'MULTIPLE':
                 location.href = "/admin/make/multi";
                 break;
             case 'QNA':

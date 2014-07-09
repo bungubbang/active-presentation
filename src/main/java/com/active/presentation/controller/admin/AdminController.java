@@ -65,18 +65,21 @@ public class AdminController {
     @RequestMapping(value = "/ox", method = RequestMethod.GET)
     public String ox(ModelMap map) {
         map.addAttribute("datas", dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), OX, new Sort(Sort.Direction.DESC, "createdDate")));
+        map.addAttribute("boardType", "OX");
         return "admin/board";
     }
 
     @RequestMapping(value = "/multi", method = RequestMethod.GET)
     public String multiChoice(ModelMap map) {
         map.addAttribute("datas", dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), MULTIPLE_CHOICE, new Sort(Sort.Direction.DESC, "createdDate")));
+        map.addAttribute("boardType", "MULTIPLE");
         return "admin/board";
     }
 
     @RequestMapping(value = "/qna", method = RequestMethod.GET)
     public String qna(ModelMap map) {
         map.addAttribute("datas", dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), QNA, new Sort(Sort.Direction.DESC, "createdDate")));
+        map.addAttribute("boardType", "QNA");
         return "admin/board";
     }
 

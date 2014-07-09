@@ -109,6 +109,28 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="mod-modify" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="i-circle success"><i class="fa fa-cogs"></i></div>
+                        <h4>&nbsp;</h4>
+                        <input type="text" class="mod-modify-input form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Proceed</button>
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Delete</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </div>
 
 <div th:include="admin/layout :: script"></div>
@@ -121,6 +143,15 @@
 
     $('.bt-switch').bootstrapSwitch();
     $('[data-toggle="tooltip"]').tooltip();
+
+    var listHTML = function(text) {
+        return "<li class='dd-item' data-answerlist='" + text + "'>"
+                + "<div class='pull-right' onclick='modifyList(this)' style='margin: 7px' data-toggle='modal' data-target='#mod-modify'>"
+                + "<i class='fa fa-cogs'></i>"
+                + "</div>"
+                + "<div class='dd-handle'>" + text + "</div>"
+                + "</li>";
+    }
 
     var selectList = [];
     for(var i=0; i < data.questions.length ; i++) {
@@ -165,17 +196,10 @@
         $("#questionList").val(listText);
     }
 
+    var modiDiv;
     var modifyList = function(div) {
-        console.log($(div));
-    }
-
-    var listHTML = function(text) {
-        return "<li class='dd-item' data-answerlist='" + text + "'>"
-                + "<div class='pull-right' onclick='modifyList(this)' style='margin: 7px'>"
-                + "<i class='fa fa-cogs'></i>"
-                + "</div>"
-                + "<div class='dd-handle'>" + text + "</div>"
-                + "</li>";
+        modiDiv = $(div).parent();
+        $('.mod-modify-input').val(modiDiv.attr('data-answerlist'));
     }
     /*]]>*/
 </script>
