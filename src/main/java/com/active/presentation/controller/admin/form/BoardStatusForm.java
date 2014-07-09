@@ -1,6 +1,7 @@
 package com.active.presentation.controller.admin.form;
 
-import com.sun.istack.internal.NotNull;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by bungubbang
