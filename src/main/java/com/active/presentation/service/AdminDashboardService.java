@@ -96,6 +96,7 @@ public class AdminDashboardService implements AdminService {
             for (int i = 0; i < qList.length; i++) {
                 questions.add(questionRepository.save(new Question(qList[i], i + 1)));
             }
+            dashboard.setChoiceCount(questions.size());
         } else if(dashboard.getPresentationType().equals(PresentationType.QNA)) {
             questions.add(questionRepository.save(new Question("Q")));
         }
@@ -110,18 +111,19 @@ public class AdminDashboardService implements AdminService {
         dashboard.setSecure(boardModifyForm.isSecure());
         dashboard.setStatus(boardModifyForm.isStatus());
 
-        List<Question> questionList = new ArrayList<Question>();
+        List<Question> questions = new ArrayList<Question>();
         String[] qList = boardModifyForm.getQuestionList().split(",");
         for (int i = 0; i < qList.length; i++) {
             Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), qList[i]);
             if(question != null) {
                 question.setListOrder(i+1);
-                questionList.add(questionRepository.save(question));
+                questions.add(questionRepository.save(question));
             } else {
-                questionList.add(questionRepository.save(new Question(qList[i], i+1)));
+                questions.add(questionRepository.save(new Question(qList[i], i+1)));
             }
         }
-        dashboard.setQuestions(questionList);
+        dashboard.setQuestions(questions);
+        dashboard.setChoiceCount(questions.size());
 
         return dashboardRepository.save(dashboard);
     }

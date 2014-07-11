@@ -20,7 +20,7 @@ public class DefaultController {
 
     @RequestMapping("/signin")
     public String signin() {
-        return "signin";
+        return "signup";
     }
 
     @RequestMapping("/signout")
