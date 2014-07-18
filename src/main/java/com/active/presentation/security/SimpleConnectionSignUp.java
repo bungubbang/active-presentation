@@ -5,6 +5,7 @@ import com.active.presentation.repository.SpeakerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionSignUp;
+import org.springframework.social.connect.UserProfile;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -21,9 +22,13 @@ public class SimpleConnectionSignUp implements ConnectionSignUp {
 
     @Override
     public String execute(Connection<?> connection) {
-        Speaker speaker = speakerRepository.findByEmail(connection.fetchUserProfile().getEmail());
+        Speaker speaker = speakerRepository.findByPlatformAndProviderId(connection.getKey().getProviderId(), connection.getKey().getProviderUserId());
         if(speaker == null) {
-            speaker = new Speaker(connection.fetchUserProfile().getName(), connection.fetchUserProfile().getEmail(), connection.getImageUrl());
+            speaker = new Speaker(connection.fetchUserProfile().getName()
+                                , connection.fetchUserProfile().getEmail()
+                                , connection.getImageUrl()
+                                , connection.getKey().getProviderId()
+                                , connection.getKey().getProviderUserId());
             speakerRepository.save(speaker);
         }
         return String.valueOf(speaker.getId());

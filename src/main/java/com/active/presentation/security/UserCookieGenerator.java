@@ -15,7 +15,7 @@ public class UserCookieGenerator {
     private final CookieGenerator userCookieGenerator = new CookieGenerator();
 
     public UserCookieGenerator() {
-        userCookieGenerator.setCookieName("ap_speaker");
+        userCookieGenerator.setCookieName("poll_speaker");
     }
 
     public void addCookie(String userId, HttpServletResponse response) {

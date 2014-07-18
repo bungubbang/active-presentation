@@ -24,66 +24,6 @@
     <link rel="stylesheet" href="/css/ox.css"/>
     <link rel="stylesheet" href="/css/control.css"/>
     <link rel="stylesheet" href="/css/bounce.css"/>
-
-    <script src="/js/sockjs.js"></script>
-    <script src="/js/jquery.js"></script>
-    <script src="/js/stomp.js"></script>
-    <script src="/js/jquery.cookie.js"></script>
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" th:inline="javascript">
-        /*<![CDATA[*/
-            var board = /*[[${dashboard}]]*/ null;
-            var uId = /*[[${uid}]]*/ null;
-            var result = /*[[${answer}]]*/ null;
-        /*]]>*/
-
-        var stompClient, socket;
-        var COOKIE_ID = "apuid";
-        var status = false;
-        var timeout = 5000;
-        var answer = {
-            response: "",
-            uid: uId,
-            userAgent: navigator.userAgent
-        }
-        var oxBounceClass = "ox-bounce-target";
-
-        $(document).ready(function() {
-            socketConnect();
-            markingResult(result);
-        });
-
-
-        var yes = function() {
-            if(status) {
-                answer.response = "O";
-                markingResult("O");
-                stompClient.send('/socket/answer/ox/' + board.id, {}, JSON.stringify(answer));
-            }
-        }
-
-        var no = function() {
-            if(status) {
-                answer.response = "X";
-                markingResult("X");
-                stompClient.send('/socket/answer/ox/' + board.id, {}, JSON.stringify(answer));
-            }
-        }
-
-        var markingResult = function(answer) {
-            if(answer === "O") {
-                $('.control-ox-answer-o').addClass(oxBounceClass);
-                $('.control-ox-answer-x').removeClass(oxBounceClass);
-            } else if(answer === "X") {
-                $('.control-ox-answer-x').addClass(oxBounceClass);
-                $('.control-ox-answer-o').removeClass(oxBounceClass);
-            }
-        }
-
-    </script>
-    <script src="/js/socketConnect.js"></script>
 </head>
 <body>
     <header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
@@ -105,6 +45,9 @@
     </header>
     <div id="content">
         <div class="container">
+            <div class="alert alert-danger closed" role="alert" style="display: none;">
+                This poll <strong>is closed.</strong>
+            </div>
             <div class="control-ox-container">
                 <h1 th:text="${dashboard.title}"></h1>
                 <span class="control-ox-answer control-ox-answer-o" onclick="yes()">O</span>
@@ -112,5 +55,92 @@
             </div>
         </div>
     </div>
+
+    <script src="/js/sockjs.js"></script>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/stomp.js"></script>
+    <script src="/js/jquery.cookie.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var board = /*[[${dashboard}]]*/ null;
+        var uId = /*[[${uid}]]*/ null;
+        var result = /*[[${answer}]]*/ null;
+
+
+        var WEBSOCKET_TARGET_URL = "/join";
+        var stompClient, socket;
+        var COOKIE_ID = "apuid";
+        var connect = false;
+        var timeout = 5000;
+        var answer = {
+            response: "",
+            uid: uId,
+            userAgent: navigator.userAgent
+        }
+        var oxBounceClass = "ox-bounce-target";
+
+        $(document).ready(function() {
+            socketOxConnect();
+            markingResult(result);
+        });
+
+        var socketOxConnect = function() {
+            socket = new SockJS(WEBSOCKET_TARGET_URL);
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect(' ', ' ', function(frame) {
+                connect = true;
+                stompClient.subscribe("/socket/players/answer/ox/" + board.id, function(message) {
+                    var answer = JSON.parse(message.body);
+                    if(answer.result[0] != null && answer.result[0].status == false) {
+                        $('.closed').show();
+                        connect = false;
+                        $('.control-ox-answer-x').removeClass(oxBounceClass);
+                        $('.control-ox-answer-o').removeClass(oxBounceClass);
+                    }
+                });
+                statusConnect();
+            }, function (error) {
+                // TODO error 처리
+                connect = false;
+                setTimeout(function() {
+                    socketConnect();
+                }, timeout);
+                statusDisconnect();
+            });
+        }
+
+
+        var yes = function() {
+            if(connect) {
+                answer.response = "O";
+                markingResult("O");
+                stompClient.send('/socket/answer/ox/' + board.id, {}, JSON.stringify(answer));
+            }
+        }
+
+        var no = function() {
+            if(connect) {
+                answer.response = "X";
+                markingResult("X");
+                stompClient.send('/socket/answer/ox/' + board.id, {}, JSON.stringify(answer));
+            }
+        }
+
+        var markingResult = function(answer) {
+            if(answer === "O") {
+                $('.control-ox-answer-o').addClass(oxBounceClass);
+                $('.control-ox-answer-x').removeClass(oxBounceClass);
+            } else if(answer === "X") {
+                $('.control-ox-answer-x').addClass(oxBounceClass);
+                $('.control-ox-answer-o').removeClass(oxBounceClass);
+            }
+        }
+        /*]]>*/
+    </script>
+    <script src="/js/socketConnect.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@ var App = function () {
     tooltip: true,
     popover: true,
     nanoScroller: true,
-    nestableLists: true,
+    nestableLists: false,
     hiddenElements: true,
     bootstrapSwitch:true,
     dateTime:true,

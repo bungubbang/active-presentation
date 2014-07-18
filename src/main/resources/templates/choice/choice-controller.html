@@ -53,6 +53,9 @@
     </header>
     <div id="content">
         <div class="container">
+            <div class="alert alert-danger closed" role="alert" style="display: none;">
+                This poll <strong>is closed.</strong>
+            </div>
             <div class="control-choice-container">
                 <h1 th:text="${dashboard.title}"></h1>
                 <ul class="control-choice-list"></ul>
@@ -68,7 +71,7 @@
 
         var stompClient, socket;
         var COOKIE_ID = "apuid";
-        var status = false;
+        var connect = false;
         var timeout = 5000;
         var answer = {
             response: "",
@@ -79,10 +82,37 @@
         var classList = [];
 
         $(document).ready(function() {
-            socketConnect();
+            socketChoiceConnect();
             answerList();
             markingResult(result);
         });
+
+        var socketChoiceConnect = function() {
+            socket = new SockJS(WEBSOCKET_TARGET_URL);
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect(' ', ' ', function(frame) {
+                connect = true;
+                stompClient.subscribe("/socket/players/answer/choice/" + board.id, function(message) {
+                    var answer = JSON.parse(message.body);
+                    if(answer.result[0] != null && answer.result[0].status == false) {
+                        $('.closed').show();
+                        connect = false;
+                        for(var i in classList) {
+                            $('.' + classList[i]).removeClass(choiceBounceClass);
+                        }
+                    }
+                });
+                statusConnect();
+            }, function (error) {
+                // TODO error 처리
+                connect = false;
+                setTimeout(function() {
+                    socketConnect();
+                }, timeout);
+                statusDisconnect();
+            });
+        }
 
         var answerList = function() {
             for(var i in board.questions) {
@@ -95,7 +125,7 @@
         var response = function(div) {
             $(div).removeClass(choiceBounceClass);
             var responseNumber = $(div).attr('class');
-            if(status) {
+            if(connect) {
                 answer.response = responseNumber;
                 markingResult(responseNumber);
                 stompClient.send('/socket/answer/choice/' + board.id, {}, JSON.stringify(answer));

@@ -12,22 +12,26 @@ public class AnswerResultDto {
     private long choice;
     private Date createdDate;
     private String title;
+    private boolean status;
 
-    public AnswerResultDto(String result, long choice, Date createdDate) {
+    public AnswerResultDto(String result, long choice, Date createdDate, boolean status) {
         this.result = result;
         this.choice = choice;
         this.createdDate = createdDate;
+        this.status = status;
     }
 
-    public AnswerResultDto(String result, Date createdDate) {
+    public AnswerResultDto(String result, Date createdDate, boolean status) {
         this.result = result;
         this.createdDate = createdDate;
+        this.status = status;
     }
 
-    public AnswerResultDto(String result, String title, Date createdDate) {
+    public AnswerResultDto(String result, String title, Date createdDate, boolean status) {
         this.result = result;
         this.createdDate = createdDate;
         this.title = title;
+        this.status = status;
     }
 
     public String getResult() {
@@ -46,6 +50,10 @@ public class AnswerResultDto {
         return title;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
     @Override
     public String toString() {
         return "AnswerResultDto{" +
@@ -53,6 +61,7 @@ public class AnswerResultDto {
                 ", choice=" + choice +
                 ", createdDate=" + createdDate +
                 ", title='" + title + '\'' +
+                ", status=" + status +
                 '}';
     }
 }

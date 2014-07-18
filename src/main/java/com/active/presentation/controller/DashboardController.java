@@ -2,13 +2,18 @@ package com.active.presentation.controller;
 
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.PresentationType;
+import com.active.presentation.domain.Speaker;
 import com.active.presentation.repository.PresentationDashboardRepository;
 import com.active.presentation.repository.PresentationDashboardSpecifications;
+import com.active.presentation.repository.SpeakerRepository;
+import com.active.presentation.security.UserCookieGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by bungubbang
@@ -22,9 +27,19 @@ public class DashboardController {
     @Autowired
     private PresentationDashboardRepository dashboardRepository;
 
+    @Autowired
+    private SpeakerRepository speakerRepository;
+
+    private final UserCookieGenerator userCookieGenerator = new UserCookieGenerator();
+
     @RequestMapping("/{id}")
-    public String board(@PathVariable Long id, ModelMap map) {
+    public String board(@PathVariable Long id, ModelMap map, HttpServletRequest request) {
         PresentationDashboard board = dashboardRepository.findOne(PresentationDashboardSpecifications.findFetchQuestion(id));
+        if(board.getSecure()) {
+            if(!isValidSpeaker(board, request)) {
+                return "secure";
+            }
+        }
         map.addAttribute("dashboard", board);
 
         if(board.getPresentationType().equals(PresentationType.OX)) {
@@ -36,6 +51,22 @@ public class DashboardController {
         }
         return "default";
     }
+
+    private boolean isValidSpeaker(PresentationDashboard dashboard, HttpServletRequest request) {
+        String userId = userCookieGenerator.readCookieValue(request);
+
+        if (userId == null || userId.isEmpty()) {
+            return false;
+        }
+
+        Speaker speaker = speakerRepository.findOne(Long.valueOf(userId));
+        if(dashboard.getSpeaker() != speaker) {
+            return false;
+        }
+
+        return true;
+    }
+
 
 
 }

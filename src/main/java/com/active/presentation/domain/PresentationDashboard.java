@@ -1,6 +1,7 @@
 package com.active.presentation.domain;
 
 import javax.persistence.*;
+import javax.persistence.criteria.Predicate;
 import javax.validation.constraints.Max;
 import java.util.Date;
 import java.util.List;
@@ -33,14 +34,16 @@ public class PresentationDashboard {
 
     private Boolean status = true;
     private Boolean secure = false;
+    private Boolean anonymous = true;
 
     public PresentationDashboard() {}
 
-    public PresentationDashboard(PresentationType presentationType, String title, Boolean status, Boolean secure) {
+    public PresentationDashboard(PresentationType presentationType, String title, Boolean status, Boolean secure, Boolean anonymous) {
         this.presentationType = presentationType;
         this.title = title;
         this.status = status;
         this.secure = secure;
+        this.anonymous = anonymous;
     }
 
     public Long getId() {
@@ -115,6 +118,14 @@ public class PresentationDashboard {
         this.secure = secure;
     }
 
+    public Boolean getAnonymous() {
+        return anonymous;
+    }
+
+    public void setAnonymous(Boolean anonymous) {
+        this.anonymous = anonymous;
+    }
+
     @Override
     public String toString() {
         return "PresentationDashboard{" +
@@ -123,9 +134,11 @@ public class PresentationDashboard {
                 ", presentationType=" + presentationType +
                 ", createdDate=" + createdDate +
                 ", title='" + title + '\'' +
+                ", questions=" + questions +
                 ", choiceCount=" + choiceCount +
                 ", status=" + status +
                 ", secure=" + secure +
+                ", anonymous=" + anonymous +
                 '}';
     }
 }

@@ -30,7 +30,7 @@
     <div class="middle-sign-up">
         <div class="block-flat">
             <div class="header">
-                <h3 class="text-center"><img class="logo-img" src="images/logo.png" alt="logo"/> Clean Zone</h3>
+                <h3 class="text-center"><img class="logo-img" src="images/logo.png" alt="logo"/> Poll.pt</h3>
             </div>
             <div>
                 <form style="margin-bottom: 0px !important;" class="form-horizontal" th:action="@{/signin/facebook}" method="POST" >
@@ -39,21 +39,15 @@
                         <h5 class="title text-center"><strong>Sign Up</strong></h5>
                         <hr/>
                         <div class="form-group">
-                            <div class="col-md-6 col-sm-6 col-xs-6">
+                            <!--<div class="col-md-6 col-sm-6 col-xs-6 text-center">-->
                                 <button class="btn btn-block btn-trans btn-facebook bg btn-rad" type="submit"><i class="fa fa-facebook"></i> Sign in with Facebook</button>
-                            </div>
-                            <div class="col-md-6 col-sm-6 col-xs-6">
-                                <!--<a id="kakao-login-btn"></a>-->
-                                <a href="javascript:loginWithKakao()" class="btn btn-block btn-trans bg btn-rad" type="button" style="background:#ffeb00;color: #fff;border: 1px solid rgba(0, 0, 0, 0.08);">
-                                    <img src="/images/kakao_symbol.png" style="width: 13px;"/>&nbsp;Sign in with KakaoTalk
-                                </a>
-                            </div>
+                            <!--</div>-->
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-        <div class="text-center out-links"><a href="#">&copy; 2014 Your Company</a></div>
+        <div class="text-center out-links"><a href="#">&copy; 2014 Poll.pt</a></div>
     </div>
 
 </div>
@@ -72,21 +66,9 @@
 <script type="text/javascript" src="/js/jquery.flot/jquery.flot.pie.js"></script>
 <script type="text/javascript" src="/js/jquery.flot/jquery.flot.resize.js"></script>
 <script type="text/javascript" src="/js/jquery.flot/jquery.flot.labels.js"></script>
-<script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
 
 <script type="text/javascript">
-    // 사용할 앱의 Javascript 키를 설정해 주세요.
-    Kakao.init('62bdc0a1476d4bd8afeeb6883af27f82');
 
-    // 카카오 로그인 버튼을 생성합니다.
-    var loginWithKakao = function () {
-        // 로그인 창을 띄웁니다.
-        Kakao.Auth.login({
-            success: function (authObj) {
-                alert(JSON.stringify(authObj));
-            }
-        });
-    }
 </script>
 </body>
 </html>

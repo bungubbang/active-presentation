@@ -5,6 +5,75 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+
+    <!-- BootStrap START -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- BootStrap END -->
+
+    <link rel="stylesheet" href="/css/control.css"/>
+    <link rel="stylesheet" href="/css/dashboard.css"/>
+
+    <script src="/js/jquery.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+    <header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="/" class="navbar-brand control-navbar-brand">Active Presentation</a>
+            </div>
+            <div class="control-navbar-status">
+                <ul>
+                    <div class="control-navbar-status-fail">
+                        <span class="glyphicon glyphicon-remove control-navbar-status-fail"></span> Not Connected ...
+                    </div>
+                    <div class="control-navbar-status-connect" style="display: none;">
+                        <span class="glyphicon glyphicon-signal"></span>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div id="content">
+        <div class="container">
+            <div class="dashboard-block">
+                <div class="text-center dashboard-ox-div">
+                    <h1 th:text="${dashboard.title}" class="dashboard-ox-title"></h1>
+                    <h4 class="dashboard-ox-url">Vote URL </h4>
+                    <h2 th:text="'http://poll.pt/' + ${dashboard.id}" class="dashboard-ox-link"></h2>
+                </div>
+            </div>
+            <div class="dashboard-block" style="min-height: 500px;">
+                <div class="row dashboard-ox-bar">
+                    <div class="col-md-6 no-padding">
+                        <div class="pull-right dashboard-ox-bar-o text-center progress-bar"></div>
+                    </div>
+                    <div class="col-md-6 no-padding">
+                        <div class="pull-left dashboard-ox-bar-x text-center progress-bar progress-bar-warning"></div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <h2 class="count"></h2>
+                </div>
+                <div class="text-center">
+                    <h1 class="dashboard-ox-list">O&nbsp;&nbsp;X</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="/js/sockjs.js"></script>
     <script src="/js/jquery.js"></script>
     <script src="/js/stomp.js"></script>
@@ -14,19 +83,20 @@
 
         var stompClient, socket;
         var WEBSOCKET_TARGET_URL = "/join";
-        var status = false;
+        var connect = false;
         var timeout = 5000;
 
         $(document).ready(function() {
-            socketoxConnect();
+            socketOxConnect();
         });
 
-        var socketoxConnect = function() {
+        var socketOxConnect = function() {
             socket = new SockJS(WEBSOCKET_TARGET_URL);
             stompClient = Stomp.over(socket);
 
             stompClient.connect(' ', ' ', function(frame) {
-                status = true;
+                connect = true;
+                statusConnect();
                 stompClient.subscribe("/socket/players/answer/ox/" + board.id, function(message) {
                     var ox = {
                         o: 0,
@@ -38,37 +108,29 @@
                             ox.o = answer.result[a].choice;
                         } else if(answer.result[a].result == 'X') {
                             ox.x = answer.result[a].choice;
-
                         }
-
                     }
-                    console.log(ox);
-                    $('.o-count').text(ox.o);
-                    $('.x-count').text(ox.x);
+
+                    var oPer = parseInt((ox.o/(ox.o + ox.x))*100) + "%";
+                    var xPer = parseInt((ox.x/(ox.o + ox.x))*100) + "%";
+
+                    $('.dashboard-ox-bar-o').width(oPer);
+                    $('.dashboard-ox-bar-o').text(oPer);
+
+                    $('.dashboard-ox-bar-x').width(xPer);
+                    $('.dashboard-ox-bar-x').text(xPer);
+                    $('.count').text(ox.o + "  :  " + ox.x);
                 });
             }, function (error) {
-                // TODO error 처리
-                status = false;
+                connect = false;
+                statusDisconnect();
                 setTimeout(function() {
-                    socketoxConnect();
+                    socketOxConnect();
                 }, timeout);
             });
         }
         /*]]>*/
     </script>
-</head>
-<body>
-    <h1 th:text="${dashboard.title}"></h1>
-    <div>
-        <p class="socket-status">connecting ...</p>
-    </div>
-    <div>
-        <p>O</p>
-        <span class="o-count"></span>
-    </div>
-    <div>
-        <p>X</p>
-        <span class="x-count"></span>
-    </div>
+    <script src="/js/socketConnect.js"></script>
 </body>
 </html>

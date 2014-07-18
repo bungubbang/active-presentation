@@ -110,6 +110,7 @@ public class AdminDashboardService implements AdminService {
         dashboard.setTitle(boardModifyForm.getTitle());
         dashboard.setSecure(boardModifyForm.isSecure());
         dashboard.setStatus(boardModifyForm.isStatus());
+        dashboard.setAnonymous(boardModifyForm.isAnonymous());
 
         List<Question> questions = new ArrayList<Question>();
         String[] qList = boardModifyForm.getQuestionList().split(",");

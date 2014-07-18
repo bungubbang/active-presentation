@@ -1,7 +1,10 @@
 package com.active.presentation.security;
 
+import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.Speaker;
+import com.active.presentation.repository.PresentationDashboardRepository;
 import com.active.presentation.repository.SpeakerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -72,7 +75,6 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
 
     private void handleSignOut(HttpServletRequest request, HttpServletResponse response) {
         if (SecurityContext.userSignedIn() && request.getServletPath().startsWith("/signout")) {
-            System.out.println("com.active.presentation.security.UserInterceptor.handleSignOut");
             connectionRepository.createConnectionRepository(String.valueOf(SecurityContext.getCurrentUser().getId())).removeConnections("facebook");
             userCookieGenerator.removeCookie(response);
             SecurityContext.remove();

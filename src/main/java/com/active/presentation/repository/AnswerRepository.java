@@ -36,13 +36,13 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
 
     Answer findByDashboardAndAudience(PresentationDashboard dashboard, Audience audience);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, count(a.result) as choice, a.createdDate as createdDate) FROM Answer a WHERE a.dashboard = :dashboard GROUP BY a.result")
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, count(a.result) as choice, a.createdDate as createdDate, d.status as status) FROM Answer a JOIN a.dashboard d WHERE a.dashboard = :dashboard GROUP BY a.result")
     List<AnswerResultDto> resultByDashboard(@Param("dashboard") PresentationDashboard dashboard);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, a.createdDate as createdDate) FROM Answer a WHERE a.dashboard = :dashboard")
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, a.createdDate as createdDate, d.status as status) FROM Answer a JOIN a.dashboard d WHERE a.dashboard = :dashboard")
     List<AnswerResultDto> findByDashboardOnAnswerResultDto(@Param("dashboard") PresentationDashboard dashboard);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, d.title as title, a.createdDate as createdDate) FROM Answer a join a.dashboard d join d.speaker s " +
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.result as result, d.title as title, a.createdDate as createdDate, d.status as status) FROM Answer a join a.dashboard d join d.speaker s " +
             "WHERE s = :speaker AND d.presentationType = :dashboardType order by a.createdDate desc")
     List<AnswerResultDto> findByRecentBySpeakerAndType(@Param("speaker") Speaker speaker, @Param("dashboardType") PresentationType presentationType, Pageable pageable);
 

@@ -34,7 +34,7 @@
                             <h4 th:if="${boardType} == 'QNA'">Make Q&amp;A</h4>
                         </div>
                         <div class="content text-center">
-                            <div style="height: 87px;">
+                            <div style="height: 110px;">
                                 <p style="font-size: 50px; margin-top: 35px; color: #dadada;"><i class="fa fa-plus"></i></p>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                                 <h3 class="visible-lg">MULTI</h3>
                                 <h3 class="visible-xs">MULTI</h3>
                             </div>
-
+                            <span th:text="${#calendars.format(data.createdDate, 'yyyy/MM/dd HH:mm')}"></span>
                         </div>
                         <div class="content">
                             <div style="height: 50px; overflow: hidden;" class="title">

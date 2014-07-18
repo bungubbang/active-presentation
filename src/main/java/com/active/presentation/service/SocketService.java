@@ -2,6 +2,7 @@ package com.active.presentation.service;
 
 import com.active.presentation.domain.Audience;
 import com.active.presentation.domain.PresentationDashboard;
+import com.active.presentation.domain.message.SocketResponseMessage;
 
 /**
  * Created by bungubbang
@@ -11,4 +12,5 @@ import com.active.presentation.domain.PresentationDashboard;
 public interface SocketService {
     Audience generateAudience(String uid);
     PresentationDashboard findOxDashBoard(Long id);
+    SocketResponseMessage checkSecure(PresentationDashboard dashboard);
 }

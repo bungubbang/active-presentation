@@ -59,7 +59,64 @@
                 </div>
             </div> <!-- .stats_bar END -->
 
-            <div class="row dash-cols">
+            <div class="row dash-cols" th:if="${homeData.answerTotal} == 0">
+                <div class="col-sm-12 col-md-12">
+                    <div class="block">
+                        <div class="header">
+                            <h2>Welcome to Poll.pt</h2>
+                        </div>
+                        <div class="content">
+                            <h4>for starting you make any poll.</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-12">
+                    <div class="col-sm-4 col-md-4">
+                        <a href="/admin/make/ox">
+                            <div class="block-flat makeone">
+                                <div class="header">
+                                    <h4>Make OX Choice</h4>
+                                </div>
+                                <div class="content text-center">
+                                    <div style="height: 87px;">
+                                        <p style="font-size: 50px; margin-top: 35px; color: #dadada;"><i class="fa fa-plus"></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-4 col-md-4">
+                        <a href="/admin/make/multi">
+                            <div class="block-flat makeone">
+                                <div class="header">
+                                    <h4>Make Multiple Choice</h4>
+                                </div>
+                                <div class="content text-center">
+                                    <div style="height: 87px;">
+                                        <p style="font-size: 50px; margin-top: 35px; color: #dadada;"><i class="fa fa-plus"></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-4 col-md-4">
+                        <a href="/admin/make/qna">
+                            <div class="block-flat makeone">
+                                <div class="header">
+                                    <h4>Make Q&amp;A</h4>
+                                </div>
+                                <div class="content text-center">
+                                    <div style="height: 87px;">
+                                        <p style="font-size: 50px; margin-top: 35px; color: #dadada;"><i class="fa fa-plus"></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row dash-cols" th:if="${homeData.answerTotal} != 0">
                 <div class="col-sm-6 col-md-6">
                     <div class="block">
                         <div class="header no-border">
@@ -89,7 +146,7 @@
                         </div>
                     </div> <!-- Transaction END -->
 
-
+                    <div th:if="${homeData.qnaTotal} != 0">
                     <div class="block">
                         <div class="header no-border">
                             <h2>Qna Timeline</h2>
@@ -107,6 +164,7 @@
                             </div>
                         </li>
                     </ul> <!-- Qna END -->
+                    </div>
 
 
 
@@ -164,7 +222,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var homeDate = /*[[${homeData}]]*/ null;
+    var homeData = /*[[${homeData}]]*/ null;
     var pollData = /*[[${homeData.top10}]]*/ null;
     var transactionData = /*[[${homeData.transaction}]]*/ null;
 

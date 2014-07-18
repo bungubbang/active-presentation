@@ -18,6 +18,7 @@ public class BoardMakeForm {
     private String title;
     private Boolean secure;
     private Boolean status;
+    private Boolean anonymous;
     private PresentationType presentationType;
 
     public String getQuestionList() {
@@ -60,6 +61,14 @@ public class BoardMakeForm {
         this.presentationType = presentationType;
     }
 
+    public Boolean getAnonymous() {
+        return anonymous;
+    }
+
+    public void setAnonymous(Boolean anonymous) {
+        this.anonymous = anonymous;
+    }
+
     @Override
     public String toString() {
         return "BoardMakeForm{" +
@@ -67,6 +76,7 @@ public class BoardMakeForm {
                 ", title='" + title + '\'' +
                 ", secure=" + secure +
                 ", status=" + status +
+                ", anonymous=" + anonymous +
                 ", presentationType=" + presentationType +
                 '}';
     }

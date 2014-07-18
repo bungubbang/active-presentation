@@ -78,6 +78,14 @@
                                         </label>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Anonymous <i class="fa fa-question-circle" data-placement="right" data-toggle="tooltip" data-original-title="Anonymous can vote." ></i></label>
+                                    <div class="col-sm-6">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" class="switch bt-switch" data-size="small" th:field="*{anonymous}"/>
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="spacer2 text-center">
                                     <button class="btn btn-primary" type="submit">Submit</button>
                                     <a href="/admin/ox" th:if="${data.presentationType?.name() == 'OX'}" class="btn btn-default">Cancel</a>

@@ -53,6 +53,9 @@
 <div id="content">
     <div class="container">
         <div class="control-qna-container">
+            <div class="alert alert-danger closed" role="alert" style="display: none;">
+                This poll <strong>is closed.</strong>
+            </div>
             <h1 th:text="${dashboard.title}"></h1>
             <textarea rows="2" cols="50" class="form-control control-qna-textarea"></textarea>
             <button class="control-qna-submit btn btn-default btn-block" type="button" style="margin-top: 10px;">Submit</button>
@@ -69,7 +72,7 @@
     var WEBSOCKET_TARGET_URL = "/join";
     var stompClient, socket;
     var COOKIE_ID = "apuid";
-    var status = false;
+    var connect = false;
     var timeout = 5000;
     var answer = {
         response: "",
@@ -90,25 +93,41 @@
         stompClient = Stomp.over(socket);
 
         stompClient.connect(' ', ' ', function(frame) {
-            status = true;
+            connect = true;
             statusConnect();
             stompClient.subscribe("/socket/players/answer/qna/" + board.id, function(message) {
                 var answer = JSON.parse(message.body);
-                for (var a in answer.result) {
-                    var inHtml = "<li><h4>" + answer.result[a].result + "</h4></li>";
-                    $('.control-qna-list').prepend(inHtml);
+                if(answer.result[0] != null && answer.result[0].status == false) {
+                    $('.closed').show();
+                    connect = false;
+                }
+
+                if(!board.secure) {
+                    for (var a in answer.result) {
+                        var inHtml = "<li><h4>" + answer.result[a].result + "</h4></li>";
+                        $('.control-qna-list').prepend(inHtml);
+                    }
                 }
             });
 
             stompClient.subscribe("/socket/players/answer/qna/result/" + board.id, function(message) {
-                var answer = JSON.parse(message.body);
-                var inHtml = "<li><h4>" + answer + "</h4></li>";
-                $('.control-qna-list').prepend(inHtml);
+                if(!board.secure) {
+                    var answer = JSON.parse(message.body);
+                    if(answer.result[0] != null) {
+                        if(answer.result[0].status == false) {
+                            $('.closed').show();
+                            connect = false;
+                        } else {
+                            var inHtml = "<li><h4>" + answer.result[0].result + "</h4></li>";
+                            $('.control-qna-list').prepend(inHtml);
+                        }
+                    }
+                }
             });
 
         }, function (error) {
             // TODO error 처리
-            status = false;
+            connect = false;
             setTimeout(function() {
                 socketQnaConnect();
             }, timeout);
@@ -119,7 +138,7 @@
     var response = function() {
         var questionText = $('.control-qna-textarea').val();
         if(questionText.length != 0) {
-            if(status) {
+            if(connect) {
                 answer.response = questionText;
                 stompClient.send('/socket/answer/qna/' + board.id, {}, JSON.stringify(answer));
                 $('.control-qna-textarea').val('');

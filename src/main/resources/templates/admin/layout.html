@@ -9,7 +9,7 @@
     <meta name="author" content=""/>
     <link rel="shortcut icon" href="/images/favicon.png"/>
 
-    <title>Clean Zone</title>
+    <title>Poll.pt</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'/>
     <link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'/>
 
@@ -45,12 +45,13 @@
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="fa fa-gear"></span>
             </button>
-            <a class="navbar-brand" href="#"><span>Clean Zone</span></a>
+            <a class="navbar-brand" href="/admin"><span>Poll.pt</span></a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
+                <li class="active"><a href="/admin">Home</a></li>
+                <li><a href="/admin/about">About</a></li>
+                <li><a href="/admin/contact">Contract us</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right user-nav">
                 <li class="dropdown profile_menu">
@@ -59,11 +60,9 @@
                         <span th:text="${speaker.name}"></span><b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">My Account</a></li>
-                        <li><a href="#">Profile</a></li>
-                        <li><a href="#">Messages</a></li>
+                        <li><a href="#">Setting</a></li>
                         <li class="divider"></li>
-                        <li><a href="#">Sign Out</a></li>
+                        <li><a href="/signout">Sign Out</a></li>
                     </ul>
                 </li>
             </ul>
@@ -92,11 +91,8 @@
                         </li>
                         <li><a href="/admin/multi"><i class="fa fa-list-ol"></i><span>Multiple Choice</span></a>
                         </li>
-                        <li><a href="/admin/qna"><i class="fa fa-comments"></i><span>Q&amp;A</span></a>
+                        <li><a href="/admin/qna"><i class="fa fa-comments"></i><span>Q&amp;A Board</span></a>
                         </li>
-                        <li><a href="#"><i class="fa fa-envelope"></i><span>Contract</span></a>
-                        </li>
-
                     </ul>
                 </div>
             </div>

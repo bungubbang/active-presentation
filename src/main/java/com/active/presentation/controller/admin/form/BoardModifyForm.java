@@ -14,6 +14,7 @@ public class BoardModifyForm {
     private String title;
     private boolean secure;
     private boolean status;
+    private boolean anonymous;
 
     private String questionList;
 
@@ -57,6 +58,14 @@ public class BoardModifyForm {
         this.questionList = questionList;
     }
 
+    public boolean isAnonymous() {
+        return anonymous;
+    }
+
+    public void setAnonymous(boolean anonymous) {
+        this.anonymous = anonymous;
+    }
+
     @Override
     public String toString() {
         return "BoardModifyForm{" +
@@ -64,6 +73,7 @@ public class BoardModifyForm {
                 ", title='" + title + '\'' +
                 ", secure=" + secure +
                 ", status=" + status +
+                ", anonymous=" + anonymous +
                 ", questionList='" + questionList + '\'' +
                 '}';
     }

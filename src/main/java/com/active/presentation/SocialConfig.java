@@ -81,7 +81,6 @@ public class SocialConfig implements SocialConfigurer {
             public void afterPropertiesSet() throws Exception {
                 super.afterPropertiesSet();
                 setApplicationUrl(appUrl);
-                setPostSignInUrl("/admin");
             }
         };
         return signInController;

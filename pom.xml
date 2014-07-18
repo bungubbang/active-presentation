@@ -26,6 +26,14 @@
         <version>1.0.2.RELEASE</version>
     </parent>
 
+    <repositories>
+        <repository>
+            <id>local</id>
+            <name>local</name>
+            <url>file://${project.basedir}/libs</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -114,7 +122,6 @@
             <artifactId>spring-security-crypto</artifactId>
             <version>${spring-security-crypto.version}</version>
         </dependency>
-
 
     </dependencies>
 
