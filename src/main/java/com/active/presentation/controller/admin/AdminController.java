@@ -118,7 +118,11 @@ public class AdminController {
 
     @RequestMapping(value = "/modify/{id}", method = RequestMethod.GET)
     public String modifyPage(ModelMap map, @PathVariable Long id) {
-        map.addAttribute("data", dashboardRepository.findOne(id));
+        PresentationDashboard dashboard = dashboardRepository.findOne(id);
+        if(dashboard == null || !dashboard.getSpeaker().equals(SecurityContext.getCurrentUser())) {
+            return "redirect:/";
+        }
+        map.addAttribute("data", dashboard);
         return "admin/modify";
     }
 
@@ -142,6 +146,10 @@ public class AdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public String delete(@PathVariable Long id) {
+        PresentationDashboard dashboard = dashboardRepository.findOne(id);
+        if(dashboard == null || !dashboard.getSpeaker().equals(SecurityContext.getCurrentUser())) {
+            return "redirect:/";
+        }
         dashboardRepository.delete(id);
         return "redirect:/admin";
     }

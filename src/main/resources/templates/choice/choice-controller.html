@@ -2,66 +2,24 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+<head th:include="dashboard-layout :: head"></head>
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
-
-
-    <!-- BootStrap START -->
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" />
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <!-- BootStrap END -->
-
-    <link rel="stylesheet" href="/css/control.css"/>
-    <link rel="stylesheet" href="/css/bounce.css"/>
-
-    <script src="/js/sockjs.js"></script>
-    <script src="/js/jquery.js"></script>
-    <script src="/js/stomp.js"></script>
-    <script src="/js/jquery.cookie.js"></script>
-
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
-        <div class="container">
-            <div class="navbar-header">
-                <a href="/" class="navbar-brand control-navbar-brand">Active Presentation</a>
-            </div>
-            <div class="control-navbar-status">
-                <ul>
-                    <div class="control-navbar-status-fail">
-                        <span class="glyphicon glyphicon-remove control-navbar-status-fail"></span> Not Connected ...
-                    </div>
-                    <div class="control-navbar-status-connect" style="display: none;">
-                        <span class="glyphicon glyphicon-signal"></span>
-                    </div>
-                </ul>
-            </div>
-        </div>
-    </header>
+    <div th:include="dashboard-layout :: navbar"></div>
     <div id="content">
         <div class="container">
-            <div class="alert alert-danger closed" role="alert" style="display: none;">
-                This poll <strong>is closed.</strong>
+            <div class="dashboard-block">
+                <div class="pull-left dashboard-up-title">QUESTION</div>
+                <div class="alert alert-danger closed" role="alert" style="display: none;">
+                    This poll <strong>is closed.</strong>
+                </div>
+                <h1 class="text-center" th:text="${dashboard.title}"></h1>
             </div>
-            <div class="control-choice-container">
-                <h1 th:text="${dashboard.title}"></h1>
-                <ul class="control-choice-list"></ul>
-            </div>
+            <div class="controller-choice-list"></div>
         </div>
     </div>
+    <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         var board = /*[[${dashboard}]]*/ null;
@@ -79,7 +37,7 @@
             uid: uId,
             userAgent: navigator.userAgent
         }
-        var choiceBounceClass = "choice-bounce-target";
+        var choiceBounceClass = "choice-target";
         var classList = [];
 
         $(document).ready(function() {
@@ -115,22 +73,27 @@
         }
 
         var answerList = function() {
+            var sortedQuestions = [];
             for(var i in board.questions) {
+                sortedQuestions[board.questions[i].listOrder] = board.questions[i];
                 classList.push(board.questions[i].id);
-                var inHtml = "<li class='" + board.questions[i].id + "' onclick='response(this)'><h2>" + board.questions[i].answerList + "</h2></li>";
-                $('.control-choice-list').append(inHtml);
+
             }
+
+            addAnswerList(sortedQuestions);
         }
 
         var response = function(div) {
             $(div).removeClass(choiceBounceClass);
-            var responseText = $(div).attr('class');
+            var responseText = $(div).attr('class').replace("dashboard-block ", "");
+            responseText = responseText.replace("choice-target ", "");
+
             if(connect) {
                 answer.response = responseText;
                 markingResult(responseText);
                 stompClient.send('/socket/answer/choice/' + board.id, {}, JSON.stringify(answer));
             }
-        }
+        };
 
         var markingResult = function(answer) {
             answer = String(answer);
@@ -138,9 +101,18 @@
                 $('.' + classList[i]).removeClass(choiceBounceClass);
             }
             $('.' + answer).addClass(choiceBounceClass);
-        }
+        };
+
+        var addAnswerList = function(answer) {
+            for(var i in answer) {
+                var inHTML = "<div class='dashboard-block " + answer[i].id + "' onclick='response(this)'>"
+                                + "<i class='fa fa-check roundicon'></i>"
+                                + "<h3>" + answer[i].answerList + "</h3>"
+                           + "</div>";
+                $('.controller-choice-list').append(inHTML);
+            }
+        };
         /*]]>*/
     </script>
-    <script src="/js/socketConnect.js"></script>
 </body>
 </html>

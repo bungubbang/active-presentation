@@ -53,7 +53,7 @@ public class QnaSocketController {
     public void answer(@DestinationVariable Long boardId, AnswerMessage message) {
         Audience audience = socketService.generateAudience(message.getUid());
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
-        Question question = questionRepository.searchBoardAndId(dashboard.getId(), Long.valueOf(message.getResponse()));
+        Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), "Q");
         answerRepository.save(new Answer(dashboard, audience, question.getId(), message.getResponse(), message.getUserAgent()));
 
         SocketResponseMessage responseMessage =

@@ -22,7 +22,7 @@
                 <li><a href="/admin">Home</a></li>
                 <li th:if="${data.presentationType?.name() == 'OX'}"><a href="/admin/ox">OX Choice</a></li>
                 <li th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}"><a href="/admin/multi">Multiple Choice</a></li>
-                <li th:if="${data.presentationType?.name() == 'QNA'}"><a href="/admin/qna">QnA</a></li>
+                <li th:if="${data.presentationType?.name() == 'QNA'}"><a href="/admin/qna">Message Board</a></li>
                 <li class="active">Edit</li>
             </ol>
         </div>
@@ -31,7 +31,16 @@
                 <div class="col-md-12">
                     <div class="block-flat">
                         <div class="header">
-                            <h3 th:text="${data.presentationType?.name()} + ' Dashboard Modify'"></h3>
+                            <div th:if="${data.presentationType?.name()} == 'OX'" >
+                                <h3>OX Dashboard Modify</h3>
+                            </div>
+                            <div th:if="${data.presentationType?.name()} == 'MULTIPLE_CHOICE'" >
+                                <h3>MULTI CHOICE Dashboard Modify</h3>
+                            </div>
+                            <div th:if="${data.presentationType?.name()} == 'QNA'" >
+                                <h3>Message Board Modify</h3>
+                            </div>
+
                             <p style="margin-bottom: 0px !important">
                                 Dashboard URL : <a th:href="'http://metadata.co.kr/board/' + ${data.id}" th:text="'http://metadata.co.kr/board/' + ${data.id}"></a>
                             </p>
@@ -153,6 +162,10 @@
 
     $('.bt-switch').bootstrapSwitch();
     $('[data-toggle="tooltip"]').tooltip();
+
+    $(document).ready(function() {
+        fillQuestions();
+    })
 
     var listHTML = function(text) {
         return "<li class='dd-item' data-answerlist='" + text + "'>"

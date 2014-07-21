@@ -9,13 +9,20 @@
         <div class="container">
             <div th:include="dashboard-layout :: board-title"></div>
             <div class="dashboard-block dashboard-block-result">
-                <div class="col-sm-8">
-                    <div class="dashboard-choice-chart"></div>
+                <div class="row">
+                    <div class="text-center nobody" style="display: none;">
+                        <h1>Nobody has not vote yet.</h1>
+                    </div>
                 </div>
-                <div class="col-sm-4">
-                    <table class="no-borders no-strip padding-sm dashboard-choice-table">
-                        <tbody class="no-border-x no-border-y dashboard-choice-list"></tbody>
-                    </table>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="dashboard-choice-chart"></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <table class="no-borders no-strip padding-sm dashboard-choice-table">
+                            <tbody class="no-border-x no-border-y dashboard-choice-list"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -50,6 +57,7 @@
                 statusConnect();
                 stompClient.subscribe("/socket/players/answer/choice/" + board.id, function(message) {
                     var answer = JSON.parse(message.body);
+                    checkEmpty(answer.result.length);
                     fillLegendTable(answer.result);
                     drawPieChart(answer.result);
                 });
@@ -60,7 +68,7 @@
                     socketChoiceConnect();
                 }, timeout);
             });
-        }
+        };
 
         var fillLegendTable = function(result) {
             $('.dashboard-choice-list').empty();
@@ -83,7 +91,7 @@
                 var color = el.attr("data-color");
                 el.css("background",color);
             });
-        }
+        };
 
         var drawPieChart = function(result) {
             var pollData = [];
@@ -126,7 +134,15 @@
                     show: false
                 }
             });
-        }
+        };
+
+        var checkEmpty = function(answer) {
+            if(answer == 0) {
+                $('.nobody').show();
+            } else {
+                $('.nobody').hide();
+            }
+        };
 
         /*]]>*/
     </script>

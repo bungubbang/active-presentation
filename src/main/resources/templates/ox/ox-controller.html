@@ -2,67 +2,30 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+<head th:include="dashboard-layout :: head"></head>
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
-
-
-    <!-- BootStrap START -->
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" />
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <!-- BootStrap END -->
-
-    <link rel="stylesheet" href="/css/ox.css"/>
-    <link rel="stylesheet" href="/css/control.css"/>
-    <link rel="stylesheet" href="/css/bounce.css"/>
 </head>
 <body>
-    <header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
-        <div class="container">
-            <div class="navbar-header">
-                <a href="/" class="navbar-brand control-navbar-brand">Active Presentation</a>
-            </div>
-            <div class="control-navbar-status">
-                <ul>
-                    <div class="control-navbar-status-fail">
-                        <span class="glyphicon glyphicon-remove control-navbar-status-fail"></span> Not Connected ...
-                    </div>
-                    <div class="control-navbar-status-connect" style="display: none;">
-                        <span class="glyphicon glyphicon-signal"></span>
-                    </div>
-                </ul>
-            </div>
-        </div>
-    </header>
+    <div th:include="dashboard-layout :: navbar"></div>
     <div id="content">
         <div class="container">
-            <div class="alert alert-danger closed" role="alert" style="display: none;">
-                This poll <strong>is closed.</strong>
+            <div class="row">
+                <div class="dashboard-block">
+                    <div class="pull-left dashboard-up-title">QUESTION</div>
+                    <div class="alert alert-danger closed" role="alert" style="display: none;">
+                        This poll <strong>is closed.</strong>
+                    </div>
+                    <h1 class="text-center" th:text="${dashboard.title}"></h1>
+                </div>
             </div>
-            <div class="control-ox-container">
-                <h1 th:text="${dashboard.title}"></h1>
-                <span class="control-ox-answer control-ox-answer-o" onclick="yes()">O</span>
-                <span class="control-ox-answer control-ox-answer-x" onclick="no()">X</span>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6 dashboard-block control-ox-answer control-ox-answer-o" onclick="yes()">O</div>
+                <div class="col-xs-6 col-sm-6 col-md-6 dashboard-block control-ox-answer control-ox-answer-x" onclick="no()">X</div>
             </div>
         </div>
     </div>
 
-    <script src="/js/sockjs.js"></script>
-    <script src="/js/jquery.js"></script>
-    <script src="/js/stomp.js"></script>
-    <script src="/js/jquery.cookie.js"></script>
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         var board = /*[[${dashboard}]]*/ null;
@@ -80,7 +43,7 @@
             uid: uId,
             userAgent: navigator.userAgent
         }
-        var oxBounceClass = "ox-bounce-target";
+        var oxBounceClass = "choice-target";
 
         $(document).ready(function() {
             socketOxConnect();
@@ -140,6 +103,5 @@
         }
         /*]]>*/
     </script>
-    <script src="/js/socketConnect.js"></script>
 </body>
 </html>

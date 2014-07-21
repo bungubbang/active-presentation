@@ -107,24 +107,29 @@ public class AdminDashboardService implements AdminService {
     @Override
     public PresentationDashboard modifyBoard(BoardModifyForm boardModifyForm) {
         PresentationDashboard dashboard = dashboardRepository.findOne(boardModifyForm.getId());
+        if(dashboard == null || !dashboard.getSpeaker().equals(SecurityContext.getCurrentUser())) {
+            return dashboard;
+        }
         dashboard.setTitle(boardModifyForm.getTitle());
         dashboard.setSecure(boardModifyForm.isSecure());
         dashboard.setStatus(boardModifyForm.isStatus());
         dashboard.setAnonymous(boardModifyForm.isAnonymous());
 
-        List<Question> questions = new ArrayList<Question>();
-        String[] qList = boardModifyForm.getQuestionList().split(",");
-        for (int i = 0; i < qList.length; i++) {
-            Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), qList[i]);
-            if(question != null) {
-                question.setListOrder(i+1);
-                questions.add(questionRepository.save(question));
-            } else {
-                questions.add(questionRepository.save(new Question(qList[i], i+1)));
+        if(dashboard.getPresentationType().equals(PresentationType.MULTIPLE_CHOICE)) {
+            List<Question> questions = new ArrayList<Question>();
+            String[] qList = boardModifyForm.getQuestionList().split(",");
+            for (int i = 0; i < qList.length; i++) {
+                Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), qList[i]);
+                if (question != null) {
+                    question.setListOrder(i + 1);
+                    questions.add(questionRepository.save(question));
+                } else {
+                    questions.add(questionRepository.save(new Question(qList[i], i + 1)));
+                }
             }
+            dashboard.setQuestions(questions);
+            dashboard.setChoiceCount(questions.size());
         }
-        dashboard.setQuestions(questions);
-        dashboard.setChoiceCount(questions.size());
 
         return dashboardRepository.save(dashboard);
     }

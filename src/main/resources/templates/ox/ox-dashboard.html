@@ -9,9 +9,14 @@
         <div class="container">
             <div th:include="dashboard-layout :: board-title"></div>
             <div class="dashboard-block dashboard-block-result">
+                <div class="row">
+                    <div class="text-center nobody" style="display: none;">
+                        <h1>Nobody has not vote yet.</h1>
+                    </div>
+                </div>
                 <div class="row dashboard-ox-bar">
                     <div class="col-md-6 dashboard-ox-progress">
-                        <div class="pull-right dashboard-ox-bar-o text-center progress-bar progress-bar-success"></div>
+                        <div class="pull-right dashboard-ox-bar-o text-center progress-bar progress-bar-primary"></div>
                     </div>
                     <div class="col-md-6 dashboard-ox-progress">
                         <div class="pull-left dashboard-ox-bar-x text-center progress-bar progress-bar-warning"></div>
@@ -59,6 +64,7 @@
                         x: 0
                     }
                     var answer = JSON.parse(message.body);
+                    checkEmpty(answer.result.length);
                     for (var a in answer.result) {
                         if(answer.result[a].result == 'O') {
                             ox.o = answer.result[a].choice;
@@ -86,7 +92,17 @@
                     socketOxConnect();
                 }, timeout);
             });
-        }
+        };
+
+        var checkEmpty = function(answer) {
+            if(answer == 0) {
+                $('.nobody').show();
+                $('.dashboard-ox-bar').hide();
+            } else {
+                $('.nobody').hide();
+                $('.dashboard-ox-bar').show();
+            }
+        };
         /*]]>*/
     </script>
 </body>

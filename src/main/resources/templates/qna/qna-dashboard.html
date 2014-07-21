@@ -2,109 +2,82 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
-
-
-    <!-- BootStrap START -->
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" />
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <!-- BootStrap END -->
-
-    <link rel="stylesheet" href="/css/control.css"/>
-
-    <script src="/js/sockjs.js"></script>
-    <script src="/js/jquery.js"></script>
-    <script src="/js/stomp.js"></script>
-    <script src="/js/jquery.cookie.js"></script>
-
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-</head>
+<head th:include="dashboard-layout :: head"></head>
 <body>
-<header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
-    <div class="container">
-        <div class="navbar-header">
-            <a href="/" class="navbar-brand control-navbar-brand">Active Presentation</a>
-        </div>
-        <div class="control-navbar-status">
-            <ul>
-                <div class="control-navbar-status-fail">
-                    <span class="glyphicon glyphicon-remove control-navbar-status-fail"></span> Not Connected ...
+    <div th:include="dashboard-layout :: navbar"></div>
+    <div id="content">
+        <div class="container">
+            <div th:include="dashboard-layout :: board-title"></div>
+            <div class="dashboard-block nobody" style="display: none;">
+                <div class="row">
+                    <div class="text-center">
+                        <h1>Nobody has not vote yet.</h1>
+                    </div>
                 </div>
-                <div class="control-navbar-status-connect" style="display: none;">
-                    <span class="glyphicon glyphicon-signal"></span>
-                </div>
-            </ul>
+            </div>
+            <div class="dashboard-qna">
+            </div>
         </div>
     </div>
-</header>
-<div id="content">
-    <div class="container">
-        <div class="control-qna-container">
-            <h1 th:text="${dashboard.title}"></h1>
-            <ul class="control-qna-list"></ul>
-        </div>
-    </div>
-</div>
-<script type="text/javascript" th:inline="javascript">
-    /*<![CDATA[*/
-    var board = /*[[${dashboard}]]*/ null;
 
-    var WEBSOCKET_TARGET_URL = "/join";
-    var stompClient, socket;
-    var status = false;
-    var timeout = 5000;
+    <div th:include="dashboard-layout :: script"></div>
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var board = /*[[${dashboard}]]*/ null;
 
-    $(document).ready(function() {
-        socketQnaConnect();
-    });
+        var WEBSOCKET_TARGET_URL = "/join";
+        var stompClient, socket;
+        var connect = false;
+        var timeout = 5000;
 
-    var socketQnaConnect = function() {
-        socket = new SockJS(WEBSOCKET_TARGET_URL);
-        stompClient = Stomp.over(socket);
-
-        stompClient.connect(' ', ' ', function(frame) {
-            status = true;
-            statusConnect();
-            stompClient.subscribe("/socket/players/answer/qna/" + board.id, function(message) {
-                var answer = JSON.parse(message.body);
-                for (var a in answer.result) {
-                    var inHtml = "<li><h4>" + answer.result[a].result + "</h4></li>";
-                    $('.control-qna-list').prepend(inHtml);
-                }
-            });
-
-            stompClient.subscribe("/socket/players/answer/qna/result/" + board.id, function(message) {
-                console.log(message);
-                var answer = JSON.parse(message.body);
-                var inHtml = "<li><h4>" + answer + "</h4></li>";
-                $('.control-qna-list').prepend(inHtml);
-            });
-
-        }, function (error) {
-            // TODO error 처리
-            status = false;
-            setTimeout(function() {
-                socketQnaConnect();
-            }, timeout);
-            statusDisconnect();
+        $(document).ready(function() {
+            socketQnaConnect();
         });
-    }
 
-    /*]]>*/
-</script>
-<script src="/js/socketConnect.js"></script>
+        var socketQnaConnect = function() {
+            socket = new SockJS(WEBSOCKET_TARGET_URL);
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect(' ', ' ', function(frame) {
+                connect = true;
+                statusConnect();
+                stompClient.subscribe("/socket/players/answer/qna/" + board.id, function(message) {
+                    var answer = JSON.parse(message.body);
+                    addQna(answer.result);
+                });
+
+                stompClient.subscribe("/socket/players/answer/qna/result/" + board.id, function(message) {
+                    var answer = JSON.parse(message.body);
+                    addQna(answer.result);
+                });
+
+            }, function (error) {
+                connect = false;
+                setTimeout(function() {
+                    socketQnaConnect();
+                }, timeout);
+                statusDisconnect();
+            });
+        };
+
+        var addQna = function(result) {
+            for(var i in result) {
+                var date = new Date(result[i].createdDate);
+                var dateFormat = date.getFullYear()
+                                + "/" + (date.getMonth()+1)
+                                + "/" + date.getDate()
+                                + " " + date.getHours()
+                                + ":" + date.getMinutes();
+                var inHTML = "<div class='dashboard-block'>"
+                                + "<p class='pull-right dashboard-qna-date'>" + dateFormat + "</p>"
+                                + "<i class='fa fa-comment roundicon'></i>"
+                                + "<h3>" + result[i].result + "</h3>"
+                           + "</div>";
+                $(".dashboard-qna").prepend(inHTML);
+            }
+        };
+
+        /*]]>*/
+    </script>
 </body>
 </html>

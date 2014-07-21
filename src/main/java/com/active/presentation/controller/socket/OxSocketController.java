@@ -53,7 +53,7 @@ public class OxSocketController {
         Audience audience = socketService.generateAudience(message.getUid());
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
         Answer answer = answerRepository.findByDashboardAndAudience(dashboard, audience);
-        Question question = questionRepository.searchBoardAndId(dashboard.getId(), Long.valueOf(message.getResponse()));
+        Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), message.getResponse());
         if(answer != null) {
             answer.setResultId(question.getId());
             answer.setResult(message.getResponse());

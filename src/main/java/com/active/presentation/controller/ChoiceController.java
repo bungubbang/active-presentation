@@ -10,6 +10,7 @@ import com.active.presentation.repository.AudienceRepository;
 import com.active.presentation.repository.PresentationDashboardRepository;
 import com.active.presentation.repository.PresentationDashboardSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -79,7 +80,11 @@ public class ChoiceController {
     private void attachAnswer(PresentationDashboard dashboard, Audience audience, ModelMap map) {
         Answer answer = answerRepository.findByDashboardAndAudience(dashboard, audience);
         if(answer != null) {
-            map.addAttribute("answer", answer.getResultId());
+            if(dashboard.getPresentationType().equals(PresentationType.OX)) {
+                map.addAttribute("answer", answer.getResult());
+            } else if(dashboard.getPresentationType().equals(PresentationType.MULTIPLE_CHOICE)) {
+                map.addAttribute("answer", answer.getResultId());
+            }
         }
     }
 

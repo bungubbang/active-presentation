@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class="butpro butstyle">
-                    <div class="sub"><h2>Q&amp;A</h2><span th:text="${homeData.qnaTotal}">5</span></div>
+                    <div class="sub"><h2>Message Board</h2><span th:text="${homeData.qnaTotal}">5</span></div>
                     <div class="stat">
                         <span th:if="${homeData.qnaTotalDiff} == 0" class="equal"> 0</span>
                         <span th:if="${homeData.qnaTotalDiff} != 0" class="up" th:text="${homeData.qnaTotalDiff}"> 0</span>
@@ -103,7 +103,7 @@
                         <a href="/admin/make/qna">
                             <div class="block-flat makeone">
                                 <div class="header">
-                                    <h4>Make Q&amp;A</h4>
+                                    <h4>Make Message Board</h4>
                                 </div>
                                 <div class="content text-center">
                                     <div style="height: 87px;">
@@ -149,14 +149,14 @@
                     <div th:if="${homeData.qnaTotal} != 0">
                     <div class="block">
                         <div class="header no-border">
-                            <h2>Qna Timeline</h2>
+                            <h2>Message Board Timeline</h2>
                         </div>
                     </div>
                     <ul class="timeline">
                         <li th:each="qna : ${homeData.qna}">
                             <i class="fa fa-comment"></i>
                             <span class="date" th:text="${#calendars.format(qna.createdDate.time,'MM/dd')}">5 Jan</span>
-                            <div class="content">
+                            <div class="content" th:name="${qna.id}" onclick="viewBoard(this);" style="cursor: pointer;">
                                 <i class="fa fa-paperclip pull-right"></i>
                                 <p><strong th:text="${qna.title}">abc</strong></p>
                                 <p th:text="${qna.result}">First Question...? how?</p>
@@ -179,7 +179,7 @@
                                 <div class="col-sm-8">
                                     <table class="no-borders no-strip padding-sm">
                                         <tbody class="no-border-x no-border-y poppoll-list">
-                                            <tr th:each="top : ${homeData.top10}">
+                                            <tr th:each="top : ${homeData.top10}" th:name="${top.id}" onclick="viewBoard(this);" style="cursor: pointer;">
                                                 <td style="width:15px;"><div class="legend" data-color=""></div></td>
                                                 <td th:text="${top.label}">Responsive</td>
                                                 <td class="text-right" th:text="${top.data}"><b>$3.500</b></td>
@@ -197,7 +197,7 @@
                         </div>
                         <div class="content">
                             <div class="list-group tickets">
-                                <li class="list-group-item" href="#" th:each="poll : ${homeData.latest}">
+                                <li class="list-group-item" href="#" th:each="poll : ${homeData.latest}" th:name="${poll.id}" onclick="viewBoard(this);" style="cursor: pointer;">
                                     <span th:if="${poll.presentationType?.name()} == 'OX'" class="label label-danger pull-right">OX</span>
                                     <span th:if="${poll.presentationType?.name()} == 'MULTIPLE_CHOICE'" class="label label-warning pull-right">Multiple Choice</span>
                                     <span th:if="${poll.presentationType?.name()} == 'QNA'" class="label label-primary pull-right">QnA</span>
@@ -371,6 +371,11 @@
             el.css("background",color);
         });
     });
+
+    var viewBoard = function(div) {
+        var id = $(div).attr('name');
+        window.open('/board/' + id, '_blank');
+    };
     /*]]>*/
 </script>
 </body>

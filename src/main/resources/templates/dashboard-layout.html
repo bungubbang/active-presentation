@@ -38,7 +38,7 @@
         <header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
             <div class="container">
                 <div class="navbar-header">
-                    <a href="/" class="navbar-brand control-navbar-brand">Active Presentation</a>
+                    <a href="/" class="navbar-brand control-navbar-brand">Poll.pt</a>
                 </div>
                 <div class="control-navbar-status">
                     <ul>
@@ -58,8 +58,12 @@
             <div th:fragment="board-title">
                 <div class="dashboard-block">
                     <div class="text-center dashboard-div">
+                        <div class="pull-right" style="font-size: 20px; margin-top: -34px;">
+                            <a th:href="'/qr/' + ${dashboard.id}" target="_blank" style="color: #111 !important;"><i class="fa fa-qrcode"></i></a>
+                            <a th:href="'/admin/modify/' + ${dashboard.id}" target="_blank"  style="color: #111 !important;"><i class="fa fa-cog"></i></a>
+                        </div>
                         <h1 th:text="${dashboard.title}" class="dashboard-title"></h1>
-                        <h4 class="dashboard-url">Vote URL </h4>
+                        <h4 class="dashboard-url">Vote URL</h4>
                         <h2 th:text="'http://poll.pt/' + ${dashboard.id}" class="dashboard-link"></h2>
                     </div>
                 </div>

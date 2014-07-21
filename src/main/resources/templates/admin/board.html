@@ -31,7 +31,7 @@
                         <div class="header">
                             <h4 th:if="${boardType} == 'OX'">Make OX Choice</h4>
                             <h4 th:if="${boardType} == 'MULTIPLE'">Make Multiple Choice</h4>
-                            <h4 th:if="${boardType} == 'QNA'">Make Q&amp;A</h4>
+                            <h4 th:if="${boardType} == 'QNA'">Make Message Board</h4>
                         </div>
                         <div class="content text-center">
                             <div style="height: 110px;">
@@ -47,7 +47,7 @@
                             <input th:if="!${data.status}" class="switch bt-switch" type="checkbox" data-size="mini" th:id="${data.id}"/>
                         </div>
                         <div class="header">
-                            <div th:if="${data.presentationType?.name()} != 'MULTIPLE_CHOICE'" >
+                            <div th:if="${data.presentationType?.name()} == 'OX'" >
                                 <h3 class="visible-sm visible-md" th:text="${data.presentationType?.name()}">Col 4</h3>
                                 <h3 class="visible-lg" th:text="${data.presentationType?.name()}">Col 3</h3>
                                 <h3 class="visible-xs" th:text="${data.presentationType?.name()}">Col 12</h3>
@@ -56,6 +56,11 @@
                                 <h3 class="visible-sm visible-md">MULTI</h3>
                                 <h3 class="visible-lg">MULTI</h3>
                                 <h3 class="visible-xs">MULTI</h3>
+                            </div>
+                            <div th:if="${data.presentationType?.name()} == 'QNA'" >
+                                <h3 class="visible-sm visible-md">MESSAGE BOARD</h3>
+                                <h3 class="visible-lg">MESSAGE BOARD</h3>
+                                <h3 class="visible-xs">MESSAGE BOARD</h3>
                             </div>
                             <span th:text="${#calendars.format(data.createdDate, 'yyyy/MM/dd HH:mm')}"></span>
                         </div>
@@ -66,6 +71,7 @@
                             <div class="spacer2 text-center">
                                 <a th:href="'/board/' + ${data.id}" class="btn btn-default btn-flat" target="_blank"><i class="fa fa-dashboard"></i> Dashboard</a>
                                 <a th:href="'/admin/modify/' + ${data.id}" class="btn btn-default btn-flat"><i class="fa fa-edit"></i> Modify</a>
+                                <a th:href="'/qr/' + ${data.id}" class="btn btn-default btn-flat" target="_blank"><i class="fa fa-qrcode"></i> QRcode</a>
                             </div>
                         </div>
                     </div>
