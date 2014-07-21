@@ -104,10 +104,9 @@
                 });
                 statusConnect();
             }, function (error) {
-                // TODO error 처리
                 connect = false;
                 setTimeout(function() {
-                    socketConnect();
+                    socketOxConnect();
                 }, timeout);
                 statusDisconnect();
             });

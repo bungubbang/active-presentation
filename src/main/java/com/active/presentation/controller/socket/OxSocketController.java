@@ -3,9 +3,11 @@ package com.active.presentation.controller.socket;
 import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.Audience;
 import com.active.presentation.domain.PresentationDashboard;
+import com.active.presentation.domain.Question;
 import com.active.presentation.domain.message.AnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
 import com.active.presentation.repository.AnswerRepository;
+import com.active.presentation.repository.QuestionRepository;
 import com.active.presentation.service.SocketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,9 @@ public class OxSocketController {
     private AnswerRepository answerRepository;
 
     @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
     private SocketService socketService;
 
     @SubscribeMapping("/players/answer/ox/{boardId}")
@@ -48,12 +53,14 @@ public class OxSocketController {
         Audience audience = socketService.generateAudience(message.getUid());
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
         Answer answer = answerRepository.findByDashboardAndAudience(dashboard, audience);
+        Question question = questionRepository.searchBoardAndId(dashboard.getId(), Long.valueOf(message.getResponse()));
         if(answer != null) {
+            answer.setResultId(question.getId());
             answer.setResult(message.getResponse());
             answer.setModifyDate(new Date());
             answerRepository.save(answer);
         } else {
-            answerRepository.save(new Answer(dashboard, audience, message.getResponse(), message.getUserAgent()));
+            answerRepository.save(new Answer(dashboard, audience, question.getId(), message.getResponse(), message.getUserAgent()));
         }
 
         SocketResponseMessage socketResponseMessage = new SocketResponseMessage(answerRepository.resultByDashboard(dashboard), message.getResponse());

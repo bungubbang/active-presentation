@@ -79,7 +79,7 @@ public class ChoiceController {
     private void attachAnswer(PresentationDashboard dashboard, Audience audience, ModelMap map) {
         Answer answer = answerRepository.findByDashboardAndAudience(dashboard, audience);
         if(answer != null) {
-            map.addAttribute("answer", answer.getResult());
+            map.addAttribute("answer", answer.getResultId());
         }
     }
 

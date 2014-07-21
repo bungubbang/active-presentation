@@ -3,9 +3,11 @@ package com.active.presentation.controller.socket;
 import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.Audience;
 import com.active.presentation.domain.PresentationDashboard;
+import com.active.presentation.domain.Question;
 import com.active.presentation.domain.message.AnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
 import com.active.presentation.repository.AnswerRepository;
+import com.active.presentation.repository.QuestionRepository;
 import com.active.presentation.service.SocketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -30,6 +32,9 @@ public class ChoiceSocketController {
     private AnswerRepository answerRepository;
 
     @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
     private SocketService socketService;
 
     @SubscribeMapping("/players/answer/choice/{boardId}")
@@ -43,12 +48,14 @@ public class ChoiceSocketController {
         Audience audience = socketService.generateAudience(message.getUid());
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
         Answer answer = answerRepository.findByDashboardAndAudience(dashboard, audience);
+        Question question = questionRepository.searchBoardAndId(dashboard.getId(), Long.valueOf(message.getResponse()));
         if(answer != null) {
-            answer.setResult(message.getResponse());
+            answer.setResultId(question.getId());
+            answer.setResult(question.getAnswerList());
             answer.setModifyDate(new Date());
             answerRepository.save(answer);
         } else {
-            answerRepository.save(new Answer(dashboard, audience, message.getResponse(), message.getUserAgent()));
+            answerRepository.save(new Answer(dashboard, audience, question.getId(), question.getAnswerList(), message.getUserAgent()));
         }
 
         SocketResponseMessage socketResponseMessage = new SocketResponseMessage(answerRepository.resultByDashboard(dashboard), message.getResponse());

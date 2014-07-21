@@ -22,6 +22,7 @@ public class Answer {
     @OneToOne
     private Audience audience;
 
+    private Long resultId;
     private String result;
     private String userAgent;
     private Date createdDate = new Date();
@@ -29,9 +30,10 @@ public class Answer {
 
     public Answer() {}
 
-    public Answer(PresentationDashboard dashboard, Audience audience, String result, String userAgent) {
+    public Answer(PresentationDashboard dashboard, Audience audience, Long resultId, String result, String userAgent) {
         this.dashboard = dashboard;
         this.audience = audience;
+        this.resultId = resultId;
         this.result = result;
         this.userAgent = userAgent;
     }
@@ -92,12 +94,21 @@ public class Answer {
         this.userAgent = userAgent;
     }
 
+    public Long getResultId() {
+        return resultId;
+    }
+
+    public void setResultId(Long resultId) {
+        this.resultId = resultId;
+    }
+
     @Override
     public String toString() {
         return "Answer{" +
                 "id=" + id +
                 ", dashboard=" + dashboard +
                 ", audience=" + audience +
+                ", resultId=" + resultId +
                 ", result='" + result + '\'' +
                 ", userAgent='" + userAgent + '\'' +
                 ", createdDate=" + createdDate +

@@ -2,61 +2,133 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
-    <script src="/js/sockjs.js"></script>
-    <script src="/js/jquery.js"></script>
-    <script src="/js/stomp.js"></script>
+<head th:include="dashboard-layout :: head"></head>
+<body>
+    <div th:include="dashboard-layout :: navbar"></div>
+    <div id="content">
+        <div class="container">
+            <div th:include="dashboard-layout :: board-title"></div>
+            <div class="dashboard-block dashboard-block-result">
+                <div class="col-sm-8">
+                    <div class="dashboard-choice-chart"></div>
+                </div>
+                <div class="col-sm-4">
+                    <table class="no-borders no-strip padding-sm dashboard-choice-table">
+                        <tbody class="no-border-x no-border-y dashboard-choice-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:include="dashboard-layout :: script"></div>
+
+    <script type="text/javascript" src="/js/jquery.flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="/js/jquery.flot/jquery.flot.pie.js"></script>
+
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         var board = /*[[${dashboard}]]*/ null;
 
         var stompClient, socket;
         var WEBSOCKET_TARGET_URL = "/join";
-        var status = false;
+        var connect = false;
         var timeout = 5000;
 
+        var colorArray = ["#5793f3", "#19B698","#dd4444","#fd9c35","#fec42c","#d4df5a","#5578c2", "#649BF4", "#BD3B47", "#A66BBE"];
+
         $(document).ready(function() {
-            socketConnect();
+            socketChoiceConnect();
         });
 
-        var socketConnect = function() {
+        var socketChoiceConnect = function() {
             socket = new SockJS(WEBSOCKET_TARGET_URL);
             stompClient = Stomp.over(socket);
 
             stompClient.connect(' ', ' ', function(frame) {
-                status = true;
+                connect = true;
+                statusConnect();
                 stompClient.subscribe("/socket/players/answer/choice/" + board.id, function(message) {
                     var answer = JSON.parse(message.body);
-                    for(var i in board.questions) {
-                        var result = 0;
-                        for (var a in answer.result) {
-                            if(board.questions[i].id == answer.result[a].result) {
-                                result = answer.result[a].choice;
-                            }
-                        }
-                        $($('.' + board.questions[i].id).next()).text(result);
-                    }
+                    fillLegendTable(answer.result);
+                    drawPieChart(answer.result);
                 });
             }, function (error) {
-                // TODO error 처리
-                status = false;
+                connect = false;
+                statusDisconnect();
                 setTimeout(function() {
-                    socketConnect();
+                    socketChoiceConnect();
                 }, timeout);
             });
         }
+
+        var fillLegendTable = function(result) {
+            $('.dashboard-choice-list').empty();
+            for(var i in result) {
+                var inHTML = "<tr>"
+                                + "<td style='width:30px;'><div class='legend dashboard-choice-legend' data-color=''></div></td>"
+                                + "<td>" + result[i].result + "</td>"
+                                + "<td class='text-right'><b>" + result[i].choice + "</b></td>"
+                           + "</tr>"
+                $('.dashboard-choice-list').append(inHTML);
+            }
+
+            for(var i=0; i < $('.dashboard-choice-list tr').size(); i++) {
+                $($('.dashboard-choice-list tr')[i]).find('.legend').attr('data-color', colorArray[i]);
+            }
+
+            //color fill
+            $("table td .legend").each(function(){
+                var el = $(this);
+                var color = el.attr("data-color");
+                el.css("background",color);
+            });
+        }
+
+        var drawPieChart = function(result) {
+            var pollData = [];
+
+            for(var i in result) {
+                pollData.push({
+                    id: result[i].id,
+                    data: result[i].choice,
+                    label: result[i].result
+                });
+            }
+
+            $.plot('.dashboard-choice-chart', pollData, {
+                series: {
+                    pie: {
+                        show: true,
+                        innerRadius: 0.5,
+                        shadow:{
+                            top: 5,
+                            left: 15,
+                            alpha:0.3
+                        },
+                        stroke:{
+                            width:0
+                        },
+                        label: {
+                            show: true
+                        },
+                        highlight:{
+                            opacity: 0.08
+                        }
+                    }
+                },
+                grid: {
+                    hoverable: true,
+                    clickable: true
+                },
+                colors: ["#5793f3", "#19B698","#dd4444","#fd9c35","#fec42c","#d4df5a","#5578c2"],
+                legend: {
+                    show: false
+                }
+            });
+        }
+
         /*]]>*/
     </script>
-</head>
-<body>
-    <h1 th:text="${dashboard.title}"></h1>
-    <div th:each="question : ${dashboard.questions}">
-        <ul>
-            <li th:class="${question.id}" th:text="${question.answerList}"></li>
-            <li></li>
-        </ul>
-    </div>
 </body>
 </html>

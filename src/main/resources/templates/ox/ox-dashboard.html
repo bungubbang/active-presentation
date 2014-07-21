@@ -2,70 +2,28 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
-
-    <!-- BootStrap START -->
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" />
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <!-- BootStrap END -->
-
-    <link rel="stylesheet" href="/css/control.css"/>
-    <link rel="stylesheet" href="/css/dashboard.css"/>
-
-    <script src="/js/jquery.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-
-
-</head>
+<head th:include="dashboard-layout :: head"></head>
 <body>
-    <header class="navbar navbar-static-top control-navbar-header" id="top" role="banner">
-        <div class="container">
-            <div class="navbar-header">
-                <a href="/" class="navbar-brand control-navbar-brand">Active Presentation</a>
-            </div>
-            <div class="control-navbar-status">
-                <ul>
-                    <div class="control-navbar-status-fail">
-                        <span class="glyphicon glyphicon-remove control-navbar-status-fail"></span> Not Connected ...
-                    </div>
-                    <div class="control-navbar-status-connect" style="display: none;">
-                        <span class="glyphicon glyphicon-signal"></span>
-                    </div>
-                </ul>
-            </div>
-        </div>
-    </header>
+    <div th:include="dashboard-layout :: navbar"></div>
     <div id="content">
         <div class="container">
-            <div class="dashboard-block">
-                <div class="text-center dashboard-ox-div">
-                    <h1 th:text="${dashboard.title}" class="dashboard-ox-title"></h1>
-                    <h4 class="dashboard-ox-url">Vote URL </h4>
-                    <h2 th:text="'http://poll.pt/' + ${dashboard.id}" class="dashboard-ox-link"></h2>
-                </div>
-            </div>
-            <div class="dashboard-block" style="min-height: 500px;">
+            <div th:include="dashboard-layout :: board-title"></div>
+            <div class="dashboard-block dashboard-block-result">
                 <div class="row dashboard-ox-bar">
-                    <div class="col-md-6 no-padding">
-                        <div class="pull-right dashboard-ox-bar-o text-center progress-bar"></div>
+                    <div class="col-md-6 dashboard-ox-progress">
+                        <div class="pull-right dashboard-ox-bar-o text-center progress-bar progress-bar-success"></div>
                     </div>
-                    <div class="col-md-6 no-padding">
+                    <div class="col-md-6 dashboard-ox-progress">
                         <div class="pull-left dashboard-ox-bar-x text-center progress-bar progress-bar-warning"></div>
                     </div>
                 </div>
-                <div class="text-center">
-                    <h2 class="count"></h2>
+                <div class="row dashboard-ox-bar">
+                    <div class="col-md-6 dashboard-ox-progress">
+                        <h2 class="pull-right dashboard-ox-bar-o-count"></h2>
+                    </div>
+                    <div class="col-md-6 dashboard-ox-progress">
+                        <h2 class="pull-left dashboard-ox-bar-x-count"></h2>
+                    </div>
                 </div>
                 <div class="text-center">
                     <h1 class="dashboard-ox-list">O&nbsp;&nbsp;X</h1>
@@ -74,9 +32,7 @@
         </div>
     </div>
 
-    <script src="/js/sockjs.js"></script>
-    <script src="/js/jquery.js"></script>
-    <script src="/js/stomp.js"></script>
+    <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         var board = /*[[${dashboard}]]*/ null;
@@ -119,7 +75,9 @@
 
                     $('.dashboard-ox-bar-x').width(xPer);
                     $('.dashboard-ox-bar-x').text(xPer);
-                    $('.count').text(ox.o + "  :  " + ox.x);
+
+                    $('.dashboard-ox-bar-o-count').text(ox.o);
+                    $('.dashboard-ox-bar-x-count').text(ox.x);
                 });
             }, function (error) {
                 connect = false;
@@ -131,6 +89,5 @@
         }
         /*]]>*/
     </script>
-    <script src="/js/socketConnect.js"></script>
 </body>
 </html>

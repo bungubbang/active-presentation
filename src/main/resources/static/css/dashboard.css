@@ -1,20 +1,27 @@
-/* utility*/
-.no-padding { padding: 0px !important; }
-
 body { background-color: #F6F6F6; }
 header { background-color: #fff; }
 
 /* dashboard ox */
-.dashboard-ox-div { color: #555; }
-.dashboard-ox-url { margin-bottom: -20px; margin-top: 25px;}
-.dashboard-ox-link { color: #c7254e; }
+.dashboard-div { color: #555; }
+.dashboard-url { margin-bottom: -20px; margin-top: 25px;}
+.dashboard-link { color: #c7254e; }
 .dashboard-ox-bar { margin-top: 50px; }
 .dashboard-ox-bar-o-blank, .dashboard-ox-bar-o, .dashboard-ox-bar-x-blank, .dashboard-ox-bar-x { height: 30px; }
 .dashboard-ox-bar-o, .dashboard-ox-bar-x { color: #fff; padding-top: 5px; }
 .dashboard-ox-bar-o { background-color: #60C060; border-top-left-radius: 5px; border-bottom-left-radius: 5px; }
-.dashboard-ox-bar-o {}
 .dashboard-ox-bar-x { background-color: #FC9700; border-top-right-radius: 5px; border-bottom-right-radius: 5px; }
 .dashboard-ox-list { font-size: 130px; }
+.dashboard-ox-progress { padding: 0px !important; width: 50%; float: left;}
+.dashboard-ox-bar-o-count { margin-right: 20px; }
+.dashboard-ox-bar-x-count { margin-left: 20px; }
 
+.dashboard-choice-chart { min-height: 400px; }
+.dashboard-choice-table { width: 100%; }
+.dashboard-choice-legend { width: 15px; height: 15px; }
+.dashboard-choice-list { font-size: 30px; font-family: 'Open Sans', sans-serif; font-weight: 100; }
+.dashboard-choice-list > tr > td { padding: 5px !important; }
 
-.dashboard-block {margin-bottom: 40px; padding: 20px 20px; background: #FFF; border-radius: 3px; -webkit-border-radius: 3px; border-left: 1px solid #efefef; border-right: 1px solid #efefef; border-bottom: 1px solid #e2e2e2; box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.04); }
+.dashboard-block { margin-bottom: 40px; padding: 20px 20px; background: #FFF; border-radius: 3px; -webkit-border-radius: 3px; border-left: 1px solid #efefef; border-right: 1px solid #efefef; border-bottom: 1px solid #e2e2e2; box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.04); }
+.dashboard-block-result { min-height: 500px; }
+
+.pieLabel > div {font-size: 20px !important;}

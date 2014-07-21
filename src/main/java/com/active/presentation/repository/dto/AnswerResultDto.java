@@ -8,26 +8,30 @@ import java.util.Date;
  * Date: 6/13/14
  */
 public class AnswerResultDto {
+    private long id;
     private String result;
     private long choice;
     private Date createdDate;
     private String title;
     private boolean status;
 
-    public AnswerResultDto(String result, long choice, Date createdDate, boolean status) {
+    public AnswerResultDto(long id, String result, long choice, Date createdDate, boolean status) {
+        this.id = id;
         this.result = result;
         this.choice = choice;
         this.createdDate = createdDate;
         this.status = status;
     }
 
-    public AnswerResultDto(String result, Date createdDate, boolean status) {
+    public AnswerResultDto(Long id, String result, Date createdDate, boolean status) {
+        this.id = id;
         this.result = result;
         this.createdDate = createdDate;
         this.status = status;
     }
 
-    public AnswerResultDto(String result, String title, Date createdDate, boolean status) {
+    public AnswerResultDto(Long id, String result, String title, Date createdDate, boolean status) {
+        this.id = id;
         this.result = result;
         this.createdDate = createdDate;
         this.title = title;
@@ -54,10 +58,15 @@ public class AnswerResultDto {
         return status;
     }
 
+    public long getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "AnswerResultDto{" +
-                "result='" + result + '\'' +
+                "id=" + id +
+                ", result='" + result + '\'' +
                 ", choice=" + choice +
                 ", createdDate=" + createdDate +
                 ", title='" + title + '\'' +

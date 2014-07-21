@@ -70,6 +70,7 @@
 
 
         var stompClient, socket;
+        var WEBSOCKET_TARGET_URL = "/join";
         var COOKIE_ID = "apuid";
         var connect = false;
         var timeout = 5000;
@@ -105,10 +106,9 @@
                 });
                 statusConnect();
             }, function (error) {
-                // TODO error 처리
                 connect = false;
                 setTimeout(function() {
-                    socketConnect();
+                    socketChoiceConnect();
                 }, timeout);
                 statusDisconnect();
             });
@@ -124,10 +124,10 @@
 
         var response = function(div) {
             $(div).removeClass(choiceBounceClass);
-            var responseNumber = $(div).attr('class');
+            var responseText = $(div).attr('class');
             if(connect) {
-                answer.response = responseNumber;
-                markingResult(responseNumber);
+                answer.response = responseText;
+                markingResult(responseText);
                 stompClient.send('/socket/answer/choice/' + board.id, {}, JSON.stringify(answer));
             }
         }

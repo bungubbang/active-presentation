@@ -42,6 +42,6 @@ public class APSocketService implements SocketService {
 
     @Override
     public SocketResponseMessage checkSecure(PresentationDashboard dashboard) {
-        return new SocketResponseMessage(Lists.newArrayList(new AnswerResultDto(null, null, dashboard.getStatus())));
+        return new SocketResponseMessage(Lists.newArrayList(new AnswerResultDto(null, null, null, dashboard.getStatus())));
     }
 }

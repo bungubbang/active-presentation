@@ -3,9 +3,11 @@ package com.active.presentation.controller.socket;
 import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.Audience;
 import com.active.presentation.domain.PresentationDashboard;
+import com.active.presentation.domain.Question;
 import com.active.presentation.domain.message.AnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
 import com.active.presentation.repository.AnswerRepository;
+import com.active.presentation.repository.QuestionRepository;
 import com.active.presentation.repository.dto.AnswerResultDto;
 import com.active.presentation.service.SocketService;
 import com.google.common.collect.Lists;
@@ -33,6 +35,9 @@ public class QnaSocketController {
     private AnswerRepository answerRepository;
 
     @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
     private SocketService socketService;
 
     @SubscribeMapping("/players/answer/qna/{boardId}")
@@ -48,10 +53,11 @@ public class QnaSocketController {
     public void answer(@DestinationVariable Long boardId, AnswerMessage message) {
         Audience audience = socketService.generateAudience(message.getUid());
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
-        answerRepository.save(new Answer(dashboard, audience, message.getResponse(), message.getUserAgent()));
+        Question question = questionRepository.searchBoardAndId(dashboard.getId(), Long.valueOf(message.getResponse()));
+        answerRepository.save(new Answer(dashboard, audience, question.getId(), message.getResponse(), message.getUserAgent()));
 
         SocketResponseMessage responseMessage =
-                new SocketResponseMessage(Lists.newArrayList(new AnswerResultDto(message.getResponse(), new Date(), dashboard.getStatus())));
+                new SocketResponseMessage(Lists.newArrayList(new AnswerResultDto(question.getId(), message.getResponse(), new Date(), dashboard.getStatus())));
 
         messagingTemplate.convertAndSend("/socket/players/answer/qna/result/" + dashboard.getId(), responseMessage);
     }
