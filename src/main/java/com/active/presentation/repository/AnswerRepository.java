@@ -23,6 +23,8 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
 
     Long countByDashboardAndResult(PresentationDashboard dashboard, String result);
 
+    List<Answer> findByResultId(Long resultId);
+
     @Query("SELECT count(*) FROM Answer a join a.dashboard d join d.speaker s where s = :speaker GROUP BY s")
     Long countBySpeaker(@Param("speaker") Speaker speaker);
 
@@ -51,4 +53,8 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
             " group by year(a.createdDate) ||'-'|| month(a.createdDate) ||'-'|| day(a.createdDate)" +
             " order by year(a.createdDate) ||'-'|| month(a.createdDate) ||'-'|| day(a.createdDate) desc")
     List<AnswerTransactionDto> countAnswerAfterDate(@Param("speaker") Speaker speaker, @Param("date") Date date);
+
+//    UPDATE ap.answer SET result='O' WHERE result_id=17;
+    @Query("UPDATE Answer a SET a.result = :result WHERE a.resultId = :id")
+    void modifyAnswerResult(@Param("id") Long id, @Param("result") String result);
 }

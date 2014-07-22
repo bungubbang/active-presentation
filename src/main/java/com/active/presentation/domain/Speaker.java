@@ -24,6 +24,8 @@ public class Speaker {
     private String platform;
     private String providerId;
 
+    private boolean status = true;
+
     public Speaker() {}
 
     public Speaker(String email) {
@@ -91,6 +93,14 @@ public class Speaker {
         this.providerId = providerId;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Speaker{" +
@@ -100,6 +110,7 @@ public class Speaker {
                 ", profileImage='" + profileImage + '\'' +
                 ", platform='" + platform + '\'' +
                 ", providerId='" + providerId + '\'' +
+                ", status=" + status +
                 '}';
     }
 

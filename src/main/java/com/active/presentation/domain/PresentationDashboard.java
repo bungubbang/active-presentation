@@ -26,7 +26,7 @@ public class PresentationDashboard {
     private Date createdDate = new Date();
     private String title;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Question> questions;
 
     @Max(10)

@@ -1,11 +1,16 @@
 package com.active.presentation.controller.admin;
 
+import com.active.presentation.controller.admin.form.AddQuestions;
 import com.active.presentation.controller.admin.form.BoardResultForm;
 import com.active.presentation.controller.admin.form.BoardStatusForm;
+import com.active.presentation.controller.admin.form.ModifyQuestion;
+import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.PresentationDashboard;
+import com.active.presentation.domain.Question;
 import com.active.presentation.exception.NotValidUser;
 import com.active.presentation.repository.AnswerRepository;
 import com.active.presentation.repository.PresentationDashboardRepository;
+import com.active.presentation.repository.QuestionRepository;
 import com.active.presentation.repository.dto.AnswerResultDto;
 import com.active.presentation.security.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +36,9 @@ public class AdminApiController {
     @Autowired
     private AnswerRepository answerRepository;
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
     @RequestMapping(value = "/status", method = RequestMethod.POST)
     public PresentationDashboard modifyStatus(@Valid BoardStatusForm statusForm) {
         PresentationDashboard dashboard = dashboardRepository.findOne(statusForm.getId());
@@ -45,6 +53,29 @@ public class AdminApiController {
         resultForm.setDashboardId(id);
         resultForm.setResults(answerRepository.resultByDashboard(dashboardRepository.findOne(id)));
         return resultForm;
+    }
+
+    @RequestMapping(value = "/questions", method = RequestMethod.POST)
+    public Question addQuestion(AddQuestions addQuestions) {
+        PresentationDashboard dashboard = dashboardRepository.findOne(addQuestions.getBoardId());
+        List<Question> questions = dashboard.getQuestions();
+        Question question = questionRepository.save(new Question(addQuestions.getQuestion(), questions.size()+1));
+        questions.add(question);
+        dashboardRepository.save(dashboard);
+
+        return question;
+    }
+
+    @RequestMapping(value = "/questions", method = RequestMethod.PUT)
+    public Question modifyQuestion(ModifyQuestion modifyQuestion) {
+        Question question = questionRepository.findOne(modifyQuestion.getId());
+        question.setAnswerList(modifyQuestion.getQuestion());
+        List<Answer> answers = answerRepository.findByResultId(modifyQuestion.getId());
+        for (Answer answer : answers) {
+            answer.setResult(modifyQuestion.getQuestion());
+            answerRepository.save(answer);
+        }
+        return questionRepository.save(question);
     }
 
     private void checkValidUser(PresentationDashboard dashboard) {

@@ -5,19 +5,20 @@ import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.PresentationType;
 import com.active.presentation.domain.Question;
 import com.active.presentation.domain.Speaker;
-import com.active.presentation.repository.AnswerRepository;
-import com.active.presentation.repository.AudienceRepository;
-import com.active.presentation.repository.PresentationDashboardRepository;
-import com.active.presentation.repository.QuestionRepository;
+import com.active.presentation.repository.*;
 import com.active.presentation.repository.dto.AdminHomeDto;
 import com.active.presentation.security.SecurityContext;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,8 @@ import java.util.List;
  */
 @Service
 public class AdminDashboardService implements AdminService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AdminDashboardService.class);
 
     @Autowired
     private AnswerRepository answerRepository;
@@ -40,6 +43,12 @@ public class AdminDashboardService implements AdminService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private SpeakerRepository speakerRepository;
+
+    @Autowired
+    private Environment env;
 
     @Override
     public AdminHomeDto getAdminHome(Speaker speaker) {
@@ -119,19 +128,59 @@ public class AdminDashboardService implements AdminService {
             List<Question> questions = new ArrayList<Question>();
             String[] qList = boardModifyForm.getQuestionList().split(",");
             for (int i = 0; i < qList.length; i++) {
-                Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), qList[i]);
-                if (question != null) {
-                    question.setListOrder(i + 1);
-                    questions.add(questionRepository.save(question));
-                } else {
-                    questions.add(questionRepository.save(new Question(qList[i], i + 1)));
-                }
+                Question question = questionRepository.searchBoardAndId(dashboard.getId(), Long.valueOf(qList[i]));
+                question.setListOrder(i + 1);
+                questions.add(questionRepository.save(question));
             }
             dashboard.setQuestions(questions);
             dashboard.setChoiceCount(questions.size());
         }
 
         return dashboardRepository.save(dashboard);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        Speaker speaker = speakerRepository.findOne(id);
+        speaker.setStatus(false);
+        speakerRepository.save(speaker);
+//        List<PresentationDashboard> dashboards = dashboardRepository.findBySpeaker(speaker);
+//        for (PresentationDashboard dashboard : dashboards) {
+//            dashboardRepository.delete(dashboard);
+//        }
+//        speakerRepository.delete(speaker);
+//
+//        Connection con = null;
+//        PreparedStatement statement = null;
+//        try {
+//            con = DriverManager.getConnection(env.getProperty("jdbc.url"), env.getProperty("jdbc.username"), env.getProperty("jdbc.password"));
+//
+//            statement = con.prepareStatement("DELETE FROM ap.UserConnection WHERE userId=?");
+//            statement.setLong(1, id);
+//
+//            statement.executeUpdate();
+//
+//        } catch (SQLException sqex) {
+//            logger.error("SQLException: " + sqex.getMessage());
+//            logger.error("SQLState: " + sqex.getSQLState());
+//        } finally {
+//            if (statement != null) {
+//                try {
+//                    statement.close();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            if (con != null) {
+//                try {
+//                    con.close();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        }
     }
 
     private Long convertNullToZero(Long count) {

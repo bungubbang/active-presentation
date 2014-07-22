@@ -1,0 +1,119 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="admin/layout :: head"></head>
+<head>
+    <link href="/js/jquery.icheck/skins/square/blue.css" rel="stylesheet"/>
+</head>
+
+<body>
+
+<!-- Fixed navbar -->
+<div id="head-nav" class="navbar navbar-default navbar-fixed-top" th:include="admin/layout :: navbar"></div>
+
+
+<div id="cl-wrapper">
+    <div class="cl-sidebar" th:include="admin/layout :: sidebar"></div>
+
+    <div class="container-fluid" id="pcont">
+        <div class="page-head">
+            <h2>OX Choice</h2>
+            <ol class="breadcrumb">
+                <li><a href="/admin">Home</a></li>
+                <li class="active">Account</li>
+            </ol>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3>Profile</h3>
+                        </div>
+                        <div class="content">
+                            <form class="form-horizontal group-border-dashed" th:action="@{/admin/account}" style="border-radius: 0px;" th:object="${speaker}" method="post">
+                                <input type="hidden" name="_method" value="PUT"/>
+                                <input type="hidden" th:field="*{id}"/>
+                                <input type="hidden" th:field="*{platform}"/>
+                                <input type="hidden" th:field="*{providerId}"/>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Name</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" th:field="*{name}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Email</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" th:field="*{email}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Profile URL</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" th:field="*{profileImage}" />
+                                    </div>
+                                </div>
+                                <div class="spacer2 text-center">
+                                    <button class="btn btn-primary" type="submit">Submit</button>
+                                    <a href="/admin" class="btn btn-default">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <h3>DELETE ACCOUNT</h3>
+                        </div>
+                        <div class="content">
+                            <div class="spacer2 text-center">
+                                <input type="button" class="btn btn-danger btn-flat md-trigger" value="DELETE" data-toggle='modal' data-target='#mod-delete'/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Nifty Modal -->
+<div class="modal fade colored-header danger" id="mod-delete">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 style="display: inline;">DELETE ACCOUNT</h3>
+            <button type="button" class="close md-close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body" style="background-color: #fff;">
+            <div class="text-center">
+                <div class="i-circle danger"><i class="fa fa-check"></i></div>
+                <h4>All your user data will be remove.</h4>
+                <p>Are you sure you want to remove user account?</p>
+            </div>
+        </div>
+        <div class="modal-footer" style="background-color: #fff;">
+            <form method="POST" th:action="'/admin/account/' + ${speaker.id}">
+                <input type="hidden" name="_method" value="DELETE" />
+                <button type="button" class="btn btn-default btn-flat md-close" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger btn-flat md-close">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="md-overlay"></div>
+
+<div th:include="admin/layout :: script"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function(){
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,10 +1,7 @@
 package com.active.presentation.security;
 
-import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.Speaker;
-import com.active.presentation.repository.PresentationDashboardRepository;
 import com.active.presentation.repository.SpeakerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -39,7 +36,9 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
 
         rememberUser(request, response);
         handleSignOut(request, response);
-        if (SecurityContext.userSignedIn() || requestForSignIn(request)) {
+
+
+        if (SecurityContext.userSignedIn() || requestForSignIn(request) || !isDeleteUser()) {
             return true;
         } else {
             return requireSignIn(request, response);
@@ -96,7 +95,15 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
     }
 
     private boolean isAdminPage(HttpServletRequest request) {
-        return request.getServletPath().startsWith("/admin") || request.getServletPath().startsWith("/sign");
+        return request.getServletPath().startsWith("/admin")
+                || request.getServletPath().startsWith("/sign");
+    }
+
+    private boolean isDeleteUser() {
+        if(SecurityContext.userSignedIn()) {
+            return !SecurityContext.getCurrentUser().isStatus();
+        }
+        return true;
     }
 
 }

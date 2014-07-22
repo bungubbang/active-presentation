@@ -4,17 +4,15 @@ import com.active.presentation.controller.admin.form.BoardMakeForm;
 import com.active.presentation.controller.admin.form.BoardModifyForm;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.PresentationType;
-import com.active.presentation.domain.Question;
 import com.active.presentation.domain.Speaker;
 import com.active.presentation.repository.PresentationDashboardRepository;
 import com.active.presentation.repository.QuestionRepository;
-import com.active.presentation.repository.dto.AdminHomeDto;
+import com.active.presentation.repository.SpeakerRepository;
 import com.active.presentation.security.SecurityContext;
+import com.active.presentation.security.UserCookieGenerator;
 import com.active.presentation.service.AdminService;
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 
 import static com.active.presentation.domain.PresentationType.*;
 
@@ -43,6 +41,11 @@ public class AdminController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private SpeakerRepository speakerRepository;
+
+    private final UserCookieGenerator userCookieGenerator = new UserCookieGenerator();
 
     @ModelAttribute
     public Speaker speaker() {
@@ -130,6 +133,35 @@ public class AdminController {
     public String modify(BoardModifyForm board) {
         PresentationDashboard dashboard = adminService.modifyBoard(board);
         return typeReturn(dashboard.getPresentationType());
+    }
+
+    @RequestMapping(value = "/account", method = RequestMethod.GET)
+    public String accountPage() {
+        return "admin/account";
+    }
+
+    @RequestMapping(value = "/account", method = RequestMethod.PUT)
+    public String accountModify(Speaker speaker) {
+        if(SecurityContext.getCurrentUser() == speaker) {
+            speakerRepository.save(speaker);
+        }
+        return "redirect:/admin";
+    }
+
+    @RequestMapping(value = "/account/{id}", method = RequestMethod.DELETE)
+    public String accountModify(@PathVariable Long id, HttpServletResponse response) {
+        Speaker speaker = speakerRepository.findOne(id);
+        if(SecurityContext.getCurrentUser().equals(speaker)) {
+            adminService.deleteUser(id);
+            userCookieGenerator.removeCookie(response);
+            SecurityContext.remove();
+        }
+        return "redirect:/";
+    }
+
+    @RequestMapping("/landing")
+    public String landing() {
+        return "landing";
     }
 
     private String typeReturn(PresentationType type) {

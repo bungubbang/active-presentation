@@ -25,15 +25,21 @@ header { background-color: #fff; }
 .dashboard-qna-date { color: #ccc; }
 .dashboard-qna:first-child { background-color: #FFFEFA; }
 
-.dashboard-block { margin-bottom: 40px; padding: 20px 20px; background: #FFF; border-radius: 3px; -webkit-border-radius: 3px; border-left: 1px solid #efefef; border-right: 1px solid #efefef; border-bottom: 1px solid #e2e2e2; box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.04); }
+.dashboard-block { margin-bottom: 20px; padding: 20px 20px; background: #FFF; border-radius: 3px; -webkit-border-radius: 3px; border-left: 1px solid #efefef; border-right: 1px solid #efefef; border-bottom: 1px solid #e2e2e2; box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.04); }
 .dashboard-block-result { min-height: 500px; }
 
 .dashboard-up-title { margin-top: -10px; font-family: "Raleway", Helvetica, sans-serif; font-weight: 200; }
-
 
 /* utility */
 .pieLabel > div {font-size: 20px !important;}
 .nobody {font-size: 30px; color: #ccc; padding: 20px;}
 .choice-target {background-color: #2494F2; color: #fff;}
 .dashboard-block > .roundicon {left: 2px; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1); font-size: 14px; color: #FFF; border-radius: 50%; background: #52AEFF; padding: 10px; text-align: center; width: 40px; height: 40px;border: 3px solid #FFF;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);z-index: 2;float: left;margin: 15px;}
-.control-ox-answer {font-size: 100px; text-align: center;}
+.control-ox-answer {font-size: 100px; text-align: center; height: 252px; padding-top: 60px;}
+.controller-choice-list {font-family: "Raleway", Helvetica, sans-serif; font-weight: 200;}
+
+@media (max-width: 768px) {
+    .dashboard-title {
+        font-size: 25px !important;
+    }
+}

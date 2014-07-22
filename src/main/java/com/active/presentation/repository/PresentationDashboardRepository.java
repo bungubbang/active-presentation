@@ -28,6 +28,7 @@ public interface PresentationDashboardRepository extends JpaRepository<Presentat
     Long countBySpeakerAndPresentationType(Speaker speaker, PresentationType presentationType);
     Long countBySpeakerAndPresentationTypeAndCreatedDateBefore(Speaker speaker, PresentationType presentationType, Date createdDate);
 
+    List<PresentationDashboard> findBySpeaker(Speaker speaker);
     List<PresentationDashboard> findBySpeaker(Speaker speaker, Pageable pageable);
     List<PresentationDashboard> findBySpeakerAndPresentationType(Speaker speaker, PresentationType presentationType, Sort sort);
 

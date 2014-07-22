@@ -1,7 +1,13 @@
 package com.active.presentation.controller;
 
+import com.active.presentation.domain.PresentationDashboard;
+import com.active.presentation.domain.Speaker;
+import com.active.presentation.repository.SpeakerRepository;
+import com.active.presentation.security.SecurityContext;
+import com.active.presentation.security.UserCookieGenerator;
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,10 +31,17 @@ public class DefaultController {
     @Value("${application.url}")
     public String host;
 
+    @Autowired
+    private SpeakerRepository speakerRepository;
+
+    private final UserCookieGenerator userCookieGenerator = new UserCookieGenerator();
+
     @RequestMapping("/")
-    public RedirectView index() {
-        // Landing Page
-        return new RedirectView("/admin");
+    public String index(HttpServletRequest request) {
+        if(isLoginUser(request)) {
+            return "redirect:/admin";
+        }
+        return "landing";
     }
 
     @RequestMapping("/qr/{id}")
@@ -48,5 +61,20 @@ public class DefaultController {
     @RequestMapping("/signout")
     public String signout() {
         return "signout";
+    }
+
+    private boolean isLoginUser(HttpServletRequest request) {
+        String userId = userCookieGenerator.readCookieValue(request);
+
+        if (userId == null || userId.isEmpty()) {
+            return false;
+        }
+
+        Speaker speaker = speakerRepository.findOne(Long.valueOf(userId));
+        if(speaker == null) {
+            return false;
+        }
+
+        return true;
     }
 }

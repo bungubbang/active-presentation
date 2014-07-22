@@ -90,7 +90,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Status <i class="fa fa-question-circle" data-placement="right" data-toggle="tooltip" data-original-title="Anonymous can vote." ></i></label>
+                                    <label class="col-sm-3 control-label">Anonymous <i class="fa fa-question-circle" data-placement="right" data-toggle="tooltip" data-original-title="Anonymous can vote." ></i></label>
                                     <div class="col-sm-6">
                                         <label class="checkbox-inline">
                                             <input type="checkbox" class="switch bt-switch" data-size="small" th:field="*{anonymous}"/>
@@ -165,25 +165,26 @@
 
     $(document).ready(function() {
         fillQuestions();
-    })
+    });
 
-    var listHTML = function(text) {
+    var listHTML = function(id, text) {
         return "<li class='dd-item' data-answerlist='" + text + "'>"
                 + "<div class='pull-right' onclick='modifyList(this)' style='margin: 7px' data-toggle='modal' data-target='#mod-modify'>"
                     + "<i class='fa fa-cogs'></i>"
                 + "</div>"
-                + "<div class='dd-handle'>" + text + "</div>"
+                + "<div class='dd-handle' data-id='" + id + "'>" + text + "</div>"
             + "</li>";
-    }
+    };
 
     var selectList = [];
+
     for(var i=0; i < data.questions.length ; i++) {
-        selectList[data.questions[i].listOrder - 1] = data.questions[i].answerList;
-    }
+        selectList[data.questions[i].listOrder - 1] = data.questions[i];
+    };
 
     for(var i=0; i< selectList.length; i++) {
-        $('.dd-list').append(listHTML(selectList[i]));
-    }
+        $('.dd-list').append(listHTML(selectList[i].id, selectList[i].answerList));
+    };
 
 
     $('.dd').nestable();
@@ -202,26 +203,29 @@
             });
             return false;
         }
-        $('.dd-list').append(listHTML(listText));
+
+        $.post('/admin/api/questions', { boardId:data.id, question: listText}, function(result) {
+            $('.dd-list').append(listHTML(result.id, result.answerList));
+        });
 
         $('.add-list input').val("");
         fillQuestions();
-    }
+    };
 
     var fillQuestions = function() {
         var listText = [];
         var lists = $('.dd').find('.dd-handle');
         for(var i=0; i < lists.length; i++) {
-            listText.push($(lists[i]).text());
+            listText.push($(lists[i]).attr('data-id'));
         }
         $("#questionList").val(listText.join(','));
-    }
+    };
 
     var modiDiv;
     var modifyList = function(div) {
         modiDiv = $(div).parent();
         $('.mod-modify-input').val(modiDiv.attr('data-answerlist'));
-    }
+    };
 
     var modifyProceed = function() {
         var text = $('.mod-modify-input').val();
@@ -234,15 +238,17 @@
             });
             return false;
         }
-        $(modiDiv).attr('data-answerlist', text);
-        $($(modiDiv).children().get(1)).text(text);
-        fillQuestions();
-    }
+
+        $.post('/admin/api/questions',{id: $($(modiDiv).children().get(1)).attr('data-id'), question: text, _method: 'PUT'}, function(result) {
+            $(modiDiv).attr('data-answerlist', text);
+            $($(modiDiv).children().get(1)).text(text);
+        });
+    };
 
     var removeProceed = function() {
         $(modiDiv).remove();
         fillQuestions();
-    }
+    };
 
     /*]]>*/
 </script>

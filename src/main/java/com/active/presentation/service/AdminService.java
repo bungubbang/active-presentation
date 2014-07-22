@@ -14,4 +14,5 @@ public interface AdminService {
     AdminHomeDto getAdminHome(Speaker speaker);
     PresentationDashboard addBoard(PresentationDashboard dashboard, String questionList);
     PresentationDashboard modifyBoard(BoardModifyForm boardModifyForm);
+    void deleteUser(Long id);
 }
