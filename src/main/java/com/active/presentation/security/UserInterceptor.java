@@ -37,8 +37,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         rememberUser(request, response);
         handleSignOut(request, response);
 
-
-        if (SecurityContext.userSignedIn() || requestForSignIn(request) || !isDeleteUser()) {
+        if ((SecurityContext.userSignedIn() && !isDeleteUser()) || requestForSignIn(request)) {
             return true;
         } else {
             return requireSignIn(request, response);
@@ -90,7 +89,6 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
     }
 
     private boolean userNotFound(String userId) {
-        // doesn't bother checking a local user database: simply checks if the userId is connected to Facebook
         return connectionRepository.createConnectionRepository(userId).findPrimaryConnection(Facebook.class) != null;
     }
 
@@ -100,10 +98,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
     }
 
     private boolean isDeleteUser() {
-        if(SecurityContext.userSignedIn()) {
-            return !SecurityContext.getCurrentUser().isStatus();
-        }
-        return true;
+        return !SecurityContext.getCurrentUser().isStatus();
     }
 
 }

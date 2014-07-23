@@ -1,6 +1,6 @@
 /* html tag */
 body { background-color: #F6F6F6; }
-header { background-color: #fff; }
+header { background-color: #2494F2; color: #FFF; }
 
 /* dashboard ox */
 .dashboard-div { color: #555; }
@@ -19,7 +19,7 @@ header { background-color: #fff; }
 .dashboard-choice-chart { min-height: 400px; }
 .dashboard-choice-table { width: 100%; }
 .dashboard-choice-legend { width: 15px; height: 15px; }
-.dashboard-choice-list { font-size: 30px; font-family: 'Open Sans', sans-serif; font-weight: 100; }
+.dashboard-choice-list { font-size: 20px; font-family: "Raleway", Helvetica, sans-serif; font-weight: 200; }
 .dashboard-choice-list > tr > td { padding: 5px !important; }
 
 .dashboard-qna-date { color: #ccc; }
@@ -31,7 +31,8 @@ header { background-color: #fff; }
 .dashboard-up-title { margin-top: -10px; font-family: "Raleway", Helvetica, sans-serif; font-weight: 200; }
 
 /* utility */
-.pieLabel > div {font-size: 20px !important;}
+.navbar-brand { color: #FFF !important; }
+.pieLabel > div { font-size: 20px !important; max-width: 150px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .nobody {font-size: 30px; color: #ccc; padding: 20px;}
 .choice-target {background-color: #2494F2; color: #fff;}
 .dashboard-block > .roundicon {left: 2px; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1); font-size: 14px; color: #FFF; border-radius: 50%; background: #52AEFF; padding: 10px; text-align: center; width: 40px; height: 40px;border: 3px solid #FFF;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);z-index: 2;float: left;margin: 15px;}
