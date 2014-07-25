@@ -1,26 +1,22 @@
 package com.active.presentation.service;
 
 import com.active.presentation.controller.admin.form.BoardModifyForm;
-import com.active.presentation.domain.PresentationDashboard;
-import com.active.presentation.domain.PresentationType;
-import com.active.presentation.domain.Question;
-import com.active.presentation.domain.Speaker;
+import com.active.presentation.domain.*;
 import com.active.presentation.repository.*;
 import com.active.presentation.repository.dto.AdminHomeDto;
 import com.active.presentation.security.SecurityContext;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by bungubbang
@@ -46,6 +42,9 @@ public class AdminDashboardService implements AdminService {
 
     @Autowired
     private SpeakerRepository speakerRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @Autowired
     private Environment env;
@@ -144,43 +143,20 @@ public class AdminDashboardService implements AdminService {
         Speaker speaker = speakerRepository.findOne(id);
         speaker.setStatus(false);
         speakerRepository.save(speaker);
-//        List<PresentationDashboard> dashboards = dashboardRepository.findBySpeaker(speaker);
-//        for (PresentationDashboard dashboard : dashboards) {
-//            dashboardRepository.delete(dashboard);
-//        }
-//        speakerRepository.delete(speaker);
-//
-//        Connection con = null;
-//        PreparedStatement statement = null;
-//        try {
-//            con = DriverManager.getConnection(env.getProperty("jdbc.url"), env.getProperty("jdbc.username"), env.getProperty("jdbc.password"));
-//
-//            statement = con.prepareStatement("DELETE FROM ap.UserConnection WHERE userId=?");
-//            statement.setLong(1, id);
-//
-//            statement.executeUpdate();
-//
-//        } catch (SQLException sqex) {
-//            logger.error("SQLException: " + sqex.getMessage());
-//            logger.error("SQLState: " + sqex.getSQLState());
-//        } finally {
-//            if (statement != null) {
-//                try {
-//                    statement.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            if (con != null) {
-//                try {
-//                    con.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//        }
+    }
+
+    @Override
+    public Set<Tag> addTags(String name, PresentationDashboard dashboard, Long questionId) {
+        Set<Tag> tags = dashboard.getTags();
+        if(tags == null) {
+            tags = new HashSet<Tag>();
+        }
+        Tag tag = tagRepository.findByName(name);
+        if(tag == null) {
+            tag = tagRepository.save(new Tag(name));
+        }
+        tags.add(tag);
+        return tags;
     }
 
     private Long convertNullToZero(Long count) {

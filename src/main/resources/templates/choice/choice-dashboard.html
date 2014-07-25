@@ -4,9 +4,9 @@
       xmlns:th="http://www.thymeleaf.org">
 <head th:include="dashboard-layout :: head"></head>
 <body>
-    <div th:include="dashboard-layout :: navbar"></div>
+    <div th:include="dashboard-layout :: navbar" style="min-width: 600px;"></div>
     <div id="content">
-        <div class="container">
+        <div class="container" style="min-width: 600px;">
             <div th:include="dashboard-layout :: board-title"></div>
             <div class="dashboard-block dashboard-block-result">
                 <div class="row">

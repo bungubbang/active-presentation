@@ -16,7 +16,7 @@ header { background-color: #2494F2; color: #FFF; }
 .dashboard-ox-bar-o-count { margin-right: 20px; }
 .dashboard-ox-bar-x-count { margin-left: 20px; }
 
-.dashboard-choice-chart { min-height: 400px; }
+.dashboard-choice-chart { height: 400px; }
 .dashboard-choice-table { width: 100%; }
 .dashboard-choice-legend { width: 15px; height: 15px; }
 .dashboard-choice-list { font-size: 20px; font-family: "Raleway", Helvetica, sans-serif; font-weight: 200; }
@@ -38,9 +38,13 @@ header { background-color: #2494F2; color: #FFF; }
 .dashboard-block > .roundicon {left: 2px; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1); font-size: 14px; color: #FFF; border-radius: 50%; background: #52AEFF; padding: 10px; text-align: center; width: 40px; height: 40px;border: 3px solid #FFF;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);z-index: 2;float: left;margin: 15px;}
 .control-ox-answer {font-size: 100px; text-align: center; height: 252px; padding-top: 60px;}
 .controller-choice-list {font-family: "Raleway", Helvetica, sans-serif; font-weight: 200;}
+.select2-container-multi .select2-choices .select2-search-choice { border: 1px solid #CCCCCC !important;background-image: linear-gradient(to bottom, #ffffff 60%, #f9f9f9 100%) !important;padding: 3px 5px 5px 18px !important;}
+
+@media (max-width: 992px) {
+    .dashboard-choice-chart { height: 300px; }
+}
 
 @media (max-width: 768px) {
-    .dashboard-title {
-        font-size: 25px !important;
-    }
+    .dashboard-title { font-size: 25px !important; }
 }
+

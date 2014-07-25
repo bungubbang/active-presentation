@@ -11,6 +11,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface SpeakerRepository extends JpaRepository<Speaker, Long> {
-    Speaker findByPlatformAndProviderId(String platform, String providerId);
-
+    public Speaker findByPlatformAndProviderId(String platform, String providerId);
 }

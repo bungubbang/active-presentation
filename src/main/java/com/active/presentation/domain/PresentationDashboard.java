@@ -3,8 +3,7 @@ package com.active.presentation.domain;
 import javax.persistence.*;
 import javax.persistence.criteria.Predicate;
 import javax.validation.constraints.Max;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by bungubbang
@@ -26,7 +25,7 @@ public class PresentationDashboard {
     private Date createdDate = new Date();
     private String title;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Question> questions;
 
     @Max(10)
@@ -35,6 +34,9 @@ public class PresentationDashboard {
     private Boolean status = true;
     private Boolean secure = false;
     private Boolean anonymous = true;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private Set<Tag> tags;
 
     public PresentationDashboard() {}
 
@@ -126,6 +128,14 @@ public class PresentationDashboard {
         this.anonymous = anonymous;
     }
 
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public String toString() {
         return "PresentationDashboard{" +
@@ -139,6 +149,7 @@ public class PresentationDashboard {
                 ", status=" + status +
                 ", secure=" + secure +
                 ", anonymous=" + anonymous +
+                ", tags=" + tags +
                 '}';
     }
 }

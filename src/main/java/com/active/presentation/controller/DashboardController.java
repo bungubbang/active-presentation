@@ -52,6 +52,22 @@ public class DashboardController {
         return "default";
     }
 
+    @RequestMapping("/{id}/tags/{name}")
+    public String tags(@PathVariable Long id, @PathVariable String name, ModelMap map, HttpServletRequest request) {
+        PresentationDashboard board = dashboardRepository.findOne(PresentationDashboardSpecifications.findFetchQuestion(id));
+        if(!board.getPresentationType().equals(PresentationType.QNA)) {
+            return "redirect:/board/" + id;
+        }
+        if(board.getSecure()) {
+            if(!isValidSpeaker(board, request)) {
+                return "secure";
+            }
+        }
+        map.addAttribute("dashboard", board);
+        map.addAttribute("tag", name);
+        return "qna/qna-tags";
+    }
+
     private boolean isValidSpeaker(PresentationDashboard dashboard, HttpServletRequest request) {
         String userId = userCookieGenerator.readCookieValue(request);
 

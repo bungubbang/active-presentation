@@ -7,19 +7,25 @@ import com.active.presentation.controller.admin.form.ModifyQuestion;
 import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.Question;
+import com.active.presentation.domain.Tag;
 import com.active.presentation.exception.NotValidUser;
 import com.active.presentation.repository.AnswerRepository;
 import com.active.presentation.repository.PresentationDashboardRepository;
 import com.active.presentation.repository.QuestionRepository;
+import com.active.presentation.repository.TagRepository;
 import com.active.presentation.repository.dto.AnswerResultDto;
 import com.active.presentation.security.SecurityContext;
+import com.active.presentation.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by bungubbang
@@ -38,6 +44,9 @@ public class AdminApiController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AdminService adminService;
 
     @RequestMapping(value = "/status", method = RequestMethod.POST)
     public PresentationDashboard modifyStatus(@Valid BoardStatusForm statusForm) {
@@ -76,6 +85,14 @@ public class AdminApiController {
             answerRepository.save(answer);
         }
         return questionRepository.save(question);
+    }
+
+    @RequestMapping(value = "/{boardId}/tags/{questionId}/{name}", method = RequestMethod.POST)
+    public Set<Tag> addTag(@PathVariable Long boardId, @PathVariable Long questionId, @PathVariable String name) {
+        PresentationDashboard dashboard = dashboardRepository.findOne(boardId);
+        Set<Tag> tags = adminService.addTags(name, dashboard, questionId);
+        dashboard.setTags(tags);
+        return tags;
     }
 
     private void checkValidUser(PresentationDashboard dashboard) {

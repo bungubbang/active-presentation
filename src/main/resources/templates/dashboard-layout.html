@@ -25,8 +25,10 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <link rel="stylesheet" href="/css/control.css"/>
-    <link rel="stylesheet" href="/css/dashboard.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/bootstrap.switch/bootstrap-switch.css" />
+    <link rel="stylesheet" type="text/css" href="/css/control.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/dashboard.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap-switch.css"/>
 
     <script src="/js/jquery.js"></script>
     <!-- Latest compiled and minified JavaScript -->
@@ -59,12 +61,14 @@
                 <div class="dashboard-block">
                     <div class="text-center dashboard-div">
                         <div class="pull-right" style="font-size: 20px; margin-top: -34px;">
+                            <input th:if="${dashboard.status}" class="switch bt-switch" type="checkbox" checked="checked" data-size="mini" th:id="${dashboard.id}"/>
+                            <input th:if="!${dashboard.status}" class="switch bt-switch" type="checkbox" data-size="mini" th:id="${dashboard.id}"/>
                             <a th:href="'/qr/' + ${dashboard.id}" target="_blank" style="color: #111 !important;"><i class="fa fa-qrcode"></i></a>
                             <a th:href="'/admin/modify/' + ${dashboard.id}" target="_blank"  style="color: #111 !important;"><i class="fa fa-cog"></i></a>
                         </div>
                         <h1 th:text="${dashboard.title}" class="dashboard-title"></h1>
                         <h4 class="dashboard-url">Vote URL</h4>
-                        <h2 th:text="'http://poll.pt/' + ${dashboard.id}" class="dashboard-link"></h2>
+                        <h2 th:text="'http://metadata.co.kr/' + ${dashboard.id}" class="dashboard-link"></h2>
                     </div>
                 </div>
             </div>
@@ -72,10 +76,24 @@
     </div>
 
 <div  th:fragment="script">
-    <script src="/js/sockjs.js"></script>
-    <script src="/js/jquery.js"></script>
-    <script src="/js/stomp.js"></script>
-    <script src="/js/socketConnect.js"></script>
+    <script type="text/javascript" src="/js/sockjs.js"></script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/stomp.js"></script>
+    <script type="text/javascript" src="/js/socketConnect.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.switch/bootstrap-switch.min.js"></script>
+
+    <script type="text/javascript">
+        $('.bt-switch').bootstrapSwitch();
+
+        $('.bt-switch').on('switchChange.bootstrapSwitch', function(event, state) {
+            var data = {
+                id: $(this).attr('id'),
+                status: state
+            }
+
+            $.post('/admin/api/status', data, function(data){});
+        });
+    </script>
 </div>
 </body>
 </html>

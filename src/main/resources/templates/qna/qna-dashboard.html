@@ -3,11 +3,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head th:include="dashboard-layout :: head"></head>
+<link rel="stylesheet" type="text/css" href="/js/jquery.select2/select2.css" />
 <body>
     <div th:include="dashboard-layout :: navbar"></div>
     <div id="content">
         <div class="container">
             <div th:include="dashboard-layout :: board-title"></div>
+            <div class="dashboard-block">
+                <div class="pull-left dashboard-up-title">Tags</div>
+                <p>&nbsp;</p>
+                <a class="btn btn-default btn-flat" th:each="tag : ${dashboard.tags}" th:text="${tag.name}" th:href="'/board/' + ${dashboard.id} + '/tags/' + ${tag.name}"></a>
+            </div>
             <div class="dashboard-block nobody" style="display: none;">
                 <div class="row">
                     <div class="text-center">

@@ -2,6 +2,7 @@ package com.active.presentation.controller.admin;
 
 import com.active.presentation.controller.admin.form.BoardMakeForm;
 import com.active.presentation.controller.admin.form.BoardModifyForm;
+import com.active.presentation.domain.DashboardGroup;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.PresentationType;
 import com.active.presentation.domain.Speaker;
@@ -184,5 +185,11 @@ public class AdminController {
         }
         dashboardRepository.delete(id);
         return "redirect:/admin";
+    }
+
+    @RequestMapping(value = "/make/group", method = RequestMethod.GET)
+    public String groupPage(DashboardGroup dashboardGroup, ModelMap map){
+        map.addAttribute("data", dashboardGroup);
+        return "admin/group";
     }
 }

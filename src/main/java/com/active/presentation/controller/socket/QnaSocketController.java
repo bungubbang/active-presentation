@@ -7,6 +7,7 @@ import com.active.presentation.domain.Question;
 import com.active.presentation.domain.message.AnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
 import com.active.presentation.repository.AnswerRepository;
+import com.active.presentation.repository.PresentationDashboardRepository;
 import com.active.presentation.repository.QuestionRepository;
 import com.active.presentation.repository.dto.AnswerResultDto;
 import com.active.presentation.service.SocketService;
@@ -40,6 +41,9 @@ public class QnaSocketController {
     @Autowired
     private SocketService socketService;
 
+    @Autowired
+    private PresentationDashboardRepository dashboardRepository;
+
     @SubscribeMapping("/players/answer/qna/{boardId}")
     public SocketResponseMessage answerResponse(@DestinationVariable Long boardId) {
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
@@ -56,9 +60,22 @@ public class QnaSocketController {
         Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), "Q");
         answerRepository.save(new Answer(dashboard, audience, question.getId(), message.getResponse(), message.getUserAgent()));
 
+        dashboard.setTags(socketService.parsingTags(message.getResponse()));
+        dashboardRepository.save(dashboard);
+
         SocketResponseMessage responseMessage =
                 new SocketResponseMessage(Lists.newArrayList(new AnswerResultDto(question.getId(), message.getResponse(), new Date(), dashboard.getStatus())));
 
         messagingTemplate.convertAndSend("/socket/players/answer/qna/result/" + dashboard.getId(), responseMessage);
+    }
+
+    @SubscribeMapping("/players/answer/qna/{boardId}/tag/{message}")
+    public SocketResponseMessage answerTagResponse(@DestinationVariable Long boardId, @DestinationVariable String message) {
+        PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
+        if(dashboard.getSecure()) {
+            return socketService.checkSecure(dashboard);
+        }
+        System.out.println("message = " + message);
+        return new SocketResponseMessage(answerRepository.findByDashboardTagsOnAnswerResultDto(dashboard, "%" + message + "%"));
     }
 }

@@ -44,6 +44,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
     @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.createdDate as createdDate, d.status as status) FROM Answer a JOIN a.dashboard d WHERE a.dashboard = :dashboard")
     List<AnswerResultDto> findByDashboardOnAnswerResultDto(@Param("dashboard") PresentationDashboard dashboard);
 
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.createdDate as createdDate, d.status as status) FROM Answer a JOIN a.dashboard d WHERE a.dashboard = :dashboard AND a.result LIKE :tags")
+    List<AnswerResultDto> findByDashboardTagsOnAnswerResultDto(@Param("dashboard") PresentationDashboard dashboard, @Param("tags") String tags);
+
     @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(d.id as id, a.result as result, d.title as title, a.createdDate as createdDate, d.status as status) FROM Answer a join a.dashboard d join d.speaker s " +
             "WHERE s = :speaker AND d.presentationType = :dashboardType order by a.createdDate desc")
     List<AnswerResultDto> findByRecentBySpeakerAndType(@Param("speaker") Speaker speaker, @Param("dashboardType") PresentationType presentationType, Pageable pageable);

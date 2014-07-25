@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="dashboard-layout :: head"></head>
+<link rel="stylesheet" type="text/css" href="/js/jquery.select2/select2.css" />
+<body>
+<div th:include="dashboard-layout :: navbar"></div>
+<div id="content">
+    <div class="container">
+        <div th:fragment="board-title">
+            <div class="dashboard-block">
+                <div class="text-center dashboard-div">
+                    <div class="pull-right" style="font-size: 20px; margin-top: -34px;">
+                        <input th:if="${dashboard.status}" class="switch bt-switch" type="checkbox" checked="checked" data-size="mini" th:id="${dashboard.id}"/>
+                        <input th:if="!${dashboard.status}" class="switch bt-switch" type="checkbox" data-size="mini" th:id="${dashboard.id}"/>
+                        <a th:href="'/qr/' + ${dashboard.id}" target="_blank" style="color: #111 !important;"><i class="fa fa-qrcode"></i></a>
+                        <a th:href="'/admin/modify/' + ${dashboard.id}" target="_blank"  style="color: #111 !important;"><i class="fa fa-cog"></i></a>
+                    </div>
+                    <h1 th:text="${dashboard.title} + ' #' + ${tag}" class="dashboard-title"></h1>
+                    <h4 class="dashboard-url">Vote URL</h4>
+                    <h2 th:text="'http://metadata.co.kr/' + ${dashboard.id}" class="dashboard-link"></h2>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-block">
+            <div class="pull-left dashboard-up-title">Tags</div>
+            <p>&nbsp;</p>
+            <a class="btn btn-default btn-flat" th:href="'/board/' + ${dashboard.id}"><i class="fa fa-mail-reply-all"></i></a>
+            <a class="btn btn-default btn-flat" th:each="tags : ${dashboard.tags}" th:text="${tags.name}" th:href="'/board/' + ${dashboard.id} + '/tags/' + ${tags.name}"></a>
+        </div>
+        <div class="dashboard-block nobody" style="display: none;">
+            <div class="row">
+                <div class="text-center">
+                    <h1>Nobody has not vote yet.</h1>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-qna">
+        </div>
+    </div>
+</div>
+
+<div th:include="dashboard-layout :: script"></div>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var board = /*[[${dashboard}]]*/ null;
+    var tag = /*[[${tag}]]*/ null;
+
+    var WEBSOCKET_TARGET_URL = "/join";
+    var stompClient, socket;
+    var connect = false;
+    var timeout = 5000;
+
+    $(document).ready(function() {
+        socketQnaConnect();
+    });
+
+    var socketQnaConnect = function() {
+        socket = new SockJS(WEBSOCKET_TARGET_URL);
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect(' ', ' ', function(frame) {
+            connect = true;
+            statusConnect();
+            stompClient.subscribe("/socket/players/answer/qna/" + board.id + "/tag/" + tag, function(message) {
+                var answer = JSON.parse(message.body);
+                addQna(answer.result);
+            });
+
+            stompClient.subscribe("/socket/players/answer/qna/result/" + board.id, function(message) {
+                var answer = JSON.parse(message.body);
+                if(answer.result[0].result.indexOf(' #' + tag + ' ') > 0) {
+                    addQna(answer.result);
+                }
+            });
+
+        }, function (error) {
+            connect = false;
+            setTimeout(function() {
+                socketQnaConnect();
+            }, timeout);
+            statusDisconnect();
+        });
+    };
+
+    var addQna = function(result) {
+        for(var i in result) {
+            var date = new Date(result[i].createdDate);
+            var dateFormat = date.getFullYear()
+                    + "/" + (date.getMonth()+1)
+                    + "/" + date.getDate()
+                    + " " + date.getHours()
+                    + ":" + date.getMinutes();
+            var inHTML = "<div class='dashboard-block'>"
+                    + "<p class='pull-right dashboard-qna-date'>" + dateFormat + "</p>"
+                    + "<i class='fa fa-comment roundicon'></i>"
+                    + "<h3>" + result[i].result + "</h3>"
+                    + "</div>";
+            $(".dashboard-qna").prepend(inHTML);
+        }
+    };
+
+    /*]]>*/
+</script>
+</body>
+</html>
