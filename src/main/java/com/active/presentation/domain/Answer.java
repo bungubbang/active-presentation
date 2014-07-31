@@ -1,7 +1,7 @@
 package com.active.presentation.domain;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by bungubbang
@@ -27,6 +27,9 @@ public class Answer {
     private String userAgent;
     private Date createdDate = new Date();
     private Date modifyDate = new Date();
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private Set<Tag> tags = new HashSet<Tag>();
 
     public Answer() {}
 
@@ -100,6 +103,14 @@ public class Answer {
 
     public void setResultId(Long resultId) {
         this.resultId = resultId;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override

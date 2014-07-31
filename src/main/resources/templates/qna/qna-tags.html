@@ -63,7 +63,7 @@
         stompClient.connect(' ', ' ', function(frame) {
             connect = true;
             statusConnect();
-            stompClient.subscribe("/socket/players/answer/qna/" + board.id + "/tag/" + tag, function(message) {
+            stompClient.subscribe("/socket/players/answer/qna/" + board.id + "/tag/" + encodeURIComponent(tag), function(message) {
                 var answer = JSON.parse(message.body);
                 addQna(answer.result);
             });

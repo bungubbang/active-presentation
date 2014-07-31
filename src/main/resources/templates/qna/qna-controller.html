@@ -16,6 +16,11 @@
                 <textarea rows="3" cols="50" class="form-control control-qna-textarea"></textarea>
                 <button class="control-qna-submit btn btn-primary btn-block" type="button" style="margin-top: 10px;">Submit</button>
             </div>
+            <div class="dashboard-block">
+                <div class="pull-left dashboard-up-title">Tags</div>
+                <p>&nbsp;</p>
+                <div class="dashboard-qna-tag"></div>
+            </div>
             <div class="control-qna-list"></div>
         </div>
     </div>
@@ -78,6 +83,11 @@
                     }
                 });
 
+                stompClient.subscribe("/socket/players/answer/qna/" + board.id + "/taglist", function(message) {
+                    var answer = JSON.parse(message.body);
+                    addTags(answer);
+                });
+
             }, function (error) {
                 connect = false;
                 setTimeout(function() {
@@ -114,6 +124,14 @@
                         + "<h3>" + result[i].result + "</h3>"
                         + "</div>";
                 $(".control-qna-list").prepend(inHTML);
+            }
+        };
+
+        var addTags = function(result) {
+            $('.dashboard-qna-tag').empty();
+            for(var i in result) {
+                var inHTML = "<a class='btn btn-default btn-flat' href='/board/" + board.id + "/tags/" + result[i].name + "' >" + result[i].name + "</a>";
+                $('.dashboard-qna-tag').append(inHTML);
             }
         };
         /*]]>*/

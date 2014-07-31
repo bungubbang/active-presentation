@@ -57,6 +57,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
             " order by year(a.createdDate) ||'-'|| month(a.createdDate) ||'-'|| day(a.createdDate) desc")
     List<AnswerTransactionDto> countAnswerAfterDate(@Param("speaker") Speaker speaker, @Param("date") Date date);
 
+    @Query("select new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.createdDate as createdDate, d.status as status) FROM Answer a join a.tags t JOIN a.dashboard d WHERE t.name = :name")
+    List<AnswerResultDto> findByTagsName(@Param("name") String name);
+
 //    UPDATE ap.answer SET result='O' WHERE result_id=17;
     @Query("UPDATE Answer a SET a.result = :result WHERE a.resultId = :id")
     void modifyAnswerResult(@Param("id") Long id, @Param("result") String result);

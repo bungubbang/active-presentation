@@ -45,14 +45,34 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Multitag from Select</label>
                                     <div class="col-sm-6">
-                                        <select class="select2" multiple="multiple">
-                                            <option value="AK">Alaska</option>
-                                            <option value="HI">Hawaii</option>
-                                            <option value="CA">California</option>
-                                            <option value="NV">Nevada</option>
-                                            <option value="OR">Oregon</option>
-                                            <option value="WA">Washington</option>
-                                        </select>
+                                        <div class="col-sm-6">
+                                            <div class="block-flat group-make-groupblock">
+                                                <div class="header">
+                                                    <h3>Poll Grouping</h3>
+                                                </div>
+                                                <div class="content">
+                                                    <div class="list-group tickets"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="block-flat group-make-groupblock">
+                                                <div class="header">
+                                                    <h3>Total Poll List</h3>
+                                                </div>
+                                                <div class="content">
+                                                    <div class="list-group tickets">
+                                                        <li class="list-group-item" style="cursor: pointer;" th:each="board : ${boards}" th:name="${board.id}" href="#" onclick="selectGroup(this);">
+                                                            <span th:if="${board.presentationType?.name()} == 'OX'" class="label label-danger pull-right">OX</span>
+                                                            <span th:if="${board.presentationType?.name()} == 'MULTIPLE_CHOICE'" class="label label-warning pull-right">Multiple Choice</span>
+                                                            <span th:if="${board.presentationType?.name()} == 'QNA'" class="label label-primary pull-right">QnA</span>
+                                                            <p th:text="${board.title}">첫 투표 인테 쓸만한가요? 나름 만든다고 만들었는데..</p>
+                                                            <span class="date" th:text="${#calendars.format(board.createdDate.time,'dd MMM yyyy HH:mm')}">17 Feb</span>
+                                                        </li>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="spacer2 text-center">
@@ -74,8 +94,11 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     var data = /*[[${data}]]*/ null;
-    $('.select2').select2({ width: '100%' });
 
+    var a;
+    var selectGroup = function(div) {
+        a = div;
+    }
     /*]]>*/
 </script>
 </body>

@@ -9,10 +9,10 @@
     <div id="content">
         <div class="container">
             <div th:include="dashboard-layout :: board-title"></div>
-            <div class="dashboard-block">
+            <div class="dashboard-block" th:if="${not #lists.isEmpty(dashboard.tags)}">
                 <div class="pull-left dashboard-up-title">Tags</div>
                 <p>&nbsp;</p>
-                <a class="btn btn-default btn-flat" th:each="tag : ${dashboard.tags}" th:text="${tag.name}" th:href="'/board/' + ${dashboard.id} + '/tags/' + ${tag.name}"></a>
+                <div class="dashboard-qna-tag"></div>
             </div>
             <div class="dashboard-block nobody" style="display: none;">
                 <div class="row">
@@ -57,6 +57,11 @@
                     addQna(answer.result);
                 });
 
+                stompClient.subscribe("/socket/players/answer/qna/" + board.id + "/taglist", function(message) {
+                    var answer = JSON.parse(message.body);
+                    addTags(answer);
+                });
+
             }, function (error) {
                 connect = false;
                 setTimeout(function() {
@@ -80,6 +85,14 @@
                                 + "<h3>" + result[i].result + "</h3>"
                            + "</div>";
                 $(".dashboard-qna").prepend(inHTML);
+            }
+        };
+
+        var addTags = function(result) {
+            $('.dashboard-qna-tag').empty();
+            for(var i in result) {
+                var inHTML = "<a class='btn btn-default btn-flat' href='/board/" + board.id + "/tags/" + result[i].name + "' >" + result[i].name + "</a>";
+                $('.dashboard-qna-tag').append(inHTML);
             }
         };
 

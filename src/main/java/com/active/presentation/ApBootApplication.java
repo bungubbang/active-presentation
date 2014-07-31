@@ -39,6 +39,7 @@ public class ApBootApplication extends SpringBootServletInitializer{
     public CharacterEncodingFilter characterEncodingFilter() {
         CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
         encodingFilter.setEncoding("UTF-8");
+        encodingFilter.setForceEncoding(true);
         return encodingFilter;
     }
 }

@@ -1,13 +1,11 @@
 package com.active.presentation.controller.socket;
 
-import com.active.presentation.domain.Answer;
-import com.active.presentation.domain.Audience;
-import com.active.presentation.domain.PresentationDashboard;
-import com.active.presentation.domain.Question;
+import com.active.presentation.domain.*;
 import com.active.presentation.domain.message.AnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
 import com.active.presentation.repository.AnswerRepository;
 import com.active.presentation.repository.PresentationDashboardRepository;
+import com.active.presentation.repository.PresentationDashboardSpecifications;
 import com.active.presentation.repository.QuestionRepository;
 import com.active.presentation.repository.dto.AnswerResultDto;
 import com.active.presentation.service.SocketService;
@@ -19,7 +17,11 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by bungubbang
@@ -56,26 +58,51 @@ public class QnaSocketController {
     @MessageMapping("/answer/qna/{boardId}")
     public void answer(@DestinationVariable Long boardId, AnswerMessage message) {
         Audience audience = socketService.generateAudience(message.getUid());
-        PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
+        PresentationDashboard dashboard = dashboardRepository.findOne(boardId);
         Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), "Q");
-        answerRepository.save(new Answer(dashboard, audience, question.getId(), message.getResponse(), message.getUserAgent()));
+        Answer answer = new Answer(dashboard, audience, question.getId(), message.getResponse(), message.getUserAgent());
 
-        dashboard.setTags(socketService.parsingTags(message.getResponse()));
+        Set<Tag> tags = socketService.parsingTags(message.getResponse());
+
+        answer.setTags(tags);
+        answerRepository.save(answer);
+
+        Set<Tag> dashboardTags;
+        PresentationDashboard one = dashboardRepository.findOne(PresentationDashboardSpecifications.findFetchTags(boardId));
+        if(one == null) {
+            dashboard.setTags(tags);
+        } else {
+            dashboardTags = one.getTags();
+            dashboardTags.addAll(tags);
+            dashboard.setTags(dashboardTags);
+        }
+
         dashboardRepository.save(dashboard);
 
         SocketResponseMessage responseMessage =
                 new SocketResponseMessage(Lists.newArrayList(new AnswerResultDto(question.getId(), message.getResponse(), new Date(), dashboard.getStatus())));
 
         messagingTemplate.convertAndSend("/socket/players/answer/qna/result/" + dashboard.getId(), responseMessage);
+        messagingTemplate.convertAndSend("/socket/players/answer/qna/" + dashboard.getId() + "/taglist", dashboard.getTags());
     }
 
     @SubscribeMapping("/players/answer/qna/{boardId}/tag/{message}")
-    public SocketResponseMessage answerTagResponse(@DestinationVariable Long boardId, @DestinationVariable String message) {
+    public SocketResponseMessage answerTagResponse(@DestinationVariable Long boardId, @DestinationVariable String message) throws UnsupportedEncodingException {
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
         if(dashboard.getSecure()) {
             return socketService.checkSecure(dashboard);
         }
-        System.out.println("message = " + message);
-        return new SocketResponseMessage(answerRepository.findByDashboardTagsOnAnswerResultDto(dashboard, "%" + message + "%"));
+        message = URLDecoder.decode(message, "utf-8");
+        return new SocketResponseMessage(answerRepository.findByTagsName(message));
+    }
+
+    @SubscribeMapping("/players/answer/qna/{boardId}/taglist")
+    public Set<Tag> answerTagLists(@DestinationVariable Long boardId) throws UnsupportedEncodingException {
+        PresentationDashboard dashboard = dashboardRepository.findOne(PresentationDashboardSpecifications.findFetchTags(boardId));
+        if(dashboard != null) {
+            return dashboard.getTags();
+        }
+        return null;
+
     }
 }

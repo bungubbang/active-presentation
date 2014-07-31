@@ -26,7 +26,7 @@ public class PresentationDashboard {
     private String title;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Question> questions;
+    private List<Question> questions = new ArrayList<Question>();
 
     @Max(10)
     private Integer choiceCount;
@@ -36,7 +36,7 @@ public class PresentationDashboard {
     private Boolean anonymous = true;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private Set<Tag> tags;
+    private Set<Tag> tags = new LinkedHashSet<Tag>();
 
     public PresentationDashboard() {}
 

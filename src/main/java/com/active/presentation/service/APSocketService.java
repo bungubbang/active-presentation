@@ -1,5 +1,6 @@
 package com.active.presentation.service;
 
+import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.Audience;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.Tag;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,7 +64,7 @@ public class APSocketService implements SocketService {
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(message);
 
-        Set<Tag> hashTags = new HashSet<Tag>();
+        Set<Tag> hashTags = new LinkedHashSet<Tag>();
         while (matcher.find()) {
             String hashTag = matcher.group().trim();
             if(!hashTag.isEmpty()) {

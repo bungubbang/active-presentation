@@ -21,4 +21,14 @@ public class PresentationDashboardSpecifications {
             }
         };
     }
+
+    public static Specification<PresentationDashboard> findFetchTags(final Long id) {
+        return new Specification<PresentationDashboard>() {
+            @Override
+            public Predicate toPredicate(Root<PresentationDashboard> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                root.fetch("tags", JoinType.INNER);
+                return cb.equal(root.get("id"), id);
+            }
+        };
+    }
 }

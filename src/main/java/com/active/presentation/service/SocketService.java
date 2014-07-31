@@ -1,5 +1,6 @@
 package com.active.presentation.service;
 
+import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.Audience;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.Tag;

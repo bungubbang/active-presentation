@@ -190,6 +190,7 @@ public class AdminController {
     @RequestMapping(value = "/make/group", method = RequestMethod.GET)
     public String groupPage(DashboardGroup dashboardGroup, ModelMap map){
         map.addAttribute("data", dashboardGroup);
+        map.addAttribute("boards", dashboardRepository.findAll());
         return "admin/group";
     }
 }
