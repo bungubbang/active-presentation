@@ -269,6 +269,28 @@ section.success {
     background: #fff;
 }
 
+/* width 200 고정된 버튼 추가 - 20140731 Jude */
+.btn-inline {
+	margin-top: 15px;
+    display: inline-block;
+    width: 200px;
+    border: solid 2px #fff;
+    font-size: 20px;
+    line-height: 45px;
+    color: #fff;
+    background: 0 0;
+    transition: all .3s ease-in-out;
+}
+.btn-inline:hover,
+.btn-inline:focus,
+.btn-inline:active,
+.btn-inline.active {
+    border: solid 2px #fff;
+    color: #18bc9c;
+    background: #fff;
+}
+
+
 .floating-label-form-group {
     position: relative;
     margin-bottom: 0;
