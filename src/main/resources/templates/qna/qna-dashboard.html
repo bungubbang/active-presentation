@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" href="/js/jquery.select2/select2.css" />
 <body>
     <div th:include="dashboard-layout :: navbar"></div>
+    <div th:include="dashboard-layout :: narrow-page" class="narrow-page"></div>
     <div id="content">
         <div class="container">
             <div th:include="dashboard-layout :: board-title"></div>
@@ -26,6 +27,7 @@
         </div>
     </div>
 
+    <div th:include="dashboard-layout :: refresh"></div>
     <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
@@ -64,9 +66,7 @@
 
             }, function (error) {
                 connect = false;
-                setTimeout(function() {
-                    socketQnaConnect();
-                }, timeout);
+                $('#mod-error').modal('show');
                 statusDisconnect();
             });
         };

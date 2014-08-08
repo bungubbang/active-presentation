@@ -2,9 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head th:include="admin/layout :: head"></head>
-<head>
-    <link href="/js/jquery.icheck/skins/square/blue.css" rel="stylesheet"/>
-</head>
 
 <body>
 
@@ -17,69 +14,43 @@
 
     <div class="container-fluid" id="pcont">
         <div class="page-head">
-            <h2>OX Choice</h2>
+            <h2>Group</h2>
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
-                <li class="active">Presentation Group</li>
+                <li class="active" >group</li>
             </ol>
         </div>
         <div class="cl-mcont">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-sm-4 col-md-4 col-lg-3">
+                    <div class="block-flat makeone">
+                        <div class="header">
+                            <h4>Make Group</h4>
+                        </div>
+                        <div class="content text-center">
+                            <div style="height: 110px;">
+                                <p style="font-size: 50px; margin-top: 35px; color: #dadada;"><i class="fa fa-plus"></i></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-3" th:each="data,iterStat : ${datas}">
                     <div class="block-flat">
                         <div class="header">
                             <div>
-                                <h3>Presentation Group</h3>
+                                <h3 class="visible-sm visible-md">GROUP</h3>
+                                <h3 class="visible-lg">GROUP</h3>
+                                <h3 class="visible-xs">GROUP</h3>
                             </div>
+                            <span th:text="${#calendars.format(data.createdDate, 'yyyy/MM/dd HH:mm')}"></span>
                         </div>
                         <div class="content">
-                            <form class="form-horizontal group-border-dashed" th:action="@{/admin/group}" style="border-radius: 0px;" th:object="${data}" method="post">
-                                <input type="hidden" th:field="*{id}"/>
-                                <input type="hidden" id="boardList" name="boardList" />
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Title</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control" th:field="*{title}" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Multitag from Select</label>
-                                    <div class="col-sm-6">
-                                        <div class="col-sm-6">
-                                            <div class="block-flat group-make-groupblock">
-                                                <div class="header">
-                                                    <h3>Poll Grouping</h3>
-                                                </div>
-                                                <div class="content">
-                                                    <div class="list-group tickets"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="block-flat group-make-groupblock">
-                                                <div class="header">
-                                                    <h3>Total Poll List</h3>
-                                                </div>
-                                                <div class="content">
-                                                    <div class="list-group tickets">
-                                                        <li class="list-group-item" style="cursor: pointer;" th:each="board : ${boards}" th:name="${board.id}" href="#" onclick="selectGroup(this);">
-                                                            <span th:if="${board.presentationType?.name()} == 'OX'" class="label label-danger pull-right">OX</span>
-                                                            <span th:if="${board.presentationType?.name()} == 'MULTIPLE_CHOICE'" class="label label-warning pull-right">Multiple Choice</span>
-                                                            <span th:if="${board.presentationType?.name()} == 'QNA'" class="label label-primary pull-right">QnA</span>
-                                                            <p th:text="${board.title}">첫 투표 인테 쓸만한가요? 나름 만든다고 만들었는데..</p>
-                                                            <span class="date" th:text="${#calendars.format(board.createdDate.time,'dd MMM yyyy HH:mm')}">17 Feb</span>
-                                                        </li>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="spacer2 text-center">
-                                    <button class="btn btn-primary" type="submit">Submit</button>
-                                    <a href="/admin/group" class="btn btn-default">Cancel</a>
-                                </div>
-                            </form>
+                            <div style="height: 50px; overflow: hidden;" class="title">
+                                <p th:text="${data.title}">title</p>
+                            </div>
+                            <div class="spacer2 text-center">
+                                <a th:href="'/admin/group/' + ${data.id}" class="btn btn-default btn-flat"><i class="fa fa-edit"></i> Modify</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -93,12 +64,11 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var data = /*[[${data}]]*/ null;
+    $('.makeone').click(function() {
+        location.href = "/admin/group/make";
+    });
 
-    var a;
-    var selectGroup = function(div) {
-        a = div;
-    }
+    $('.content > .title').ellipsis();
     /*]]>*/
 </script>
 </body>

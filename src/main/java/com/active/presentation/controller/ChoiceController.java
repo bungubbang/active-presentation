@@ -1,14 +1,8 @@
 package com.active.presentation.controller;
 
-import com.active.presentation.domain.Answer;
-import com.active.presentation.domain.Audience;
-import com.active.presentation.domain.PresentationDashboard;
-import com.active.presentation.domain.PresentationType;
+import com.active.presentation.domain.*;
 import com.active.presentation.handler.UidHandler;
-import com.active.presentation.repository.AnswerRepository;
-import com.active.presentation.repository.AudienceRepository;
-import com.active.presentation.repository.PresentationDashboardRepository;
-import com.active.presentation.repository.PresentationDashboardSpecifications;
+import com.active.presentation.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -38,6 +32,9 @@ public class ChoiceController {
     private AudienceRepository audienceRepository;
 
     @Autowired
+    private GroupListRepository groupListRepository;
+
+    @Autowired
     private UidHandler uidHandler;
 
     @RequestMapping("/{id}")
@@ -47,6 +44,12 @@ public class ChoiceController {
         String uid = generateApUid(apuid, response);
         Audience audience = audienceRepository.findByUserKey(uid);
         PresentationDashboard dashboard = dashboardRepository.findOne(PresentationDashboardSpecifications.findFetchQuestion(id));
+
+        GroupLists group = groupListRepository.findByDashboardId(id);
+        if(group != null) {
+            map.addAttribute("left", groupListRepository.findByGroupIdAndListOrder(group.getGroupId(), group.getListOrder() - 1));
+            map.addAttribute("right", groupListRepository.findByGroupIdAndListOrder(group.getGroupId(), group.getListOrder() + 1));
+        }
 
         map.addAttribute("uid", uid);
         map.addAttribute("dashboard", dashboard);

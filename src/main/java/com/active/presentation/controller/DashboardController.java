@@ -1,8 +1,10 @@
 package com.active.presentation.controller;
 
+import com.active.presentation.domain.GroupLists;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.PresentationType;
 import com.active.presentation.domain.Speaker;
+import com.active.presentation.repository.GroupListRepository;
 import com.active.presentation.repository.PresentationDashboardRepository;
 import com.active.presentation.repository.PresentationDashboardSpecifications;
 import com.active.presentation.repository.SpeakerRepository;
@@ -30,6 +32,9 @@ public class DashboardController {
     @Autowired
     private SpeakerRepository speakerRepository;
 
+    @Autowired
+    private GroupListRepository groupListRepository;
+
     private final UserCookieGenerator userCookieGenerator = new UserCookieGenerator();
 
     @RequestMapping("/{id}")
@@ -41,6 +46,12 @@ public class DashboardController {
             }
         }
         map.addAttribute("dashboard", board);
+
+        GroupLists group = groupListRepository.findByDashboardId(id);
+        if(group != null) {
+            map.addAttribute("left", groupListRepository.findByGroupIdAndListOrder(group.getGroupId(), group.getListOrder() - 1));
+            map.addAttribute("right", groupListRepository.findByGroupIdAndListOrder(group.getGroupId(), group.getListOrder() + 1));
+        }
 
         if(board.getPresentationType().equals(PresentationType.OX)) {
             return "ox/ox-dashboard";

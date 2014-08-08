@@ -19,7 +19,7 @@ public class GroupLists {
 
     Long groupId;
 
-    Integer order;
+    Integer listOrder;
     Integer total;
 
     public Long getId() {
@@ -46,12 +46,12 @@ public class GroupLists {
         this.groupId = groupId;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getListOrder() {
+        return listOrder;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setListOrder(Integer listOrder) {
+        this.listOrder = listOrder;
     }
 
     public Integer getTotal() {

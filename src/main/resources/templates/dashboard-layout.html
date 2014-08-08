@@ -28,11 +28,10 @@
     <link rel="stylesheet" type="text/css" href="/js/bootstrap.switch/bootstrap-switch.css" />
     <link rel="stylesheet" type="text/css" href="/css/control.css"/>
     <link rel="stylesheet" type="text/css" href="/css/dashboard.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/bootstrap-switch.css"/>
 
     <script src="/js/jquery.js"></script>
     <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -55,6 +54,18 @@
             </div>
         </header>
     </div>
+    <div th:fragment="narrow-page">
+        <div class="narrow-page-left" th:if="${left} != null">
+            <a th:href="${left.dashboardId}">
+                <i class="fa fa-chevron-left fa-4x"></i>
+            </a>
+        </div>
+        <div class="narrow-page-right" th:if="${right} != null">
+            <a th:href="${right.dashboardId}">
+                <i class="fa fa-chevron-right fa-4x"></i>
+            </a>
+        </div>
+    </div>
     <div id="content">
         <div class="container">
             <div th:fragment="board-title">
@@ -74,10 +85,32 @@
             </div>
         </div>
     </div>
+    <div th:fragment="refresh">
+        <!-- Modal -->
+        <div class="modal fade" id="mod-error" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <div class="i-circle danger"><i class="fa fa-times"></i></div>
+                            <h4>Oh god! Not connected temporarily.</h4>
+                            <p>If you want to reconnect, please click 'Reconnect' button.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="location.reload();">Reconnect</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
 
 <div  th:fragment="script">
     <script type="text/javascript" src="/js/sockjs.js"></script>
-    <script type="text/javascript" src="/js/jquery.js"></script>
     <script type="text/javascript" src="/js/stomp.js"></script>
     <script type="text/javascript" src="/js/socketConnect.js"></script>
     <script type="text/javascript" src="/js/bootstrap.switch/bootstrap-switch.min.js"></script>

@@ -7,6 +7,7 @@
 </head>
 <body>
     <div th:include="dashboard-layout :: navbar"></div>
+    <div th:include="dashboard-layout :: narrow-page" class="narrow-page"></div>
     <div id="content">
         <div class="container">
             <div class="dashboard-block">
@@ -19,13 +20,13 @@
             <div class="controller-choice-list"></div>
         </div>
     </div>
+    <div th:include="dashboard-layout :: refresh"></div>
     <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
         var board = /*[[${dashboard}]]*/ null;
         var uId = /*[[${uid}]]*/ null;
         var result = /*[[${answer}]]*/ null;
-
 
         var stompClient, socket;
         var WEBSOCKET_TARGET_URL = "/join";
@@ -65,9 +66,7 @@
                 statusConnect();
             }, function (error) {
                 connect = false;
-                setTimeout(function() {
-                    socketChoiceConnect();
-                }, timeout);
+                $('#mod-error').modal('show');
                 statusDisconnect();
             });
         }

@@ -1,0 +1,141 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="admin/layout :: head"></head>
+<head>
+    <link href="/js/jquery.icheck/skins/square/blue.css" rel="stylesheet"/>
+</head>
+
+<body>
+
+<!-- Fixed navbar -->
+<div id="head-nav" class="navbar navbar-default navbar-fixed-top" th:include="admin/layout :: navbar"></div>
+
+
+<div id="cl-wrapper">
+    <div class="cl-sidebar" th:include="admin/layout :: sidebar"></div>
+
+    <div class="container-fluid" id="pcont">
+        <div class="page-head">
+            <h2>Presentation Group</h2>
+            <ol class="breadcrumb">
+                <li><a href="/admin">Home</a></li>
+                <li class="active">Presentation Group</li>
+            </ol>
+        </div>
+        <div class="cl-mcont">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="block-flat">
+                        <div class="header">
+                            <div>
+                                <h3>Modify Group</h3>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <form class="form-horizontal group-border-dashed" th:action="@{/admin/group}" style="border-radius: 0px;" th:object="${data}" method="post">
+                                <input type="hidden" th:field="*{id}"/>
+                                <input type="hidden" id="boardList" name="boardList" />
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Title</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" th:field="*{title}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Multitag from Select</label>
+                                    <div class="col-sm-8 col-md-8 col-lg-6">
+                                        <div class="col-sm-6">
+                                            <div class="block-flat group-make-groupblock">
+                                                <div class="header">
+                                                    <h3>Poll Grouping</h3>
+                                                </div>
+                                                <div class="content">
+                                                    <div class="list-group tickets group-select dd">
+                                                        <ol class="dd-list"></ol>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="block-flat group-make-groupblock">
+                                                <div class="header">
+                                                    <h3>Total Poll List</h3>
+                                                </div>
+                                                <div class="content">
+                                                    <div class="list-group tickets group-un-select">
+                                                        <li class="list-group-item dd-item" style="cursor: pointer;" th:each="board : ${boards}" th:name="${board.id}" href="#" onclick="selectGroup(this);">
+                                                            <div class="dd-handle" style="border: none; background: none;">
+                                                                <span th:if="${board.presentationType?.name()} == 'OX'" class="label label-danger pull-right">OX</span>
+                                                                <span th:if="${board.presentationType?.name()} == 'MULTIPLE_CHOICE'" class="label label-warning pull-right">Multiple Choice</span>
+                                                                <span th:if="${board.presentationType?.name()} == 'QNA'" class="label label-primary pull-right">QnA</span>
+                                                                <p th:text="${board.title}">첫 투표 인테 쓸만한가요? 나름 만든다고 만들었는데..</p>
+                                                                <span class="date" th:text="${#calendars.format(board.createdDate.time,'dd MMM yyyy HH:mm')}">17 Feb</span>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p>* 오른쪽의 원하는 투표를 클릭해서, 그룹을 지정할 수 있습니다.</p>
+                                            <p>* 지정된 그룹내 글자를 Drag&amp;Drop 으로 순서를 지정 할 수 있습니다.</p>
+                                            <p>* 지정된 그룹내 테두리를 클릭하면 그룹에서 제외 시킬 수 있습니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="spacer2 text-center">
+                                    <button class="btn btn-primary" type="submit">Submit</button>
+                                    <a href="/admin/group" class="btn btn-default">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:include="admin/layout :: script"></div>
+<script type="text/javascript" src="/js/jquery.icheck/icheck.min.js"></script>
+<script type="text/javascript" src="/js/jquery.nestable/jquery.nestable.js"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var data = /*[[${data}]]*/ null;
+
+    $('.dd').nestable();
+    $('.dd').on('change', function() {
+        fillGroup();
+    })
+
+    var selectGroup = function(div) {
+        div = $(div).attr('onclick','unSelectGroup(this)');
+        $('.dd-list').append(div);
+
+        fillGroup();
+    };
+
+    var unSelectGroup = function(div) {
+        div = $(div).attr('onclick','selectGroup(this)');
+        $('.group-un-select').prepend(div);
+
+        fillGroup();
+    };
+
+    var fillGroup = function() {
+        var listText = [];
+        var lists = $('.dd-list').children();
+        for(var i=0; i < lists.length; i++) {
+            listText.push($(lists[i]).attr('name'));
+        }
+        $("#boardList").val(listText.join(','));
+
+        $('.dd').nestable();
+    };
+    /*]]>*/
+</script>
+</body>
+</html>

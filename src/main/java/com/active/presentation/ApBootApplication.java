@@ -9,7 +9,10 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import java.util.Properties;
 
 /**
  * Created by bungubbang
@@ -41,5 +44,22 @@ public class ApBootApplication extends SpringBootServletInitializer{
         encodingFilter.setEncoding("UTF-8");
         encodingFilter.setForceEncoding(true);
         return encodingFilter;
+    }
+
+    @Bean
+    public JavaMailSenderImpl mailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(25);
+        mailSender.setUsername("pollptcontract@gmail.com");
+        mailSender.setPassword("SKplanet2129");
+
+        Properties properties = new Properties();
+        properties.setProperty("mail.transport.protocol", "smtp");
+        properties.setProperty("mail.smtp.auth", "true");
+        properties.setProperty("mail.smtp.starttls.enable", "true");
+        mailSender.setJavaMailProperties(properties);
+
+        return mailSender;
     }
 }

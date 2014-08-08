@@ -14,14 +14,15 @@
 
     <div class="container-fluid" id="pcont">
         <div class="page-head">
-            <h2 th:if="${boardType} == 'OX'">OX Choice</h2>
+            <h2 th:if="${boardType} == 'OX'">OX Quiz</h2>
             <h2 th:if="${boardType} == 'MULTIPLE'">Multiple Choice</h2>
             <h2 th:if="${boardType} == 'QNA'">Q&amp;A</h2>
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
-                <li class="active" th:if="${boardType} == 'OX'">OX Choice</li>
-                <li class="active" th:if="${boardType} == 'MULTIPLE'">Multiple Choice</li>
-                <li class="active" th:if="${boardType} == 'QNA'">Q&amp;A</li>
+                <li th:if="${boardType} == 'OX'"><a href="/admin/ox">OX Quiz</a></li>
+                <li th:if="${boardType} == 'MULTIPLE'"><a href="/admin/multi">Multiple Choice</a></li>
+                <li th:if="${boardType} == 'QNA'"><a href="/admin/qna">Q&amp;A</a></li>
+                <li class="active">Create New</li>
             </ol>
         </div>
         <div class="cl-mcont">
@@ -29,9 +30,9 @@
                 <div class="col-sm-4 col-md-4 col-lg-3">
                     <div class="block-flat makeone">
                         <div class="header">
-                            <h4 th:if="${boardType} == 'OX'">Make OX Choice</h4>
-                            <h4 th:if="${boardType} == 'MULTIPLE'">Make Multiple Choice</h4>
-                            <h4 th:if="${boardType} == 'QNA'">Make Message Board</h4>
+                            <h4 th:if="${boardType} == 'OX'">Create OX Quiz</h4>
+                            <h4 th:if="${boardType} == 'MULTIPLE'">Create Multiple Choice</h4>
+                            <h4 th:if="${boardType} == 'QNA'">Create Message Board</h4>
                         </div>
                         <div class="content text-center">
                             <div style="height: 110px;">

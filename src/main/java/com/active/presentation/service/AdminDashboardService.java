@@ -1,6 +1,7 @@
 package com.active.presentation.service;
 
 import com.active.presentation.controller.admin.form.BoardModifyForm;
+import com.active.presentation.controller.admin.form.GroupForm;
 import com.active.presentation.domain.*;
 import com.active.presentation.repository.*;
 import com.active.presentation.repository.dto.AdminHomeDto;
@@ -13,10 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by bungubbang
@@ -45,6 +43,12 @@ public class AdminDashboardService implements AdminService {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private DashboardGroupRepository groupRepository;
+
+    @Autowired
+    private GroupListRepository groupListRepository;
 
     @Autowired
     private Environment env;
@@ -157,6 +161,82 @@ public class AdminDashboardService implements AdminService {
         }
         tags.add(tag);
         return tags;
+    }
+
+    @Override
+    public DashboardGroup addGroup(GroupForm form) {
+        DashboardGroup group = groupRepository.save(new DashboardGroup(SecurityContext.getCurrentUser(), form.getTitle()));
+        String[] boardLists = form.getBoardList().split(",");
+        for (int i = 0; i < boardLists.length; i++) {
+            GroupLists groupLists = new GroupLists();
+            groupLists.setDashboardId(Long.valueOf(boardLists[i]));
+            groupLists.setGroupId(group.getId());
+            groupLists.setListOrder(i + 1);
+            groupLists.setTotal(boardLists.length);
+            groupListRepository.save(groupLists);
+        }
+
+        return group;
+    }
+
+    @Override
+    public DashboardGroup modifyGroup(GroupForm form) {
+        DashboardGroup group = groupRepository.findOne(form.getId());
+        group.setTitle(form.getTitle());
+        group.setModifyDate(new Date());
+        groupRepository.save(group);
+
+        List<GroupLists> byGroupId = groupListRepository.findByGroupId(group.getId());
+        for (GroupLists groupLists : byGroupId) {
+            groupListRepository.delete(groupLists);
+        }
+
+        String[] boardLists = form.getBoardList().split(",");
+        for (int i = 0; i < boardLists.length; i++) {
+            GroupLists groupLists = new GroupLists();
+            groupLists.setDashboardId(Long.valueOf(boardLists[i]));
+            groupLists.setGroupId(group.getId());
+            groupLists.setListOrder(i + 1);
+            groupLists.setTotal(boardLists.length);
+            groupListRepository.save(groupLists);
+        }
+
+        return group;
+    }
+
+    @Override
+    public List<PresentationDashboard> selectedBoards(Long groupId) {
+        List<PresentationDashboard> dashboards = new ArrayList<PresentationDashboard>();
+        List<GroupLists> groupLists = groupListRepository.findByGroupId(groupId);
+        for (GroupLists groupList : groupLists) {
+            dashboards.add(dashboardRepository.findOne(groupList.getDashboardId()));
+        }
+        return dashboards;
+    }
+
+    @Override
+    public List<PresentationDashboard> notSelectedBoards() {
+        Speaker speaker = SecurityContext.getCurrentUser();
+        List<PresentationDashboard> dashboards = dashboardRepository.findBySpeaker(speaker);
+        List<DashboardGroup> groups = groupRepository.findBySpeaker(speaker);
+        for (DashboardGroup group : groups) {
+            List<GroupLists> groupList = groupListRepository.findByGroupId(group.getId());
+            for (GroupLists groupLists : groupList) {
+                PresentationDashboard dashboard = dashboardRepository.findOne(groupLists.getDashboardId());
+                dashboards.remove(dashboard);
+            }
+        }
+
+        return dashboards;
+    }
+
+    @Override
+    public void deleteGroup(Long id) {
+        groupRepository.delete(id);
+        List<GroupLists> byGroupId = groupListRepository.findByGroupId(id);
+        for (GroupLists groupLists : byGroupId) {
+            groupListRepository.delete(groupLists);
+        }
     }
 
     private Long convertNullToZero(Long count) {

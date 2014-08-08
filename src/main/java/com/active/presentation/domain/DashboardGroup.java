@@ -17,7 +17,19 @@ public class DashboardGroup {
     private Long id;
 
     private String title;
-    private Date createdDate;
+    private Date createdDate = new Date();
+    private Date modifyDate = new Date();
+
+    @ManyToOne
+    private Speaker speaker;
+
+    public DashboardGroup() {
+    }
+
+    public DashboardGroup(Speaker speaker, String title) {
+        this.speaker = speaker;
+        this.title = title;
+    }
 
     public Long getId() {
         return id;
@@ -43,6 +55,22 @@ public class DashboardGroup {
         this.createdDate = createdDate;
     }
 
+    public Date getModifyDate() {
+        return modifyDate;
+    }
+
+    public void setModifyDate(Date modifyDate) {
+        this.modifyDate = modifyDate;
+    }
+
+    public Speaker getSpeaker() {
+        return speaker;
+    }
+
+    public void setSpeaker(Speaker speaker) {
+        this.speaker = speaker;
+    }
+
     @Override
     public String toString() {
         return "DashboardGroup{" +
@@ -50,5 +78,22 @@ public class DashboardGroup {
                 ", title='" + title + '\'' +
                 ", createdDate=" + createdDate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DashboardGroup)) return false;
+
+        DashboardGroup group = (DashboardGroup) o;
+
+        if (id != null ? !id.equals(group.id) : group.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

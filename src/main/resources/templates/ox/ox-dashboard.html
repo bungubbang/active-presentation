@@ -5,6 +5,7 @@
 <head th:include="dashboard-layout :: head"></head>
 <body>
     <div th:include="dashboard-layout :: navbar"></div>
+    <div th:include="dashboard-layout :: narrow-page" class="narrow-page"></div>
     <div id="content">
         <div class="container">
             <div th:include="dashboard-layout :: board-title"></div>
@@ -37,6 +38,7 @@
         </div>
     </div>
 
+    <div th:include="dashboard-layout :: refresh"></div>
     <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
@@ -87,10 +89,8 @@
                 });
             }, function (error) {
                 connect = false;
+                $('#mod-error').modal('show');
                 statusDisconnect();
-                setTimeout(function() {
-                    socketOxConnect();
-                }, timeout);
             });
         };
 

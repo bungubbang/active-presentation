@@ -2,13 +2,12 @@ package com.active.presentation.controller.admin;
 
 import com.active.presentation.controller.admin.form.BoardMakeForm;
 import com.active.presentation.controller.admin.form.BoardModifyForm;
+import com.active.presentation.controller.admin.form.GroupForm;
 import com.active.presentation.domain.DashboardGroup;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.PresentationType;
 import com.active.presentation.domain.Speaker;
-import com.active.presentation.repository.PresentationDashboardRepository;
-import com.active.presentation.repository.QuestionRepository;
-import com.active.presentation.repository.SpeakerRepository;
+import com.active.presentation.repository.*;
 import com.active.presentation.security.SecurityContext;
 import com.active.presentation.security.UserCookieGenerator;
 import com.active.presentation.service.AdminService;
@@ -22,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.List;
 
 import static com.active.presentation.domain.PresentationType.*;
 
@@ -46,6 +47,12 @@ public class AdminController {
     @Autowired
     private SpeakerRepository speakerRepository;
 
+    @Autowired
+    private DashboardGroupRepository groupRepository;
+
+    @Autowired
+    private GroupListRepository groupListRepository;
+
     private final UserCookieGenerator userCookieGenerator = new UserCookieGenerator();
 
     @ModelAttribute
@@ -61,21 +68,34 @@ public class AdminController {
 
     @RequestMapping(value = "/ox", method = RequestMethod.GET)
     public String ox(ModelMap map) {
-        map.addAttribute("datas", dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), OX, new Sort(Sort.Direction.DESC, "createdDate")));
+        List<PresentationDashboard> dashboards = dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), OX, new Sort(Sort.Direction.DESC, "createdDate"));
+        if(dashboards == null) {
+            return "redirect:/admin/make/ox";
+        }
+
+        map.addAttribute("datas", dashboards);
         map.addAttribute("boardType", "OX");
         return "admin/board";
     }
 
     @RequestMapping(value = "/multi", method = RequestMethod.GET)
     public String multiChoice(ModelMap map) {
-        map.addAttribute("datas", dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), MULTIPLE_CHOICE, new Sort(Sort.Direction.DESC, "createdDate")));
+        List<PresentationDashboard> dashboards = dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), MULTIPLE_CHOICE, new Sort(Sort.Direction.DESC, "createdDate"));
+        if(dashboards == null) {
+            return "redirect:/admin/make/multi";
+        }
+        map.addAttribute("datas", dashboards);
         map.addAttribute("boardType", "MULTIPLE");
         return "admin/board";
     }
 
     @RequestMapping(value = "/qna", method = RequestMethod.GET)
     public String qna(ModelMap map) {
-        map.addAttribute("datas", dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), QNA, new Sort(Sort.Direction.DESC, "createdDate")));
+        List<PresentationDashboard> dashboards = dashboardRepository.findBySpeakerAndPresentationType(SecurityContext.getCurrentUser(), QNA, new Sort(Sort.Direction.DESC, "createdDate"));
+        if(dashboards == null) {
+            return "redirect:/admin/make/qna";
+        }
+        map.addAttribute("datas", dashboards);
         map.addAttribute("boardType", "QNA");
         return "admin/board";
     }
@@ -187,10 +207,47 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @RequestMapping(value = "/make/group", method = RequestMethod.GET)
-    public String groupPage(DashboardGroup dashboardGroup, ModelMap map){
-        map.addAttribute("data", dashboardGroup);
-        map.addAttribute("boards", dashboardRepository.findAll());
+    @RequestMapping(value = "/group", method = RequestMethod.GET)
+    public String groupListPage(ModelMap map) {
+        List<DashboardGroup> groups = groupRepository.findBySpeaker(SecurityContext.getCurrentUser());
+        if(groups == null) {
+            return "redirect:/admin/make/group";
+        }
+
+        map.addAttribute("datas", groups);
         return "admin/group";
+    }
+
+    @RequestMapping(value = "/group/make", method = RequestMethod.GET)
+    public String groupMakePage(DashboardGroup dashboardGroup, ModelMap map){
+        map.addAttribute("data", dashboardGroup);
+        map.addAttribute("boards", adminService.notSelectedBoards());
+        return "admin/makeGroup";
+    }
+
+    @RequestMapping(value = "/group/{id}", method = RequestMethod.GET)
+    public String groupModifyPage(@PathVariable Long id, ModelMap map){
+        map.addAttribute("data", groupRepository.findOne(id));
+        map.addAttribute("boards", adminService.notSelectedBoards());
+        map.addAttribute("groups", adminService.selectedBoards(id));
+        return "admin/modifyGroup";
+    }
+
+    @RequestMapping(value = "/group", method = RequestMethod.POST)
+    public String groupMake(GroupForm form) {
+        adminService.addGroup(form);
+        return "redirect:/admin/group";
+    }
+
+    @RequestMapping(value = "/group", method = RequestMethod.PUT)
+    public String modifyGroup(GroupForm form) {
+        adminService.modifyGroup(form);
+        return "redirect:/admin/group";
+    }
+
+    @RequestMapping(value = "/group/{id}", method = RequestMethod.DELETE)
+    public String deleteGroup(@PathVariable Long id) {
+        adminService.deleteGroup(id);
+        return "redirect:/admin/group";
     }
 }
