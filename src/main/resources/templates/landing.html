@@ -278,9 +278,7 @@
 
     $(document).ready(function() {
         $('.bgvideo').videobackground({
-            videoSource: [['http://designmodo.com/storage/startuppreview.mp4', 'video/mp4'],
-                ['http://designmodo.com/storage/startuppreview.webm', 'video/webm'],
-                ['http://designmodo.com/storage/startuppreview.ogg', 'video/ogg']],
+            videoSource: [['/movie/background.mp4', 'video/mp4']],
             controlPosition: '.intro-message',
             resizeTo: '.intro-header',
             resize: false,
@@ -291,7 +289,7 @@
 
     var playTutorial = function() {
         if (!window.isMobile){
-            $('body').addClass('noscroll').append("<div class='previewer'><div><iframe src='//player.vimeo.com/video/81676731?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff&amp;autoplay=1' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div><div class='close'></div></div>");
+            $('body').addClass('noscroll').append("<div class='previewer'><div><iframe src='//www.youtube.com/embed/qXwKCEVwV5U' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div><div class='close'></div></div>");
 
             $('.previewer').click(function() {
                 $('body').removeClass('noscroll');
@@ -299,7 +297,7 @@
             });
             return false;
         } else {
-            window.open("http://player.vimeo.com/video/81676731");
+            window.open("//www.youtube.com/embed/qXwKCEVwV5U");
         }
     };
 

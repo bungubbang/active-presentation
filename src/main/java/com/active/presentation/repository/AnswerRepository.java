@@ -38,7 +38,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
 
     Answer findByDashboardAndAudience(PresentationDashboard dashboard, Audience audience);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, count(a.result) as choice, a.createdDate as createdDate, d.status as status) FROM Answer a JOIN a.dashboard d WHERE a.dashboard = :dashboard GROUP BY a.result ORDER BY count(a.result) desc ")
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, q.answerList as result, count(a.result) as choice, a.createdDate as createdDate, d.status as status) FROM Answer a JOIN a.dashboard d JOIN d.questions q WHERE a.dashboard = :dashboard AND q.id = a.resultId GROUP BY q.answerList ORDER BY count(q.answerList) desc ")
     List<AnswerResultDto> resultByDashboard(@Param("dashboard") PresentationDashboard dashboard);
 
     @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.createdDate as createdDate, d.status as status) FROM Answer a JOIN a.dashboard d WHERE a.dashboard = :dashboard")
