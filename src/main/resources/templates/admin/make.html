@@ -20,10 +20,10 @@
             <h2 th:text="'Make ' + ${data.presentationType?.name()}"></h2>
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
-                <li th:if="${data.presentationType?.name() == 'OX'}"><a href="/admin/ox">OX Choice</a></li>
+                <li th:if="${data.presentationType?.name() == 'OX'}"><a href="/admin/ox">Yes or No Choice</a></li>
                 <li th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}"><a href="/admin/multi">Multiple Choice</a></li>
                 <li th:if="${data.presentationType?.name() == 'QNA'}"><a href="/admin/qna">Message Board</a></li>
-                <li class="active">Make</li>
+                <li class="active">Create New</li>
             </ol>
         </div>
         <div class="cl-mcont">
@@ -63,7 +63,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Secure <i class="fa fa-question-circle" data-placement="right" data-toggle="tooltip" data-original-title="Show only speaker." ></i></label>
+                                    <label class="col-sm-3 control-label">Secure <i class="fa fa-question-circle q-secure" data-popover="popover" data-original-title="Secure Option" data-placement="right" data-trigger="hover" data-content="Show only speaker." ></i></label>
                                     <div class="col-sm-6">
                                         <label class="checkbox-inline">
                                             <input type="checkbox" class="switch bt-switch" data-size="small" th:field="*{secure}"/>
@@ -71,7 +71,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Status <i class="fa fa-question-circle" data-placement="right" data-toggle="tooltip" data-original-title="OFF status do not voting." ></i></label>
+                                    <label class="col-sm-3 control-label">Status <i class="fa fa-question-circle q-status" data-popover="popover" data-original-title="Status Option" data-placement="right" data-trigger="hover" data-content="OFF status do not voting." ></i></label>
                                     <div class="col-sm-6">
                                         <label class="checkbox-inline">
                                             <input type="checkbox" class="switch bt-switch" data-size="small" th:field="*{status}"/>
@@ -79,7 +79,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Anonymous <i class="fa fa-question-circle" data-placement="right" data-toggle="tooltip" data-original-title="Anonymous can vote." ></i></label>
+                                    <label class="col-sm-3 control-label">Anonymous <i class="fa fa-question-circle q-anonymous" data-popover="popover" data-original-title="Anonymous Option" data-placement="right" data-trigger="hover" data-content="Anonymous can vote." ></i></label>
                                     <div class="col-sm-6">
                                         <label class="checkbox-inline">
                                             <input type="checkbox" class="switch bt-switch" data-size="small" th:field="*{anonymous}"/>
@@ -99,9 +99,7 @@
             </div>
         </div>
     </div>
-
 </div>
-
 <div th:include="admin/layout :: script"></div>
 <script type="text/javascript" src="/js/jquery.icheck/icheck.min.js"></script>
 <script type="text/javascript" src="/js/jquery.nestable/jquery.nestable.js"></script>
@@ -109,6 +107,9 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     var data = /*[[${data}]]*/ null;
+    var qSecure = /*[[#{question.secure}]]*/ null;
+    var qStatus = /*[[#{question.status}]]*/ null;
+    var qAnonymous = /*[[#{question.anonymous}]]*/ null;
 
     $('.bt-switch').bootstrapSwitch();
     $('[data-toggle="tooltip"]').tooltip();
@@ -120,6 +121,17 @@
 
     var addList = function() {
         var listText = $('.add-list input').val();
+
+        if(listText.length == 0) {
+            $.gritter.add({
+                title: 'Empty String',
+                text: 'Fill Select List.',
+                class_name: 'clean',
+                time: ''
+            });
+            return false;
+        }
+
         if(listText.indexOf(',') > 0) {
             $.gritter.add({
                 title: 'Invalid String',
@@ -129,14 +141,14 @@
             });
             return false;
         }
-        var inHTML = "<li class='dd-item' data-answerlist='" + listText + "'>"
+        var inHTML = "<li class='dd-item dd-nochildren' data-answerlist='" + listText + "'>"
                         + "<div class='dd-handle'>" + listText + "</div>"
                     + "</li>";
         $('.dd-list').append(inHTML);
 
         $('.add-list input').val("");
         fillQuestions();
-    }
+    };
 
     var fillQuestions = function() {
         var listText = [];
@@ -149,7 +161,12 @@
         // validation remove
         $('.parsley-error').removeClass('parsley-error');
         $('.parsley-errors-list').remove();
-    }
+    };
+
+    $('.q-secure').attr('data-content',qSecure);
+    $('.q-status').attr('data-content',qStatus);
+    $('.q-anonymous').attr('data-content',qAnonymous);
+
     /*]]>*/
 </script>
 </body>

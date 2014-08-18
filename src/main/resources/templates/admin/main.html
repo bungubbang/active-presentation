@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <div class="butpro butstyle">
-                    <div class="sub"><h2>User</h2><span th:text="${homeData.audienceTotal}">80</span></div>
+                    <div class="sub"><h2>Participant</h2><span th:text="${homeData.audienceTotal}">80</span></div>
                     <div class="stat">
                         <span th:if="${homeData.audienceTotalDiff} == 0" class="equal"> 0</span>
                         <span th:if="${homeData.audienceTotalDiff} != 0" class="up" th:text="${homeData.audienceTotalDiff}"> 0</span>
@@ -75,7 +75,7 @@
                         <a href="/admin/make/ox">
                             <div class="block-flat makeone">
                                 <div class="header">
-                                    <h4>Create OX Question</h4>
+                                    <h4>Create Yes or No Question</h4>
                                 </div>
                                 <div class="content text-center">
                                     <div style="height: 87px;">
@@ -198,9 +198,9 @@
                         <div class="content">
                             <div class="list-group tickets">
                                 <li class="list-group-item" href="#" th:each="poll : ${homeData.latest}" th:name="${poll.id}" onclick="viewBoard(this);" style="cursor: pointer;">
-                                    <span th:if="${poll.presentationType?.name()} == 'OX'" class="label label-danger pull-right">OX</span>
+                                    <span th:if="${poll.presentationType?.name()} == 'OX'" class="label label-danger pull-right">Yes or No</span>
                                     <span th:if="${poll.presentationType?.name()} == 'MULTIPLE_CHOICE'" class="label label-warning pull-right">Multiple Choice</span>
-                                    <span th:if="${poll.presentationType?.name()} == 'QNA'" class="label label-primary pull-right">QnA</span>
+                                    <span th:if="${poll.presentationType?.name()} == 'QNA'" class="label label-primary pull-right">Message Board</span>
                                     <p th:text="${poll.title}">My vMaps plugin doesn't work</p>
                                     <span class="date" th:text="${#calendars.format(poll.createdDate.time,'dd MMM yyyy HH:mm')}">17 Feb</span>
                                 </li>

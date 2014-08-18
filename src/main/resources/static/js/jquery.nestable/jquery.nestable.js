@@ -1,19 +1,19 @@
 /*!
-* Nestable jQuery Plugin - Copyright (c) 2012 David Bushell - http://dbushell.com/
-* Dual-licensed under the BSD or MIT licenses
-*/
+ * Nestable jQuery Plugin - Copyright (c) 2012 David Bushell - http://dbushell.com/
+ * Dual-licensed under the BSD or MIT licenses
+ */
 ;(function($, window, document, undefined)
 {
     var hasTouch = 'ontouchstart' in window;
 
     /**
-* Detect CSS pointer-events property
-* events are normally disabled on the dragging element to avoid conflicts
-* https://github.com/ausi/Feature-detection-technique-for-pointer-events/blob/master/modernizr-pointerevents.js
-*/
+     * Detect CSS pointer-events property
+     * events are normally disabled on the dragging element to avoid conflicts
+     * https://github.com/ausi/Feature-detection-technique-for-pointer-events/blob/master/modernizr-pointerevents.js
+     */
     var hasPointerEvents = (function()
     {
-        var el = document.createElement('div'),
+        var el    = document.createElement('div'),
             docEl = document.documentElement;
         if (!('pointerEvents' in el.style)) {
             return false;
@@ -26,33 +26,34 @@
         return !!supports;
     })();
 
-    var eStart = hasTouch ? 'touchstart' : 'mousedown',
-        eMove = hasTouch ? 'touchmove' : 'mousemove',
-        eEnd = hasTouch ? 'touchend' : 'mouseup';
-        eCancel = hasTouch ? 'touchcancel' : 'mouseup';
+    var eStart  = hasTouch ? 'touchstart'  : 'mousedown',
+        eMove   = hasTouch ? 'touchmove'   : 'mousemove',
+        eEnd    = hasTouch ? 'touchend'    : 'mouseup';
+    eCancel = hasTouch ? 'touchcancel' : 'mouseup';
 
     var defaults = {
-            listNodeName : 'ol',
-            itemNodeName : 'li',
-            rootClass : 'dd',
-            listClass : 'dd-list',
-            itemClass : 'dd-item',
-            dragClass : 'dd-dragel',
-            handleClass : 'dd-handle',
-            collapsedClass : 'dd-collapsed',
-            placeClass : 'dd-placeholder',
-            noDragClass : 'dd-nodrag',
-            emptyClass : 'dd-empty',
-            expandBtnHTML : '<button data-action="expand" type="button">Expand</button>',
-            collapseBtnHTML : '<button data-action="collapse" type="button">Collapse</button>',
-            group : 0,
-            maxDepth : 5,
-            threshold : 20
-        };
+        listNodeName    : 'ol',
+        itemNodeName    : 'li',
+        rootClass       : 'dd',
+        listClass       : 'dd-list',
+        itemClass       : 'dd-item',
+        dragClass       : 'dd-dragel',
+        handleClass     : 'dd-handle',
+        collapsedClass  : 'dd-collapsed',
+        placeClass      : 'dd-placeholder',
+        noDragClass     : 'dd-nodrag',
+        noChildrenClass     : 'dd-nochildren',
+        emptyClass      : 'dd-empty',
+        expandBtnHTML   : '<button data-action="expand" type="button">Expand</button>',
+        collapseBtnHTML : '<button data-action="collapse" type="button">Collapse</button>',
+        group           : 0,
+        maxDepth        : 5,
+        threshold       : 20
+    };
 
     function Plugin(element, options)
     {
-        this.w = $(window);
+        this.w  = $(window);
         this.el = $(element);
         this.options = $.extend({}, defaults, options);
         this.init();
@@ -80,7 +81,7 @@
                 }
                 var target = $(e.currentTarget),
                     action = target.data('action'),
-                    item = target.parent(list.options.itemNodeName);
+                    item   = target.parent(list.options.itemNodeName);
                 if (action === 'collapse') {
                     list.collapseItem(item);
                 }
@@ -138,23 +139,23 @@
         {
             var data,
                 depth = 0,
-                list = this;
-                step = function(level, depth)
+                list  = this;
+            step  = function(level, depth)
+            {
+                var array = [ ],
+                    items = level.children(list.options.itemNodeName);
+                items.each(function()
                 {
-                    var array = [ ],
-                        items = level.children(list.options.itemNodeName);
-                    items.each(function()
-                    {
-                        var li = $(this),
-                            item = $.extend({}, li.data()),
-                            sub = li.children(list.options.listNodeName);
-                        if (sub.length) {
-                            item.children = step(sub, depth + 1);
-                        }
-                        array.push(item);
-                    });
-                    return array;
-                };
+                    var li   = $(this),
+                        item = $.extend({}, li.data()),
+                        sub  = li.children(list.options.listNodeName);
+                    if (sub.length) {
+                        item.children = step(sub, depth + 1);
+                    }
+                    array.push(item);
+                });
+                return array;
+            };
             data = step(list.el.find(list.options.listNodeName).first(), depth);
             return data;
         },
@@ -167,30 +168,30 @@
         reset: function()
         {
             this.mouse = {
-                offsetX : 0,
-                offsetY : 0,
-                startX : 0,
-                startY : 0,
-                lastX : 0,
-                lastY : 0,
-                nowX : 0,
-                nowY : 0,
-                distX : 0,
-                distY : 0,
-                dirAx : 0,
-                dirX : 0,
-                dirY : 0,
-                lastDirX : 0,
-                lastDirY : 0,
-                distAxX : 0,
-                distAxY : 0
+                offsetX   : 0,
+                offsetY   : 0,
+                startX    : 0,
+                startY    : 0,
+                lastX     : 0,
+                lastY     : 0,
+                nowX      : 0,
+                nowY      : 0,
+                distX     : 0,
+                distY     : 0,
+                dirAx     : 0,
+                dirX      : 0,
+                dirY      : 0,
+                lastDirX  : 0,
+                lastDirY  : 0,
+                distAxX   : 0,
+                distAxY   : 0
             };
-            this.moving = false;
-            this.dragEl = null;
+            this.moving     = false;
+            this.dragEl     = null;
             this.dragRootEl = null;
-            this.dragDepth = 0;
+            this.dragDepth  = 0;
             this.hasNewRoot = false;
-            this.pointEl = null;
+            this.pointEl    = null;
         },
 
         expandItem: function(li)
@@ -246,8 +247,8 @@
 
         dragStart: function(e)
         {
-            var mouse = this.mouse,
-                target = $(e.target),
+            var mouse    = this.mouse,
+                target   = $(e.target),
                 dragItem = target.closest(this.options.itemNodeName);
 
             this.placeEl.css('height', dragItem.height());
@@ -271,7 +272,7 @@
             $(document.body).append(this.dragEl);
             this.dragEl.css({
                 'left' : e.pageX - mouse.offsetX,
-                'top' : e.pageY - mouse.offsetY
+                'top'  : e.pageY - mouse.offsetY
             });
             // total depth of dragging item
             var i, depth,
@@ -303,20 +304,20 @@
         dragMove: function(e)
         {
             var list, parent, prev, next, depth,
-                opt = this.options,
+                opt   = this.options,
                 mouse = this.mouse;
 
             this.dragEl.css({
                 'left' : e.pageX - mouse.offsetX,
-                'top' : e.pageY - mouse.offsetY
+                'top'  : e.pageY - mouse.offsetY
             });
 
             // mouse position last events
             mouse.lastX = mouse.nowX;
             mouse.lastY = mouse.nowY;
             // mouse position this events
-            mouse.nowX = e.pageX;
-            mouse.nowY = e.pageY;
+            mouse.nowX  = e.pageX;
+            mouse.nowY  = e.pageY;
             // distance mouse moved between events
             mouse.distX = mouse.nowX - mouse.lastX;
             mouse.distY = mouse.nowY - mouse.lastY;
@@ -327,11 +328,11 @@
             mouse.dirX = mouse.distX === 0 ? 0 : mouse.distX > 0 ? 1 : -1;
             mouse.dirY = mouse.distY === 0 ? 0 : mouse.distY > 0 ? 1 : -1;
             // axis mouse is now moving on
-            var newAx = Math.abs(mouse.distX) > Math.abs(mouse.distY) ? 1 : 0;
+            var newAx   = Math.abs(mouse.distX) > Math.abs(mouse.distY) ? 1 : 0;
 
             // do nothing on first move
             if (!mouse.moving) {
-                mouse.dirAx = newAx;
+                mouse.dirAx  = newAx;
                 mouse.moving = true;
                 return;
             }
@@ -353,14 +354,14 @@
             mouse.dirAx = newAx;
 
             /**
-* move horizontal
-*/
+             * move horizontal
+             */
             if (mouse.dirAx && mouse.distAxX >= opt.threshold) {
                 // reset move distance on x-axis for new phase
                 mouse.distAxX = 0;
                 prev = this.placeEl.prev(opt.itemNodeName);
                 // increase horizontal level if previous sibling exists and is not collapsed
-                if (mouse.distX > 0 && prev.length && !prev.hasClass(opt.collapsedClass)) {
+                if (mouse.distX > 0 && prev.length && !prev.hasClass(opt.collapsedClass) && !prev.hasClass(opt.noChildrenClass)) {
                     // cannot increase level when item above is collapsed
                     list = prev.find(opt.listNodeName).last();
                     // check if depth limit has reached
@@ -415,11 +416,11 @@
 
             // find parent list of item under cursor
             var pointElRoot = this.pointEl.closest('.' + opt.rootClass),
-                isNewRoot = this.dragRootEl.data('nestable-id') !== pointElRoot.data('nestable-id');
+                isNewRoot   = this.dragRootEl.data('nestable-id') !== pointElRoot.data('nestable-id');
 
             /**
-* move vertical
-*/
+             * move vertical
+             */
             if (!mouse.dirAx || isNewRoot || isEmpty) {
                 // check if groups match if dragging over new root
                 if (isNewRoot && opt.group !== pointElRoot.data('nestable-group')) {
@@ -431,7 +432,7 @@
                     return;
                 }
                 var before = e.pageY < (this.pointEl.offset().top + this.pointEl.height() / 2);
-                    parent = this.placeEl.parent();
+                parent = this.placeEl.parent();
                 // if empty create new list to replace empty placeholder
                 if (isEmpty) {
                     list = $(document.createElement(opt.listNodeName)).addClass(opt.listClass);
@@ -462,7 +463,7 @@
 
     $.fn.nestable = function(params)
     {
-        var lists = this,
+        var lists  = this,
             retval = this;
 
         lists.each(function()

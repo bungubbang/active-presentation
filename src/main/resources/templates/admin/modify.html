@@ -17,10 +17,10 @@
 
     <div class="container-fluid" id="pcont">
         <div class="page-head">
-            <h2>OX Choice</h2>
+            <h2>Yes or No Question</h2>
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
-                <li th:if="${data.presentationType?.name() == 'OX'}"><a href="/admin/ox">OX Choice</a></li>
+                <li th:if="${data.presentationType?.name() == 'OX'}"><a href="/admin/ox">Yes or No</a></li>
                 <li th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}"><a href="/admin/multi">Multiple Choice</a></li>
                 <li th:if="${data.presentationType?.name() == 'QNA'}"><a href="/admin/qna">Message Board</a></li>
                 <li class="active">Edit</li>
@@ -32,7 +32,7 @@
                     <div class="block-flat">
                         <div class="header">
                             <div th:if="${data.presentationType?.name()} == 'OX'" >
-                                <h3>OX Dashboard Modify</h3>
+                                <h3>Yes or No Dashboard Modify</h3>
                             </div>
                             <div th:if="${data.presentationType?.name()} == 'MULTIPLE_CHOICE'" >
                                 <h3>MULTI CHOICE Dashboard Modify</h3>
@@ -42,10 +42,10 @@
                             </div>
 
                             <p style="margin-bottom: 0px !important">
-                                Dashboard URL : <a th:href="'http://metadata.co.kr/board/' + ${data.id}" th:text="'http://metadata.co.kr/board/' + ${data.id}"></a>
+                                Dashboard URL : <a th:href="'http://metadata.co.kr/board/' + ${data.id}" th:text="'http://poll.pt/board/' + ${data.id}"></a>
                             </p>
                             <p>
-                                Controller URL : <a th:href="'http://metadata.co.kr/' + ${data.id}" th:text="'http://metadata.co.kr/' + ${data.id}"></a>
+                                Controller URL : <a th:href="'http://metadata.co.kr/' + ${data.id}" th:text="'http://poll.pt/' + ${data.id}"></a>
                             </p>
                         </div>
                         <div class="content">
@@ -168,7 +168,7 @@
     });
 
     var listHTML = function(id, text) {
-        return "<li class='dd-item' data-answerlist='" + text + "'>"
+        return "<li class='dd-item dd-nochildren' data-answerlist='" + text + "'>"
                 + "<div class='pull-right' onclick='modifyList(this)' style='margin: 7px' data-toggle='modal' data-target='#mod-modify'>"
                     + "<i class='fa fa-cogs'></i>"
                 + "</div>"
@@ -194,6 +194,17 @@
 
     var addList = function() {
         var listText = $('.add-list input').val();
+
+        if(listText.length == 0) {
+            $.gritter.add({
+                title: 'Empty String',
+                text: 'Fill Select List.',
+                class_name: 'clean',
+                time: ''
+            });
+            return false;
+        }
+
         if(listText.indexOf(',') > 0) {
             $.gritter.add({
                 title: 'Invalid String',
@@ -206,10 +217,9 @@
 
         $.post('/admin/api/questions', { boardId:data.id, question: listText}, function(result) {
             $('.dd-list').append(listHTML(result.id, result.answerList));
+            fillQuestions();
+            $('.add-list input').val("");
         });
-
-        $('.add-list input').val("");
-        fillQuestions();
     };
 
     var fillQuestions = function() {

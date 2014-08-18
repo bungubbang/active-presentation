@@ -14,15 +14,14 @@
 
     <div class="container-fluid" id="pcont">
         <div class="page-head">
-            <h2 th:if="${boardType} == 'OX'">OX Quiz</h2>
+            <h2 th:if="${boardType} == 'OX'">Yes or No</h2>
             <h2 th:if="${boardType} == 'MULTIPLE'">Multiple Choice</h2>
-            <h2 th:if="${boardType} == 'QNA'">Q&amp;A</h2>
+            <h2 th:if="${boardType} == 'QNA'">Message Board</h2>
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
-                <li th:if="${boardType} == 'OX'"><a href="/admin/ox">OX Quiz</a></li>
+                <li th:if="${boardType} == 'OX'"><a href="/admin/ox">Yes or No Question</a></li>
                 <li th:if="${boardType} == 'MULTIPLE'"><a href="/admin/multi">Multiple Choice</a></li>
-                <li th:if="${boardType} == 'QNA'"><a href="/admin/qna">Q&amp;A</a></li>
-                <li class="active">Create New</li>
+                <li th:if="${boardType} == 'QNA'"><a href="/admin/qna">Message Board</a></li>
             </ol>
         </div>
         <div class="cl-mcont">
@@ -30,7 +29,7 @@
                 <div class="col-sm-4 col-md-4 col-lg-3">
                     <div class="block-flat makeone">
                         <div class="header">
-                            <h4 th:if="${boardType} == 'OX'">Create OX Quiz</h4>
+                            <h4 th:if="${boardType} == 'OX'">Create Yes or No Question</h4>
                             <h4 th:if="${boardType} == 'MULTIPLE'">Create Multiple Choice</h4>
                             <h4 th:if="${boardType} == 'QNA'">Create Message Board</h4>
                         </div>
@@ -49,9 +48,9 @@
                         </div>
                         <div class="header">
                             <div th:if="${data.presentationType?.name()} == 'OX'" >
-                                <h3 class="visible-sm visible-md" th:text="${data.presentationType?.name()}">Col 4</h3>
-                                <h3 class="visible-lg" th:text="${data.presentationType?.name()}">Col 3</h3>
-                                <h3 class="visible-xs" th:text="${data.presentationType?.name()}">Col 12</h3>
+                                <h3 class="visible-sm visible-md">Yes or No</h3>
+                                <h3 class="visible-lg">Yes or No</h3>
+                                <h3 class="visible-xs">Yes or No</h3>
                             </div>
                             <div th:if="${data.presentationType?.name()} == 'MULTIPLE_CHOICE'" >
                                 <h3 class="visible-sm visible-md">MULTI</h3>

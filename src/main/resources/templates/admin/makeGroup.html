@@ -17,10 +17,10 @@
 
     <div class="container-fluid" id="pcont">
         <div class="page-head">
-            <h2>Presentation Group</h2>
+            <h2>Grouping Polls</h2>
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
-                <li class="active">Presentation Group</li>
+                <li class="active">Grouping Polls</li>
             </ol>
         </div>
         <div class="cl-mcont">
@@ -43,7 +43,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Multitag from Select</label>
+                                    <label class="col-sm-3 control-label">Manage your group</label>
                                     <div class="col-sm-8 col-md-8 col-lg-6">
                                         <div class="col-sm-6">
                                             <div class="block-flat group-make-groupblock">
@@ -64,9 +64,9 @@
                                                 </div>
                                                 <div class="content">
                                                     <div class="list-group tickets group-un-select">
-                                                        <li class="list-group-item dd-item" style="cursor: pointer;" th:each="board : ${boards}" th:name="${board.id}" href="#" onclick="selectGroup(this);">
+                                                        <li class="list-group-item dd-item dd-nochildren" style="cursor: pointer;" th:each="board : ${boards}" th:name="${board.id}" href="#" onclick="selectGroup(this);">
                                                             <div class="dd-handle" style="border: none; background: none;">
-                                                                <span th:if="${board.presentationType?.name()} == 'OX'" class="label label-danger pull-right">OX</span>
+                                                                <span th:if="${board.presentationType?.name()} == 'OX'" class="label label-danger pull-right">Yes or No</span>
                                                                 <span th:if="${board.presentationType?.name()} == 'MULTIPLE_CHOICE'" class="label label-warning pull-right">Multiple Choice</span>
                                                                 <span th:if="${board.presentationType?.name()} == 'QNA'" class="label label-primary pull-right">QnA</span>
                                                                 <p th:text="${board.title}">첫 투표 인테 쓸만한가요? 나름 만든다고 만들었는데..</p>
@@ -78,9 +78,10 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <p>* 오른쪽의 원하는 투표를 클릭해서, 그룹을 지정할 수 있습니다.</p>
-                                            <p>* 지정된 그룹내 글자를 Drag&amp;Drop 으로 순서를 지정 할 수 있습니다.</p>
-                                            <p>* 지정된 그룹내 테두리를 클릭하면 그룹에서 제외 시킬 수 있습니다.</p>
+                                            <p th:text="#{group.text1}">* 오른쪽의 원하는 투표를 클릭해서, 그룹을 지정할 수 있습니다.</p>
+                                            <p th:text="#{group.text2}">* 지정된 그룹내 글자를 Drag&amp;Drop 으로 순서를 지정 할 수 있습니다.</p>
+                                            <p th:text="#{group.text3}">* 지정된 그룹내 테두리를 클릭하면 그룹에서 제외 시킬 수 있습니다.</p>
+                                            <p th:text="#{group.text4}">* 지정된 그룹내 테두리를 클릭하면 그룹에서 제외 시킬 수 있습니다.</p>
                                         </div>
                                     </div>
                                 </div>

@@ -11,7 +11,7 @@ header { background-color: #2494F2; color: #FFF; }
 .dashboard-ox-bar-o, .dashboard-ox-bar-x { color: #fff; padding-top: 5px; }
 .dashboard-ox-bar-o { background-color: #60C060; border-top-left-radius: 5px; border-bottom-left-radius: 5px; }
 .dashboard-ox-bar-x { background-color: #FC9700; border-top-right-radius: 5px; border-bottom-right-radius: 5px; }
-.dashboard-ox-list { font-size: 130px; }
+.dashboard-ox-list { font-size: 100px; margin-left: -35px; }
 .dashboard-ox-progress { padding: 0px !important; width: 50%; float: left;}
 .dashboard-ox-bar-o-count { margin-right: 20px; }
 .dashboard-ox-bar-x-count { margin-left: 20px; }

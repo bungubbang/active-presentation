@@ -35,7 +35,10 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         }
 
         rememberUser(request, response);
-        handleSignOut(request, response);
+        if(handleSignOut(request, response)) {
+            new RedirectView("/", true).render(null, request, response);
+            return false;
+        }
 
         if ((SecurityContext.userSignedIn() && !isDeleteUser()) || requestForSignIn(request)) {
             return true;
@@ -71,12 +74,14 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         SecurityContext.setCurrentUser(speaker);
     }
 
-    private void handleSignOut(HttpServletRequest request, HttpServletResponse response) {
+    private boolean handleSignOut(HttpServletRequest request, HttpServletResponse response) {
         if (SecurityContext.userSignedIn() && request.getServletPath().startsWith("/signout")) {
             connectionRepository.createConnectionRepository(String.valueOf(SecurityContext.getCurrentUser().getId())).removeConnections("facebook");
             userCookieGenerator.removeCookie(response);
             SecurityContext.remove();
+            return true;
         }
+        return false;
     }
 
     private boolean requestForSignIn(HttpServletRequest request) {

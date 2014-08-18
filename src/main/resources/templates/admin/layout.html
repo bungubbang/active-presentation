@@ -78,7 +78,7 @@
             <div class="menu-space">
                 <div class="content">
                     <div class="side-user">
-                        <div class="avatar"><img th:src="${speaker.profileImage}" alt="Avatar" /></div>
+                        <div class="avatar"><img th:src="${speaker.profileImage}" alt="Avatar" style="width: 50px; height: 50px;" /></div>
                         <div class="info">
                             <a href="#" th:text="${speaker.name}"></a>
                             <img src="/images/state_online.png" alt="Status" /> <span>Online</span>
@@ -87,13 +87,13 @@
                     <ul class="cl-vnavigation">
                         <li><a href="/admin"><i class="fa fa-home"></i><span>Home</span></a>
                         </li>
-                        <li><a href="/admin/ox"><i class="fa fa-check-circle-o"></i><span>OX Question</span></a>
+                        <li><a href="/admin/ox"><i class="fa fa-check-circle-o"></i><span>Yes or No Question</span></a>
                         </li>
                         <li><a href="/admin/multi"><i class="fa fa-list-ol"></i><span>Multiple Choice</span></a>
                         </li>
                         <li><a href="/admin/qna"><i class="fa fa-comments"></i><span>Message Board</span></a>
                         </li>
-                        <li><a href="/admin/group"><i class="fa fa-list-ul"></i><span>Presentation Group</span></a>
+                        <li><a href="/admin/group"><i class="fa fa-list-ul"></i><span>Grouping Polls</span></a>
                         </li>
                     </ul>
                 </div>
