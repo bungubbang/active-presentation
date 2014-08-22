@@ -28,6 +28,8 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created by bungubbang
@@ -78,12 +80,20 @@ public class DefaultController {
     }
 
     @RequestMapping("/signin")
-    public String signin() {
+    public String signin(HttpServletRequest request) {
+        String board = request.getParameter("board");
+        HttpSession session = request.getSession();
+        if(board != null) {
+            session.setAttribute("board", board);
+        } else {
+            session.removeAttribute("board");
+        }
         return "signup";
     }
 
     @RequestMapping("/signout")
-    public String signout() {
+    public String signout(HttpServletRequest request) {
+        String board = request.getParameter("board");
         return "signout";
     }
 

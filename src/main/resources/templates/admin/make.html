@@ -17,7 +17,7 @@
 
     <div class="container-fluid" id="pcont">
         <div class="page-head">
-            <h2 th:text="'Make ' + ${data.presentationType?.name()}"></h2>
+            <h2 th:text="'Create ' + ${data.presentationType?.name()}"></h2>
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
                 <li th:if="${data.presentationType?.name() == 'OX'}"><a href="/admin/ox">Yes or No Choice</a></li>
@@ -42,7 +42,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group" th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}">
-                                    <label class="col-sm-3 control-label">Select List </label>
+                                    <label class="col-sm-3 control-label">Selecttions</label>
                                     <div class="col-sm-6">
                                         <div class="add-list input-group" th:if="${error} != 'questions'">
                                             <input type="text" class="form-control" />

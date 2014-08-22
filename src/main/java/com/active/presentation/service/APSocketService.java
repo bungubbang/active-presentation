@@ -1,12 +1,11 @@
 package com.active.presentation.service;
 
-import com.active.presentation.domain.Answer;
-import com.active.presentation.domain.Audience;
-import com.active.presentation.domain.PresentationDashboard;
-import com.active.presentation.domain.Tag;
+import com.active.presentation.domain.*;
+import com.active.presentation.domain.message.AnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
 import com.active.presentation.repository.AudienceRepository;
 import com.active.presentation.repository.PresentationDashboardRepository;
+import com.active.presentation.repository.SpeakerRepository;
 import com.active.presentation.repository.TagRepository;
 import com.active.presentation.repository.dto.AnswerResultDto;
 import com.google.common.collect.Lists;
@@ -37,12 +36,27 @@ public class APSocketService implements SocketService {
     @Autowired
     private TagRepository tagRepository;
 
-    public Audience generateAudience(String uid) {
-        Audience audience = audienceRepository.findByUserKey(uid);
+    @Autowired
+    private SpeakerRepository speakerRepository;
+
+    public Audience generateAudience(AnswerMessage message) {
+        Audience audience = audienceRepository.findByUserKey(message.getUid());
+
+        // 기존에 audience가 있는지 조사
         if(audience == null) {
-            audience = audienceRepository.save(new Audience(uid));
+            audience = new Audience(message.getUid(), message.getType());
         }
-        return audience;
+
+        // facebook으로 들어왔으면 스피커를 넣어주고, 익명일때는 speaker를 빼준다.
+        if(message.getType().equals(AudienceType.FACEBOOK)) {
+            audience.setSpeaker(speakerRepository.findOne(Long.valueOf(message.getSpeakerId())));
+        } else {
+            audience.setSpeaker(null);
+        }
+
+        // type을 항상 최신 타입으로 넣어준다.
+        audience.setAudienceType(message.getType());
+        return audienceRepository.save(audience);
     }
 
     public PresentationDashboard findOxDashBoard(Long id) {
@@ -55,7 +69,7 @@ public class APSocketService implements SocketService {
 
     @Override
     public SocketResponseMessage checkSecure(PresentationDashboard dashboard) {
-        return new SocketResponseMessage(Lists.newArrayList(new AnswerResultDto(null, null, null, dashboard.getStatus())));
+        return new SocketResponseMessage(Lists.newArrayList(new AnswerResultDto(null, null, null, dashboard.getStatus(), false, null, null)));
     }
 
     @Override

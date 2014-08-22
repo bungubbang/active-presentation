@@ -44,7 +44,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Manage your group</label>
+                                    <label class="col-sm-3 control-label">Selections</label>
                                     <div class="col-sm-8 col-md-8 col-lg-6">
                                         <div class="col-sm-6">
                                             <div class="block-flat group-make-groupblock">
@@ -116,9 +116,6 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var data = /*[[${data}]]*/ null;
-    var boards = /*[[${boards}]]*/ null;
-    var groups = /*[[${groups}]]*/ null;
 
     $('.dd').nestable();
     $('.dd').on('change', function() {

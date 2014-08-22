@@ -4,6 +4,7 @@ import com.active.presentation.domain.Answer;
 import com.active.presentation.domain.Audience;
 import com.active.presentation.domain.PresentationDashboard;
 import com.active.presentation.domain.Tag;
+import com.active.presentation.domain.message.AnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
 
 import java.util.Set;
@@ -14,7 +15,7 @@ import java.util.Set;
  * Date: 6/13/14
  */
 public interface SocketService {
-    Audience generateAudience(String uid);
+    Audience generateAudience(AnswerMessage message);
     PresentationDashboard findOxDashBoard(Long id);
     SocketResponseMessage checkSecure(PresentationDashboard dashboard);
     Set<Tag> parsingTags(String message);

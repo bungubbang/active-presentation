@@ -26,6 +26,21 @@
                     </div>
                 </div>
             </div>
+            <div th:if="!${dashboard.anonymous}">
+                <div class="dashboard-block">
+                    <h3 class="dashboard-answer-list">Answer List</h3>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            Answer Filter <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu answer-list-dropmenu" role="menu">
+                            <li><a href='#' class='result-' onclick='filterAnswer(this)'>Show all</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="dashboard-poll list-group tickets">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -37,7 +52,8 @@
 
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
-        var board = /*[[${dashboard}]]*/ null;
+        var boardId = /*[[${dashboard.id}]]*/ null;
+        var questions = /*[[${dashboard.questions}]]*/ null;
 
         var stompClient, socket;
         var WEBSOCKET_TARGET_URL = "/join";
@@ -48,6 +64,7 @@
 
         $(document).ready(function() {
             socketChoiceConnect();
+            addAnswerListDropMenu();
         });
 
         var socketChoiceConnect = function() {
@@ -57,12 +74,21 @@
             stompClient.connect(' ', ' ', function(frame) {
                 connect = true;
                 statusConnect();
-                stompClient.subscribe("/socket/players/answer/choice/" + board.id, function(message) {
+                stompClient.subscribe("/socket/players/answer/choice/" + boardId, function(message) {
                     var answer = JSON.parse(message.body);
                     checkEmpty(answer.result.length);
                     fillLegendTable(answer.result);
                     drawPieChart(answer.result);
                 });
+
+                stompClient.subscribe("/socket/players/answer/audience/" + boardId, function(message) {
+                    $('.dashboard-poll').empty();
+                    var answer = JSON.parse(message.body);
+                    for (var a in answer) {
+                        addResultProfile(answer[a]);
+                    }
+                });
+
             }, function (error) {
                 connect = false;
                 $('#mod-error').modal('show');
@@ -145,6 +171,45 @@
                 $('.nobody').show();
             } else {
                 $('.nobody').hide();
+            }
+        };
+
+
+        var addResultProfile = function(answer) {
+
+            var inHTML = "<li class='list-group-item col-sm-4 col-md-4 col-lg-3 result-" + answer.resultId + "'>"
+                            + "<img class='avatar' width='50' height='50' src='" + answer.profileImage + "' />"
+                            + "<h4 class='name'>" + answer.name + "</h4>"
+                            + "<div class='answer-result'>" + answer.result + "</div>"
+                            + "<span class='date'>" + dateFormat(answer.createdDate) + "</span>"
+                        + "</li>";
+
+            $('.dashboard-poll').append(inHTML);
+        };
+
+        var dateFormat = function(d) {
+            var date = new Date(d);
+            return (date.getMonth()+1) + "/" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes();
+        };
+
+        var addAnswerListDropMenu = function() {
+            for (var i in questions) {
+                var inHTML = "<li><a href='#' class='result-" + questions[i].id + "' onclick='filterAnswer(this)'>" + questions[i].answerList + "</a></li>";
+                $('.answer-list-dropmenu').append(inHTML);
+            }
+        };
+
+        var filterAnswer = function(div) {
+            var id = $(div).attr('class');
+            var answerList = $('.dashboard-poll').children();
+
+            for(var i=0; i < answerList.size(); i++) {
+                var answerDiv = $(answerList.get(i));
+                if(answerDiv.attr('class').indexOf(id) > -1) {
+                    answerDiv.show();
+                } else {
+                    answerDiv.hide();
+                }
             }
         };
 

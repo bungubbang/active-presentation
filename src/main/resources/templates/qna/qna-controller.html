@@ -17,6 +17,18 @@
                 <textarea rows="3" cols="50" class="form-control control-qna-textarea"></textarea>
                 <button class="control-qna-submit btn btn-primary btn-block" type="button" style="margin-top: 10px;">Submit</button>
             </div>
+            <div class="dashboard-block" th:if="!${dashboard.anonymous}">
+                <div th:if="${speaker} == null">
+                    <span>실명 투표 및 이벤트 참여를 위해서 로그인이 필요 합니다.</span>&nbsp;
+                    <a th:href="'/signin?board=' + ${dashboard.id}" class="btn btn btn-info btn-xs">SignIn</a>
+                </div>
+                <div th:if="${speaker} != null" class="controller-profile">
+                    <input type="hidden" th:value="${speaker.id}" class="controller-profile-id"/>
+                    <img th:src="${speaker.profileImage}"/>
+                    <span th:text="${speaker.name}"></span>
+                    <a th:href="'/signout?board=' + ${dashboard.id}" class="btn btn btn-info btn-xs">SignOut</a>
+                </div>
+            </div>
             <div class="dashboard-block">
                 <div class="pull-left dashboard-up-title">Tags</div>
                 <p>&nbsp;</p>
@@ -30,9 +42,11 @@
     <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
-        var board = /*[[${dashboard}]]*/ null;
+        var boardId = /*[[${dashboard.id}]]*/ null;
+        var secure = /*[[${dashboard.secure}]]*/ null;
         var uId = /*[[${uid}]]*/ null;
         var result = /*[[${answer}]]*/ null;
+        var speakerId = $('.controller-profile-id').val();
 
         var WEBSOCKET_TARGET_URL = "/join";
         var stompClient, socket;
@@ -47,6 +61,7 @@
 
         $(document).ready(function() {
             socketQnaConnect();
+            checkAnonymous();
         });
 
         $('.control-qna-submit').click(function() {
@@ -60,20 +75,20 @@
             stompClient.connect(' ', ' ', function(frame) {
                 connect = true;
                 statusConnect();
-                stompClient.subscribe("/socket/players/answer/qna/" + board.id, function(message) {
+                stompClient.subscribe("/socket/players/answer/qna/" + boardId, function(message) {
                     var answer = JSON.parse(message.body);
                     if(answer.result[0] != null && answer.result[0].status == false) {
                         $('.closed').show();
                         connect = false;
                     }
 
-                    if(!board.secure) {
+                    if(!secure) {
                         addQna(answer.result);
                     }
                 });
 
-                stompClient.subscribe("/socket/players/answer/qna/result/" + board.id, function(message) {
-                    if(!board.secure) {
+                stompClient.subscribe("/socket/players/answer/qna/result/" + boardId, function(message) {
+                    if(!secure) {
                         var answer = JSON.parse(message.body);
                         if(answer.result[0] != null) {
                             if(answer.result[0].status == false) {
@@ -86,7 +101,7 @@
                     }
                 });
 
-                stompClient.subscribe("/socket/players/answer/qna/" + board.id + "/taglist", function(message) {
+                stompClient.subscribe("/socket/players/answer/qna/" + boardId + "/taglist", function(message) {
                     var answer = JSON.parse(message.body);
                     addTags(answer);
                 });
@@ -103,7 +118,7 @@
             if(questionText.length != 0) {
                 if(connect) {
                     answer.response = questionText;
-                    stompClient.send('/socket/answer/qna/' + board.id, {}, JSON.stringify(answer));
+                    stompClient.send('/socket/answer/qna/' + boardId, {}, JSON.stringify(answer));
                     $('.control-qna-textarea').val('');
                 } else {
                     alert("마감되었습니다.");
@@ -131,8 +146,17 @@
         var addTags = function(result) {
             $('.dashboard-qna-tag').empty();
             for(var i in result) {
-                var inHTML = "<a class='btn btn-default btn-flat' href='/board/" + board.id + "/tags/" + result[i].name + "' >" + result[i].name + "</a>";
+                var inHTML = "<a class='btn btn-default btn-flat' href='/board/" + boardId + "/tags/" + result[i].name + "' >" + result[i].name + "</a>";
                 $('.dashboard-qna-tag').append(inHTML);
+            }
+        };
+
+        var checkAnonymous = function() {
+            if(speakerId == null) {
+                answer.type = "ANONYMOUS";
+            } else {
+                answer.type = "FACEBOOK";
+                answer.speakerId = speakerId;
             }
         };
         /*]]>*/

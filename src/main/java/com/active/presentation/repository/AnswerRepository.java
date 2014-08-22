@@ -1,6 +1,7 @@
 package com.active.presentation.repository;
 
 import com.active.presentation.domain.*;
+import com.active.presentation.domain.message.AnswerAudienceListMessage;
 import com.active.presentation.repository.dto.AnswerResultDto;
 import com.active.presentation.repository.dto.AnswerTransactionDto;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
 
     List<Answer> findByResultId(Long resultId);
 
+    @Query("SELECT new com.active.presentation.domain.message.AnswerAudienceListMessage(a.modifyDate as createdDate, a.name as name, a.profileImage as profileImage, a.result as result, a.resultId as resultId) FROM Answer a WHERE a.dashboard = :dashboard AND a.anonymous = :anonymous ORDER BY a.modifyDate desc")
+    List<AnswerAudienceListMessage> findByAnswerAudienceList(@Param("dashboard") PresentationDashboard dashboard, @Param("anonymous") Boolean anonymous);
+
     @Query("SELECT count(*) FROM Answer a join a.dashboard d join d.speaker s where s = :speaker GROUP BY s")
     Long countBySpeaker(@Param("speaker") Speaker speaker);
 
@@ -38,16 +42,16 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
 
     Answer findByDashboardAndAudience(PresentationDashboard dashboard, Audience audience);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, q.answerList as result, count(a.result) as choice, a.createdDate as createdDate, d.status as status) FROM Answer a JOIN a.dashboard d JOIN d.questions q WHERE a.dashboard = :dashboard AND q.id = a.resultId GROUP BY q.answerList ORDER BY count(q.answerList) desc ")
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, q.answerList as result, count(a.result) as choice, a.modifyDate as createdDate, d.status as status, a.anonymous as anonymous, a.name as name, a.profileImage as profileImage) FROM Answer a JOIN a.dashboard d JOIN d.questions q WHERE a.dashboard = :dashboard AND q.id = a.resultId GROUP BY q.answerList ORDER BY count(q.answerList) desc ")
     List<AnswerResultDto> resultByDashboard(@Param("dashboard") PresentationDashboard dashboard);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.createdDate as createdDate, d.status as status) FROM Answer a JOIN a.dashboard d WHERE a.dashboard = :dashboard")
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.modifyDate as createdDate, d.status as status, a.anonymous as anonymous, a.name as name, a.profileImage as profileImage) FROM Answer a JOIN a.dashboard d WHERE a.dashboard = :dashboard")
     List<AnswerResultDto> findByDashboardOnAnswerResultDto(@Param("dashboard") PresentationDashboard dashboard);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.createdDate as createdDate, d.status as status) FROM Answer a JOIN a.dashboard d WHERE a.dashboard = :dashboard AND a.result LIKE :tags")
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.modifyDate as createdDate, d.status as status, a.anonymous as anonymous, a.name as name, a.profileImage as profileImage) FROM Answer a JOIN a.dashboard d WHERE a.dashboard = :dashboard AND a.result LIKE :tags")
     List<AnswerResultDto> findByDashboardTagsOnAnswerResultDto(@Param("dashboard") PresentationDashboard dashboard, @Param("tags") String tags);
 
-    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(d.id as id, a.result as result, d.title as title, a.createdDate as createdDate, d.status as status) FROM Answer a join a.dashboard d join d.speaker s " +
+    @Query("SELECT new com.active.presentation.repository.dto.AnswerResultDto(d.id as id, a.result as result, d.title as title, a.modifyDate as createdDate, d.status as status, a.anonymous as anonymous, a.name as name, a.profileImage as profileImage) FROM Answer a join a.dashboard d join d.speaker s " +
             "WHERE s = :speaker AND d.presentationType = :dashboardType order by a.createdDate desc")
     List<AnswerResultDto> findByRecentBySpeakerAndType(@Param("speaker") Speaker speaker, @Param("dashboardType") PresentationType presentationType, Pageable pageable);
 
@@ -57,7 +61,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
             " order by year(a.createdDate) ||'-'|| month(a.createdDate) ||'-'|| day(a.createdDate) desc")
     List<AnswerTransactionDto> countAnswerAfterDate(@Param("speaker") Speaker speaker, @Param("date") Date date);
 
-    @Query("select new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.createdDate as createdDate, d.status as status) FROM Answer a join a.tags t JOIN a.dashboard d WHERE t.name = :name")
+    @Query("select new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.modifyDate as createdDate, d.status as status, a.anonymous as anonymous, a.name as name, a.profileImage as profileImage) FROM Answer a join a.tags t JOIN a.dashboard d WHERE t.name = :name")
     List<AnswerResultDto> findByTagsName(@Param("name") String name);
 
 //    UPDATE ap.answer SET result='O' WHERE result_id=17;

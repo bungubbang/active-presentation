@@ -16,7 +16,7 @@ public class PresentationDashboard {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Speaker speaker;
 
     @Enumerated(EnumType.STRING)
@@ -33,7 +33,7 @@ public class PresentationDashboard {
 
     private Boolean status = true;
     private Boolean secure = false;
-    private Boolean anonymous = true;
+    private Boolean anonymous = false;
 
     @OneToMany(fetch = FetchType.LAZY)
     private Set<Tag> tags = new LinkedHashSet<Tag>();

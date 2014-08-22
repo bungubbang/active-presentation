@@ -36,7 +36,12 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
 
         rememberUser(request, response);
         if(handleSignOut(request, response)) {
-            new RedirectView("/", true).render(null, request, response);
+            String board = request.getParameter("board");
+            if(board !=null && !board.isEmpty()) {
+                new RedirectView("/" + board, true).render(null, request, response);
+            } else {
+                new RedirectView("/", true).render(null, request, response);
+            }
             return false;
         }
 

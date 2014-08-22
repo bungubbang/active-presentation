@@ -31,6 +31,8 @@ header { background-color: #2494F2; color: #FFF; }
 
 .dashboard-up-title { margin-top: -10px; font-family: "Raleway", Helvetica, sans-serif; font-weight: 200; }
 
+.dashboard-answer-list {margin-top: 3px; font-family: "Raleway", Helvetica, sans-serif;font-weight: 200; float: left; margin-right: 30px;}
+
 /* utility */
 .narrow-page > div {position: fixed; bottom:5%; color: #2494F2;background-color: #fff; -webkit-border-radius: 3px; border-left: 1px solid #efefef;border-right: 1px solid #efefef;border-bottom: 1px solid #e2e2e2;box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.04); opacity: 0.5;}
 .narrow-page > div > a > i {padding: 10px;}
@@ -42,13 +44,25 @@ header { background-color: #2494F2; color: #FFF; }
 .choice-target {background-color: #2494F2; color: #fff;}
 .dashboard-block > .roundicon {left: 2px; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1); font-size: 14px; color: #FFF; border-radius: 50%; background: #52AEFF; padding: 10px; text-align: center; width: 40px; height: 40px;border: 3px solid #FFF;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);z-index: 2;float: left;margin: 15px;}
 .control-ox-answer {font-size: 100px; text-align: center; height: 252px; padding-top: 60px;}
+.controller-profile > img {width: 50px; height: 50px; border-radius: 25px;}
+.controller-profile > span {margin-left: 20px; margin-right: 20px;}
 .controller-choice-list {font-family: "Raleway", Helvetica, sans-serif; font-weight: 200;}
 .select2-container-multi .select2-choices .select2-search-choice { border: 1px solid #CCCCCC !important;background-image: linear-gradient(to bottom, #ffffff 60%, #f9f9f9 100%) !important;padding: 3px 5px 5px 18px !important;}
+.answer-result {overflow: hidden;text-overflow: ellipsis;max-height: 28px;background-color: #eee;padding: 5px;}
 
 .i-circle {border: 5px solid #F1F1F1;border-radius: 50%;-webkit-border-radius: 50%;height: 80px;width: 80px;display: inline-block;padding-top: 15px;margin-bottom: 7px;}
 .i-circle.danger i { color: #DA4932;}
 .i-circle i { font-size: 34px;vertical-align: middle;color: #666; }
 .modal-header {border-bottom: none !important;}
+
+.list-group.tickets .list-group-item { padding: 13px 15px; overflow: hidden; margin-bottom: 10px; border: 1px solid rgba(0, 0, 0, .15); box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.18); }
+.list-group.tickets .list-group-item .avatar { float: left; margin-right: 10px; border-radius: 50%; }
+.list-group.tickets .list-group-item .name { margin: 0 0 5px 0;font-size: 13px;font-weight: 600; }
+.list-group.tickets .list-group-item p { margin: 0;line-height: 12px; }
+.list-group.tickets .list-group-item .date { font-size: 11px;color: #999; }
+
+.dropdown-menu>li>a {max-width: 200px;overflow: hidden;}
+
 
 @media (max-width: 992px) {
     .dashboard-choice-chart { height: 300px; }

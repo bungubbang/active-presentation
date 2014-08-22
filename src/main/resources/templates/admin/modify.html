@@ -42,10 +42,10 @@
                             </div>
 
                             <p style="margin-bottom: 0px !important">
-                                Dashboard URL : <a th:href="'http://metadata.co.kr/board/' + ${data.id}" th:text="'http://poll.pt/board/' + ${data.id}"></a>
+                                Dashboard URL : <a th:href="'http://poll.pt/board/' + ${data.id}" th:text="'http://poll.pt/board/' + ${data.id}"></a>
                             </p>
                             <p>
-                                Controller URL : <a th:href="'http://metadata.co.kr/' + ${data.id}" th:text="'http://poll.pt/' + ${data.id}"></a>
+                                Controller URL : <a th:href="'http://poll.pt/' + ${data.id}" th:text="'http://poll.pt/' + ${data.id}"></a>
                             </p>
                         </div>
                         <div class="content">
@@ -60,7 +60,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group" th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}">
-                                    <label class="col-sm-3 control-label">Select List </label>
+                                    <label class="col-sm-3 control-label">Selections</label>
                                     <div class="col-sm-6">
                                         <div class="add-list input-group">
                                             <input type="text" class="form-control" />
@@ -158,7 +158,8 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var data = /*[[${data}]]*/ null;
+    var dataId = /*[[${data.id}]]*/ null;
+    var dataQuestions = /*[[${data.questions}]]*/ null;
 
     $('.bt-switch').bootstrapSwitch();
     $('[data-toggle="tooltip"]').tooltip();
@@ -178,8 +179,8 @@
 
     var selectList = [];
 
-    for(var i=0; i < data.questions.length ; i++) {
-        selectList[data.questions[i].listOrder - 1] = data.questions[i];
+    for(var i=0; i < dataQuestions.length ; i++) {
+        selectList[dataQuestions[i].listOrder - 1] = dataQuestions[i];
     };
 
     for(var i=0; i< selectList.length; i++) {
@@ -215,7 +216,7 @@
             return false;
         }
 
-        $.post('/admin/api/questions', { boardId:data.id, question: listText}, function(result) {
+        $.post('/admin/api/questions', { boardId:dataId, question: listText}, function(result) {
             $('.dd-list').append(listHTML(result.id, result.answerList));
             fillQuestions();
             $('.add-list input').val("");

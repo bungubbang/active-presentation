@@ -27,6 +27,9 @@ public class Answer {
     private String userAgent;
     private Date createdDate = new Date();
     private Date modifyDate = new Date();
+    private String name;
+    private String profileImage;
+    private Boolean anonymous;
 
     @OneToMany(fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet<Tag>();
@@ -113,6 +116,30 @@ public class Answer {
         this.tags = tags;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public Boolean getAnonymous() {
+        return anonymous;
+    }
+
+    public void setAnonymous(Boolean anonymous) {
+        this.anonymous = anonymous;
+    }
+
     @Override
     public String toString() {
         return "Answer{" +
@@ -124,6 +151,10 @@ public class Answer {
                 ", userAgent='" + userAgent + '\'' +
                 ", createdDate=" + createdDate +
                 ", modifyDate=" + modifyDate +
+                ", name='" + name + '\'' +
+                ", profileImage='" + profileImage + '\'' +
+                ", anonymous=" + anonymous +
+                ", tags=" + tags +
                 '}';
     }
 }

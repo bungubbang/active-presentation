@@ -7,7 +7,9 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.web.SignInAdapter;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created by bungubbang
@@ -25,6 +27,13 @@ public class SimpleSignInAdapter implements SignInAdapter {
         Speaker speaker = speakerRepository.findOne(Long.valueOf(userId));
         SecurityContext.setCurrentUser(speaker);
         userCookieGenerator.addCookie(userId, request.getNativeResponse(HttpServletResponse.class));
+        HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
+        Object board = servletRequest.getSession().getAttribute("board");
+        if(board != null) {
+            servletRequest.getSession().removeAttribute("board");
+            return "/" + board;
+        }
+
         return null;
     }
 }

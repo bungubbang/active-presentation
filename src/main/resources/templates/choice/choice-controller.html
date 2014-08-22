@@ -17,6 +17,18 @@
                 </div>
                 <h1 class="text-center dashboard-title" th:text="${dashboard.title}"></h1>
             </div>
+            <div class="dashboard-block" th:if="!${dashboard.anonymous}">
+                <div th:if="${speaker} == null">
+                    <span>실명 투표 및 이벤트 참여를 위해서 로그인이 필요 합니다.</span>&nbsp;
+                    <a th:href="'/signin?board=' + ${dashboard.id}" class="btn btn btn-info btn-xs">SignIn</a>
+                </div>
+                <div th:if="${speaker} != null" class="controller-profile">
+                    <input type="hidden" th:value="${speaker.id}" class="controller-profile-id"/>
+                    <img th:src="${speaker.profileImage}"/>
+                    <span th:text="${speaker.name}"></span>
+                    <a th:href="'/signout?board=' + ${dashboard.id}" class="btn btn btn-info btn-xs">SignOut</a>
+                </div>
+            </div>
             <div class="controller-choice-list"></div>
         </div>
     </div>
@@ -24,9 +36,11 @@
     <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
-        var board = /*[[${dashboard}]]*/ null;
+        var boardId = /*[[${dashboard.id}]]*/ null;
+        var questions = /*[[${dashboard.questions}]]*/ null;
         var uId = /*[[${uid}]]*/ null;
         var result = /*[[${answer}]]*/ null;
+        var speakerId = $('.controller-profile-id').val();
 
         var stompClient, socket;
         var WEBSOCKET_TARGET_URL = "/join";
@@ -37,7 +51,7 @@
             response: "",
             uid: uId,
             userAgent: navigator.userAgent
-        }
+        };
         var choiceBounceClass = "choice-target";
         var classList = [];
 
@@ -45,6 +59,7 @@
             socketChoiceConnect();
             answerList();
             markingResult(result);
+            checkAnonymous();
         });
 
         var socketChoiceConnect = function() {
@@ -53,7 +68,7 @@
 
             stompClient.connect(' ', ' ', function(frame) {
                 connect = true;
-                stompClient.subscribe("/socket/players/answer/choice/" + board.id, function(message) {
+                stompClient.subscribe("/socket/players/answer/choice/" + boardId, function(message) {
                     var answer = JSON.parse(message.body);
                     if(answer.result[0] != null && answer.result[0].status == false) {
                         $('.closed').show();
@@ -69,18 +84,18 @@
                 $('#mod-error').modal('show');
                 statusDisconnect();
             });
-        }
+        };
 
         var answerList = function() {
             var sortedQuestions = [];
-            for(var i in board.questions) {
-                sortedQuestions[board.questions[i].listOrder] = board.questions[i];
-                classList.push(board.questions[i].id);
+            for(var i in questions) {
+                sortedQuestions[questions[i].listOrder] = questions[i];
+                classList.push(questions[i].id);
 
             }
 
             addAnswerList(sortedQuestions);
-        }
+        };
 
         var response = function(div) {
             $(div).removeClass(choiceBounceClass);
@@ -90,7 +105,7 @@
             if(connect) {
                 answer.response = responseText;
                 markingResult(responseText);
-                stompClient.send('/socket/answer/choice/' + board.id, {}, JSON.stringify(answer));
+                stompClient.send('/socket/answer/choice/' + boardId, {}, JSON.stringify(answer));
             }
         };
 
@@ -109,6 +124,15 @@
                                 + "<h3>" + answer[i].answerList + "</h3>"
                            + "</div>";
                 $('.controller-choice-list').append(inHTML);
+            }
+        };
+
+        var checkAnonymous = function() {
+            if(speakerId == null) {
+                answer.type = "ANONYMOUS";
+            } else {
+                answer.type = "FACEBOOK";
+                answer.speakerId = speakerId;
             }
         };
         /*]]>*/

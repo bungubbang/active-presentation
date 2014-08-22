@@ -57,7 +57,7 @@ public class QnaSocketController {
 
     @MessageMapping("/answer/qna/{boardId}")
     public void answer(@DestinationVariable Long boardId, AnswerMessage message) {
-        Audience audience = socketService.generateAudience(message.getUid());
+        Audience audience = socketService.generateAudience(message);
         PresentationDashboard dashboard = dashboardRepository.findOne(boardId);
         Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), "Q");
         Answer answer = new Answer(dashboard, audience, question.getId(), message.getResponse(), message.getUserAgent());
@@ -80,7 +80,7 @@ public class QnaSocketController {
         dashboardRepository.save(dashboard);
 
         SocketResponseMessage responseMessage =
-                new SocketResponseMessage(Lists.newArrayList(new AnswerResultDto(question.getId(), message.getResponse(), new Date(), dashboard.getStatus())));
+                new SocketResponseMessage(Lists.newArrayList(new AnswerResultDto(question.getId(), message.getResponse(), new Date(), dashboard.getStatus(), answer.getAnonymous(), answer.getName(), answer.getProfileImage())));
 
         messagingTemplate.convertAndSend("/socket/players/answer/qna/result/" + dashboard.getId(), responseMessage);
         messagingTemplate.convertAndSend("/socket/players/answer/qna/" + dashboard.getId() + "/taglist", dashboard.getTags());

@@ -1,8 +1,6 @@
 package com.active.presentation.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by bungubbang
@@ -17,10 +15,17 @@ public class Audience {
 
     private String userKey;
 
+    @Enumerated(EnumType.STRING)
+    private AudienceType audienceType;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Speaker speaker;
+
     public Audience() {}
 
-    public Audience(String userKey) {
+    public Audience(String userKey, AudienceType audienceType) {
         this.userKey = userKey;
+        this.audienceType = audienceType;
     }
 
     public Long getId() {
@@ -39,11 +44,29 @@ public class Audience {
         this.userKey = userKey;
     }
 
+    public AudienceType getAudienceType() {
+        return audienceType;
+    }
+
+    public void setAudienceType(AudienceType audienceType) {
+        this.audienceType = audienceType;
+    }
+
+    public Speaker getSpeaker() {
+        return speaker;
+    }
+
+    public void setSpeaker(Speaker speaker) {
+        this.speaker = speaker;
+    }
+
     @Override
     public String toString() {
         return "Audience{" +
-                "id=" + id +
+                "speaker=" + speaker +
+                ", audienceType=" + audienceType +
                 ", userKey='" + userKey + '\'' +
+                ", id=" + id +
                 '}';
     }
 }

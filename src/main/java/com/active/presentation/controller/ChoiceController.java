@@ -3,6 +3,7 @@ package com.active.presentation.controller;
 import com.active.presentation.domain.*;
 import com.active.presentation.handler.UidHandler;
 import com.active.presentation.repository.*;
+import com.active.presentation.security.UserCookieGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -37,10 +39,15 @@ public class ChoiceController {
     @Autowired
     private UidHandler uidHandler;
 
+    @Autowired
+    private SpeakerRepository speakerRepository;
+
+    private final UserCookieGenerator userCookieGenerator = new UserCookieGenerator();
+
     @RequestMapping("/{id}")
     public String oxController(@PathVariable Long id, ModelMap map,
                                @CookieValue(value = "apuid", required = false) String apuid,
-                               HttpServletResponse response) {
+                               HttpServletRequest request, HttpServletResponse response) {
         String uid = generateApUid(apuid, response);
         Audience audience = audienceRepository.findByUserKey(uid);
         PresentationDashboard dashboard = dashboardRepository.findOne(PresentationDashboardSpecifications.findFetchQuestion(id));
@@ -49,6 +56,13 @@ public class ChoiceController {
         if(group != null) {
             map.addAttribute("left", groupListRepository.findByGroupIdAndListOrder(group.getGroupId(), group.getListOrder() - 1));
             map.addAttribute("right", groupListRepository.findByGroupIdAndListOrder(group.getGroupId(), group.getListOrder() + 1));
+        }
+
+        if(!dashboard.getAnonymous()) {
+            String userId = userCookieGenerator.readCookieValue(request);
+            if(!userId.isEmpty()) {
+                map.addAttribute("speaker", speakerRepository.findOne(Long.valueOf(userId)));
+            }
         }
 
         map.addAttribute("uid", uid);

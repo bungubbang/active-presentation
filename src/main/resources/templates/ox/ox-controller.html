@@ -18,6 +18,18 @@
                     </div>
                     <h1 class="text-center dashboard-title" th:text="${dashboard.title}"></h1>
                 </div>
+                <div class="dashboard-block" th:if="!${dashboard.anonymous}">
+                    <div th:if="${speaker} == null">
+                        <span>실명 투표 및 이벤트 참여를 위해서 로그인이 필요 합니다.</span>&nbsp;
+                        <a th:href="'/signin?board=' + ${dashboard.id}" class="btn btn btn-info btn-xs">Login</a>
+                    </div>
+                    <div th:if="${speaker} != null" class="controller-profile">
+                        <input type="hidden" th:value="${speaker.id}" class="controller-profile-id"/>
+                        <img th:src="${speaker.profileImage}"/>
+                        <span th:text="${speaker.name}"></span>
+                        <a th:href="'/signout?board=' + ${dashboard.id}" class="btn btn btn-info btn-xs">Change Anonymous</a>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6 dashboard-block control-ox-answer control-ox-answer-o" onclick="yes()">Yes</div>
@@ -30,9 +42,10 @@
     <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
-        var board = /*[[${dashboard}]]*/ null;
+        var boardId = /*[[${dashboard.id}]]*/ null;
         var uId = /*[[${uid}]]*/ null;
         var result = /*[[${answer}]]*/ null;
+        var speakerId = $('.controller-profile-id').val();
 
 
         var WEBSOCKET_TARGET_URL = "/join";
@@ -44,12 +57,14 @@
             response: "",
             uid: uId,
             userAgent: navigator.userAgent
-        }
+        };
+
         var oxBounceClass = "choice-target";
 
         $(document).ready(function() {
             socketOxConnect();
             markingResult(result);
+            checkAnonymous();
         });
 
         var socketOxConnect = function() {
@@ -58,7 +73,7 @@
 
             stompClient.connect(' ', ' ', function(frame) {
                 connect = true;
-                stompClient.subscribe("/socket/players/answer/ox/" + board.id, function(message) {
+                stompClient.subscribe("/socket/players/answer/ox/" + boardId, function(message) {
                     var answer = JSON.parse(message.body);
                     if(answer.result[0] != null && answer.result[0].status == false) {
                         $('.closed').show();
@@ -73,24 +88,26 @@
                 $('#mod-error').modal('show');
                 statusDisconnect();
             });
-        }
+        };
 
 
         var yes = function() {
-            if(connect) {
+            if(connect && result === "X") {
                 answer.response = "O";
                 markingResult("O");
-                stompClient.send('/socket/answer/ox/' + board.id, {}, JSON.stringify(answer));
+                stompClient.send('/socket/answer/ox/' + boardId, {}, JSON.stringify(answer));
+                result = "O";
             }
-        }
+        };
 
         var no = function() {
-            if(connect) {
+            if(connect && result === "O") {
                 answer.response = "X";
                 markingResult("X");
-                stompClient.send('/socket/answer/ox/' + board.id, {}, JSON.stringify(answer));
+                stompClient.send('/socket/answer/ox/' + boardId, {}, JSON.stringify(answer));
+                result = "X";
             }
-        }
+        };
 
         var markingResult = function(answer) {
             if(answer === "O") {
@@ -100,7 +117,16 @@
                 $('.control-ox-answer-x').addClass(oxBounceClass);
                 $('.control-ox-answer-o').removeClass(oxBounceClass);
             }
-        }
+        };
+
+        var checkAnonymous = function() {
+            if(speakerId == null) {
+                answer.type = "ANONYMOUS";
+            } else {
+                answer.type = "FACEBOOK";
+                answer.speakerId = speakerId;
+            }
+        };
         /*]]>*/
     </script>
 </body>

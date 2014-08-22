@@ -35,6 +35,23 @@
                     <h1 class="dashboard-ox-list">Yes&nbsp;&nbsp;No</h1>
                 </div>
             </div>
+            <div th:if="!${dashboard.anonymous}">
+                <div class="dashboard-block">
+                    <h3 class="dashboard-answer-list">Answer List</h3>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            Answer Filter <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu answer-list-dropmenu" role="menu">
+                            <li><a href='#' onclick='filterAnswer("result-")'>Show all</a></li>
+                            <li><a href='#' onclick='filterAnswer("result-O")'>YES</a></li>
+                            <li><a href='#' onclick='filterAnswer("result-X")'>NO</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="dashboard-poll list-group tickets">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -42,12 +59,13 @@
     <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
-        var board = /*[[${dashboard}]]*/ null;
+        var boardId = /*[[${dashboard.id}]]*/ null;
 
         var stompClient, socket;
         var WEBSOCKET_TARGET_URL = "/join";
         var connect = false;
         var timeout = 5000;
+        var answerfilter = "result-"
 
         $(document).ready(function() {
             socketOxConnect();
@@ -60,7 +78,7 @@
             stompClient.connect(' ', ' ', function(frame) {
                 connect = true;
                 statusConnect();
-                stompClient.subscribe("/socket/players/answer/ox/" + board.id, function(message) {
+                stompClient.subscribe("/socket/players/answer/ox/" + boardId, function(message) {
                     var ox = {
                         o: 0,
                         x: 0
@@ -87,6 +105,14 @@
                     $('.dashboard-ox-bar-o-count').text(ox.o);
                     $('.dashboard-ox-bar-x-count').text(ox.x);
                 });
+
+                stompClient.subscribe("/socket/players/answer/audience/" + boardId, function(message) {
+                    $('.dashboard-poll').empty();
+                    var answer = JSON.parse(message.body);
+                    for (var a in answer) {
+                        addResultProfile(answer[a]);
+                    }
+                });
             }, function (error) {
                 connect = false;
                 $('#mod-error').modal('show');
@@ -101,6 +127,48 @@
             } else {
                 $('.nobody').hide();
                 $('.dashboard-ox-bar').show();
+            }
+        };
+
+        var addResultProfile = function(answer) {
+
+            var inHTML;
+            if(answer.result === 'O') {
+                inHTML = "<li class='list-group-item col-sm-4 col-md-4 col-lg-3 result-O'>"
+                            + "<img class='avatar' width='50' height='50' src='" + answer.profileImage + "' />"
+                            + "<h4 class='name'>" + answer.name + "</h4>"
+                            + "<span class='label label-success'>" + "YES" + "</span><br/>"
+                            + "<span class='date'>" + dateFormat(answer.createdDate) + "</span>"
+                        + "</li>";
+            } else {
+                inHTML = "<li class='list-group-item col-sm-4 col-md-4 col-lg-3 result-X'>"
+                            + "<img class='avatar' width='50' height='50' src='" + answer.profileImage + "' />"
+                            + "<h4 class='name'>" + answer.name + "</h4>"
+                            + "<span class='label label-warning'>" + "NO" + "</span><br/>"
+                            + "<span class='date'>" + dateFormat(answer.createdDate) + "</span>"
+                        + "</li>";
+            }
+
+            $('.dashboard-poll').append(inHTML);
+            filterAnswer(answerfilter);
+        };
+
+        var dateFormat = function(d) {
+            var date = new Date(d);
+            return (date.getMonth()+1) + "/" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes();
+        };
+
+        var filterAnswer = function(result) {
+            answerfilter = result;
+            var answerList = $('.dashboard-poll').children();
+
+            for(var i=0; i < answerList.size(); i++) {
+                var answerDiv = $(answerList.get(i));
+                if(answerDiv.attr('class').indexOf(result) > -1) {
+                    answerDiv.show();
+                } else {
+                    answerDiv.hide();
+                }
             }
         };
         /*]]>*/
