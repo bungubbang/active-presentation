@@ -60,7 +60,7 @@ public class ChoiceController {
 
         if(!dashboard.getAnonymous()) {
             String userId = userCookieGenerator.readCookieValue(request);
-            if(!userId.isEmpty()) {
+            if(userId !=null && !userId.isEmpty()) {
                 map.addAttribute("speaker", speakerRepository.findOne(Long.valueOf(userId)));
             }
         }

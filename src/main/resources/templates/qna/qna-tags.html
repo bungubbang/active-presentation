@@ -45,7 +45,7 @@
 <div th:include="dashboard-layout :: script"></div>
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
-    var board = /*[[${dashboard}]]*/ null;
+    var boardId = /*[[${dashboard.id}]]*/ null;
     var tag = /*[[${tag}]]*/ null;
 
     var WEBSOCKET_TARGET_URL = "/join";
@@ -64,12 +64,12 @@
         stompClient.connect(' ', ' ', function(frame) {
             connect = true;
             statusConnect();
-            stompClient.subscribe("/socket/players/answer/qna/" + board.id + "/tag/" + encodeURIComponent(tag), function(message) {
+            stompClient.subscribe("/socket/players/answer/qna/" + boardId + "/tag/" + encodeURIComponent(tag), function(message) {
                 var answer = JSON.parse(message.body);
                 addQna(answer.result);
             });
 
-            stompClient.subscribe("/socket/players/answer/qna/result/" + board.id, function(message) {
+            stompClient.subscribe("/socket/players/answer/qna/result/" + boardId, function(message) {
                 var answer = JSON.parse(message.body);
                 if(answer.result[0].result.indexOf(' #' + tag + ' ') > 0) {
                     addQna(answer.result);

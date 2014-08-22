@@ -3,10 +3,7 @@ package com.active.presentation.controller.socket;
 import com.active.presentation.domain.*;
 import com.active.presentation.domain.message.AnswerMessage;
 import com.active.presentation.domain.message.SocketResponseMessage;
-import com.active.presentation.repository.AnswerRepository;
-import com.active.presentation.repository.PresentationDashboardRepository;
-import com.active.presentation.repository.PresentationDashboardSpecifications;
-import com.active.presentation.repository.QuestionRepository;
+import com.active.presentation.repository.*;
 import com.active.presentation.repository.dto.AnswerResultDto;
 import com.active.presentation.service.SocketService;
 import com.google.common.collect.Lists;
@@ -46,6 +43,9 @@ public class QnaSocketController {
     @Autowired
     private PresentationDashboardRepository dashboardRepository;
 
+    @Autowired
+    private SpeakerRepository speakerRepository;
+
     @SubscribeMapping("/players/answer/qna/{boardId}")
     public SocketResponseMessage answerResponse(@DestinationVariable Long boardId) {
         PresentationDashboard dashboard = socketService.findOxDashBoard(boardId);
@@ -61,6 +61,17 @@ public class QnaSocketController {
         PresentationDashboard dashboard = dashboardRepository.findOne(boardId);
         Question question = questionRepository.searchBoardAndAnswer(dashboard.getId(), "Q");
         Answer answer = new Answer(dashboard, audience, question.getId(), message.getResponse(), message.getUserAgent());
+
+        if(message.getType().equals(AudienceType.FACEBOOK)) {
+            Speaker speaker = speakerRepository.findOne(Long.valueOf(message.getSpeakerId()));
+            answer.setName(speaker.getName());
+            answer.setProfileImage(speaker.getProfileImage());
+            answer.setAnonymous(false);
+        } else {
+            answer.setName(null);
+            answer.setProfileImage(null);
+            answer.setAnonymous(true);
+        }
 
         Set<Tag> tags = socketService.parsingTags(message.getResponse());
 

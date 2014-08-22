@@ -31,7 +31,7 @@
     <div th:include="dashboard-layout :: script"></div>
     <script type="text/javascript" th:inline="javascript">
         /*<![CDATA[*/
-        var board = /*[[${dashboard}]]*/ null;
+        var boardId = /*[[${dashboard.id}]]*/ null;
 
         var WEBSOCKET_TARGET_URL = "/join";
         var stompClient, socket;
@@ -49,17 +49,17 @@
             stompClient.connect(' ', ' ', function(frame) {
                 connect = true;
                 statusConnect();
-                stompClient.subscribe("/socket/players/answer/qna/" + board.id, function(message) {
+                stompClient.subscribe("/socket/players/answer/qna/" + boardId, function(message) {
                     var answer = JSON.parse(message.body);
                     addQna(answer.result);
                 });
 
-                stompClient.subscribe("/socket/players/answer/qna/result/" + board.id, function(message) {
+                stompClient.subscribe("/socket/players/answer/qna/result/" + boardId, function(message) {
                     var answer = JSON.parse(message.body);
                     addQna(answer.result);
                 });
 
-                stompClient.subscribe("/socket/players/answer/qna/" + board.id + "/taglist", function(message) {
+                stompClient.subscribe("/socket/players/answer/qna/" + boardId + "/taglist", function(message) {
                     var answer = JSON.parse(message.body);
                     addTags(answer);
                 });
@@ -91,7 +91,7 @@
         var addTags = function(result) {
             $('.dashboard-qna-tag').empty();
             for(var i in result) {
-                var inHTML = "<a class='btn btn-default btn-flat' href='/board/" + board.id + "/tags/" + result[i].name + "' >" + result[i].name + "</a>";
+                var inHTML = "<a class='btn btn-default btn-flat' href='/board/" + boardId + "/tags/" + result[i].name + "' >" + result[i].name + "</a>";
                 $('.dashboard-qna-tag').append(inHTML);
             }
         };
