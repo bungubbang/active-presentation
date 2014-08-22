@@ -58,7 +58,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> , JpaSpeci
     @Query("select new com.active.presentation.repository.dto.AnswerTransactionDto(count(a) as count, year(a.createdDate) ||'-'|| month(a.createdDate) ||'-'|| day(a.createdDate) as date ) " +
             " FROM Answer a join a.dashboard d join d.speaker s where s = :speaker AND d.createdDate >= :date" +
             " group by year(a.createdDate) ||'-'|| month(a.createdDate) ||'-'|| day(a.createdDate)" +
-            " order by year(a.createdDate) ||'-'|| month(a.createdDate) ||'-'|| day(a.createdDate) desc")
+            " order a.createdDate asc")
     List<AnswerTransactionDto> countAnswerAfterDate(@Param("speaker") Speaker speaker, @Param("date") Date date);
 
     @Query("select new com.active.presentation.repository.dto.AnswerResultDto(a.resultId as id, a.result as result, a.modifyDate as createdDate, d.status as status, a.anonymous as anonymous, a.name as name, a.profileImage as profileImage) FROM Answer a join a.tags t JOIN a.dashboard d WHERE t.name = :name")
