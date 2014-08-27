@@ -70,5 +70,6 @@ header { background-color: #2494F2; color: #FFF; }
 
 @media (max-width: 768px) {
     .dashboard-title { font-size: 25px !important; }
+    .control-ox-answer {font-size: 70px;}
 }
 

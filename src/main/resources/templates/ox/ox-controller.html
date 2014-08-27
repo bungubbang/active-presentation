@@ -92,7 +92,7 @@
 
 
         var yes = function() {
-            if(connect && result === "X") {
+            if(connect && (result === "X" || result === null)) {
                 answer.response = "O";
                 markingResult("O");
                 stompClient.send('/socket/answer/ox/' + boardId, {}, JSON.stringify(answer));
@@ -101,7 +101,7 @@
         };
 
         var no = function() {
-            if(connect && result === "O") {
+            if(connect && (result === "O" || result === null)) {
                 answer.response = "X";
                 markingResult("X");
                 stompClient.send('/socket/answer/ox/' + boardId, {}, JSON.stringify(answer));

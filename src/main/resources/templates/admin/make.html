@@ -17,7 +17,9 @@
 
     <div class="container-fluid" id="pcont">
         <div class="page-head">
-            <h2 th:text="'Create ' + ${data.presentationType?.name()}"></h2>
+            <h2 th:if="${data.presentationType?.name() == 'OX'}">Create Yes or No</h2>
+            <h2 th:if="${data.presentationType?.name() == 'MULTIPLE_CHOICE'}">Create Multiple Choice</h2>
+            <h2 th:if="${data.presentationType?.name() == 'QNA'}">Create Message board</h2>
             <ol class="breadcrumb">
                 <li><a href="/admin">Home</a></li>
                 <li th:if="${data.presentationType?.name() == 'OX'}"><a href="/admin/ox">Yes or No Choice</a></li>
