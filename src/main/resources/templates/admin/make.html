@@ -144,6 +144,9 @@
             return false;
         }
         var inHTML = "<li class='dd-item dd-nochildren' data-answerlist='" + listText + "'>"
+                        + "<div class='pull-right' onclick='modifyList(this)' style='margin: 7px'>"
+                            + "<i class='fa fa-times-circle'></i>"
+                        + "</div>"
                         + "<div class='dd-handle'>" + listText + "</div>"
                     + "</li>";
         $('.dd-list').append(inHTML);
@@ -163,6 +166,12 @@
         // validation remove
         $('.parsley-error').removeClass('parsley-error');
         $('.parsley-errors-list').remove();
+    };
+
+    var modifyList = function(div) {
+        modiDiv = $(div).parent();
+        $(modiDiv).remove();
+        fillQuestions();
     };
 
     $('.q-secure').attr('data-content',qSecure);

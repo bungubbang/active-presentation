@@ -58,7 +58,7 @@ public class ChoiceController {
             map.addAttribute("right", groupListRepository.findByGroupIdAndListOrder(group.getGroupId(), group.getListOrder() + 1));
         }
 
-        if(!dashboard.getAnonymous()) {
+        if(dashboard != null && !dashboard.getAnonymous()) {
             String userId = userCookieGenerator.readCookieValue(request);
             if(userId !=null && !userId.isEmpty()) {
                 map.addAttribute("speaker", speakerRepository.findOne(Long.valueOf(userId)));
